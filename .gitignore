@@ -1,0 +1,19 @@
+\.git
+\.hg
+
+\.DS_Store
+\.idea
+\.project
+\.vagrant
+bower_components
+node_modules
+npm-debug\.log*
+jmeter.log
+
+# Config overrides
+config/local*
+
+# Build
+dist
+lib
+coverage

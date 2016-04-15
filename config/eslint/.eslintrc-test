@@ -1,0 +1,16 @@
+---
+extends:
+  - "defaults/configurations/walmart/es6-test"
+  - ".eslintrc-base"
+
+env:
+  mocha: true
+
+globals:
+  expect: true
+  sandbox: true
+
+rules:
+  max-nested-callbacks: [2, 5]
+  no-unused-expressions: 0
+
