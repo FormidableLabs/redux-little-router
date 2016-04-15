@@ -1,0 +1,2 @@
+# redux-little-router [![Build Status](https://travis-ci.org/FormidableLabs/redux-little-router.svg?branch=master)](https://travis-ci.org/FormidableLabs/redux-little-router) [![Coverage Status](https://coveralls.io/repos/github/FormidableLabs/redux-little-router/badge.svg?branch=master)](https://coveralls.io/github/FormidableLabs/redux-little-router?branch=master)
+A tiny routing solution for Redux.
