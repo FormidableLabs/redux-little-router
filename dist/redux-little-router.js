@@ -1172,9 +1172,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _actionTypes = __webpack_require__(16);
 	
 	var locationDidChange = function locationDidChange(location) {
+	  var basename = location.basename;
+	  var pathname = location.pathname;
+	
 	  return {
 	    type: _actionTypes.LOCATION_CHANGED,
-	    payload: location.pathname
+	    payload: ('' + (basename || '') + pathname).replace(/\/$/, '') // remove trailing slash
 	  };
 	};
 	
@@ -1263,13 +1266,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _props = this.props;
+	      var href = _props.href;
+	      var history = _props.history;
+	      var children = _props.children;
+	
 	      return _react2.default.createElement(
 	        'a',
 	        _extends({}, this.props, {
-	          href: this.props.href,
+	          href: history ? history.createHref(href) : href,
 	          onClick: this.onClick.bind(this)
 	        }),
-	        this.props.children
+	        children
 	      );
 	    }
 	  }]);
@@ -1283,7 +1291,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	Link.propTypes = {
 	  href: _react.PropTypes.string,
 	  children: _react.PropTypes.node,
-	  dispatch: _react.PropTypes.func
+	  dispatch: _react.PropTypes.func,
+	  history: _react.PropTypes.object
 	};
 
 /***/ },
