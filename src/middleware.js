@@ -3,9 +3,11 @@ import {
 } from './action-types';
 
 const locationDidChange = location => {
+  const { basename, pathname } = location;
   return {
     type: LOCATION_CHANGED,
-    payload: location.pathname
+    payload: `${basename || ''}${pathname}`
+      .replace(/\/$/, '') // remove trailing slash
   };
 };
 

@@ -13,13 +13,14 @@ export default class Link extends Component {
   }
 
   render() {
+    const { href, history, children} = this.props;
     return (
       <a
         {...this.props}
-        href={this.props.href}
+        href={history ? history.createHref(href) : href}
         onClick={this.onClick.bind(this)}
       >
-        {this.props.children}
+        {children}
       </a>
     );
   }
@@ -28,5 +29,6 @@ export default class Link extends Component {
 Link.propTypes = {
   href: PropTypes.string,
   children: PropTypes.node,
-  dispatch: PropTypes.func
+  dispatch: PropTypes.func,
+  history: PropTypes.object
 };
