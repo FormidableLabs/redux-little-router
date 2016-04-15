@@ -1,5 +1,5 @@
 {
-  "name": "redux-micro-router",
+  "name": "redux-little-router",
   "version": "0.1.0",
   "description": "A barebones routing solution for Redux applications.",
   "main": "lib/index.js",
@@ -29,7 +29,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://tptee@github.com/FormidableLabs/redux-micro-router.git"
+    "url": "git+https://tptee@github.com/FormidableLabs/redux-little-router.git"
   },
   "keywords": [
     "redux",
@@ -39,9 +39,9 @@
   "author": "Tyler Thompson",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/FormidableLabs/redux-micro-router/issues"
+    "url": "https://github.com/FormidableLabs/redux-little-router/issues"
   },
-  "homepage": "https://github.com/FormidableLabs/redux-micro-router#readme",
+  "homepage": "https://github.com/FormidableLabs/redux-little-router#readme",
   "dependencies": {
     "babel-cli": "^6.7.5",
     "babel-core": "^6.7.6",
