@@ -7,7 +7,7 @@
 		exports["ReduxLittleRouter"] = factory(require("react"));
 	else
 		root["ReduxLittleRouter"] = factory(root["React"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_19__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_21__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -65,15 +65,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _storeEnhancer2 = _interopRequireDefault(_storeEnhancer);
 	
-	var _middleware = __webpack_require__(17);
+	var _middleware = __webpack_require__(19);
 	
 	var _middleware2 = _interopRequireDefault(_middleware);
 	
-	var _reducer = __webpack_require__(15);
+	var _reducer = __webpack_require__(17);
 	
 	var _reducer2 = _interopRequireDefault(_reducer);
 	
-	var _link = __webpack_require__(18);
+	var _link = __webpack_require__(20);
 	
 	var _link2 = _interopRequireDefault(_link);
 	
@@ -98,15 +98,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _redux = __webpack_require__(2);
 	
-	var _featherRouteMatcher = __webpack_require__(14);
+	var _featherRouteMatcher = __webpack_require__(16);
 	
 	var _featherRouteMatcher2 = _interopRequireDefault(_featherRouteMatcher);
 	
-	var _reducer = __webpack_require__(15);
+	var _reducer = __webpack_require__(17);
 	
 	var _reducer2 = _interopRequireDefault(_reducer);
 	
-	var _middleware = __webpack_require__(17);
+	var _middleware = __webpack_require__(19);
 	
 	var _middleware2 = _interopRequireDefault(_middleware);
 	
@@ -150,23 +150,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createStore2 = _interopRequireDefault(_createStore);
 	
-	var _combineReducers = __webpack_require__(9);
+	var _combineReducers = __webpack_require__(11);
 	
 	var _combineReducers2 = _interopRequireDefault(_combineReducers);
 	
-	var _bindActionCreators = __webpack_require__(11);
+	var _bindActionCreators = __webpack_require__(13);
 	
 	var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
 	
-	var _applyMiddleware = __webpack_require__(12);
+	var _applyMiddleware = __webpack_require__(14);
 	
 	var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
 	
-	var _compose = __webpack_require__(13);
+	var _compose = __webpack_require__(15);
 	
 	var _compose2 = _interopRequireDefault(_compose);
 	
-	var _warning = __webpack_require__(10);
+	var _warning = __webpack_require__(12);
 	
 	var _warning2 = _interopRequireDefault(_warning);
 	
@@ -300,6 +300,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 	
+	var _symbolObservable = __webpack_require__(9);
+	
+	var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 	
 	/**
@@ -338,6 +342,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * and subscribe to changes.
 	 */
 	function createStore(reducer, initialState, enhancer) {
+	  var _ref2;
+	
 	  if (typeof initialState === 'function' && typeof enhancer === 'undefined') {
 	    enhancer = initialState;
 	    initialState = undefined;
@@ -494,17 +500,57 @@ return /******/ (function(modules) { // webpackBootstrap
 	    dispatch({ type: ActionTypes.INIT });
 	  }
 	
+	  /**
+	   * Interoperability point for observable/reactive libraries.
+	   * @returns {observable} A minimal observable of state changes.
+	   * For more information, see the observable proposal:
+	   * https://github.com/zenparsing/es-observable
+	   */
+	  function observable() {
+	    var _ref;
+	
+	    var outerSubscribe = subscribe;
+	    return _ref = {
+	      /**
+	       * The minimal observable subscription method.
+	       * @param {Object} observer Any object that can be used as an observer.
+	       * The observer object should have a `next` method.
+	       * @returns {subscription} An object with an `unsubscribe` method that can
+	       * be used to unsubscribe the observable from the store, and prevent further
+	       * emission of values from the observable.
+	       */
+	
+	      subscribe: function subscribe(observer) {
+	        if (typeof observer !== 'object') {
+	          throw new TypeError('Expected the observer to be an object.');
+	        }
+	
+	        function observeState() {
+	          if (observer.next) {
+	            observer.next(getState());
+	          }
+	        }
+	
+	        observeState();
+	        var unsubscribe = outerSubscribe(observeState);
+	        return { unsubscribe: unsubscribe };
+	      }
+	    }, _ref[_symbolObservable2["default"]] = function () {
+	      return this;
+	    }, _ref;
+	  }
+	
 	  // When a store is created, an "INIT" action is dispatched so that every
 	  // reducer returns their initial state. This effectively populates
 	  // the initial state tree.
 	  dispatch({ type: ActionTypes.INIT });
 	
-	  return {
+	  return _ref2 = {
 	    dispatch: dispatch,
 	    subscribe: subscribe,
 	    getState: getState,
 	    replaceReducer: replaceReducer
-	  };
+	  }, _ref2[_symbolObservable2["default"]] = observable, _ref2;
 	}
 
 /***/ },
@@ -669,6 +715,46 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* WEBPACK VAR INJECTION */(function(global) {/* global window */
+	'use strict';
+	
+	module.exports = __webpack_require__(10)(global || window || this);
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 10 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	module.exports = function symbolObservablePonyfill(root) {
+		var result;
+		var Symbol = root.Symbol;
+	
+		if (typeof Symbol === 'function') {
+			if (Symbol.observable) {
+				result = Symbol.observable;
+			} else {
+				if (typeof Symbol.for === 'function') {
+					result = Symbol.for('observable');
+				} else {
+					result = Symbol('observable');
+				}
+				Symbol.observable = result;
+			}
+		} else {
+			result = '@@observable';
+		}
+	
+		return result;
+	};
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 	
 	exports.__esModule = true;
@@ -680,7 +766,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 	
-	var _warning = __webpack_require__(10);
+	var _warning = __webpack_require__(12);
 	
 	var _warning2 = _interopRequireDefault(_warning);
 	
@@ -799,7 +885,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -828,7 +914,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 11 */
+/* 13 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -884,7 +970,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 12 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -895,7 +981,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	exports["default"] = applyMiddleware;
 	
-	var _compose = __webpack_require__(13);
+	var _compose = __webpack_require__(15);
 	
 	var _compose2 = _interopRequireDefault(_compose);
 	
@@ -947,7 +1033,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -970,22 +1056,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	    funcs[_key] = arguments[_key];
 	  }
 	
-	  return function () {
-	    if (funcs.length === 0) {
-	      return arguments.length <= 0 ? undefined : arguments[0];
-	    }
+	  if (funcs.length === 0) {
+	    return function (arg) {
+	      return arg;
+	    };
+	  } else {
+	    var _ret = function () {
+	      var last = funcs[funcs.length - 1];
+	      var rest = funcs.slice(0, -1);
+	      return {
+	        v: function v() {
+	          return rest.reduceRight(function (composed, f) {
+	            return f(composed);
+	          }, last.apply(undefined, arguments));
+	        }
+	      };
+	    }();
 	
-	    var last = funcs[funcs.length - 1];
-	    var rest = funcs.slice(0, -1);
-	
-	    return rest.reduceRight(function (composed, f) {
-	      return f(composed);
-	    }, last.apply(undefined, arguments));
-	  };
+	    if (typeof _ret === "object") return _ret.v;
+	  }
 	}
 
 /***/ },
-/* 14 */
+/* 16 */
 /***/ function(module, exports) {
 
 	// regexes borrowed from backbone
@@ -1108,7 +1201,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 15 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1119,9 +1212,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
-	var _actionTypes = __webpack_require__(16);
+	var _actionTypes = __webpack_require__(18);
 	
-	var _featherRouteMatcher = __webpack_require__(14);
+	var _featherRouteMatcher = __webpack_require__(16);
 	
 	var _featherRouteMatcher2 = _interopRequireDefault(_featherRouteMatcher);
 	
@@ -1144,7 +1237,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 16 */
+/* 18 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1160,7 +1253,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var GO_FORWARD = exports.GO_FORWARD = 'ROUTER_GO_FORWARD';
 
 /***/ },
-/* 17 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1169,7 +1262,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	
-	var _actionTypes = __webpack_require__(16);
+	var _actionTypes = __webpack_require__(18);
 	
 	var locationDidChange = function locationDidChange(location) {
 	  var basename = location.basename;
@@ -1181,13 +1274,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	};
 	
+	var locationListener = void 0;
+	
 	exports.default = function (history) {
 	  return function () {
 	    return function (next) {
 	      return function (action) {
-	        history.listen(function (location) {
-	          next(locationDidChange(location));
-	        });
+	        if (!locationListener) {
+	          locationListener = history.listen(function (location) {
+	            next(locationDidChange(location));
+	          });
+	        }
 	
 	        switch (action.type) {
 	          case _actionTypes.PUSH:
@@ -1216,7 +1313,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 18 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1229,11 +1326,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _react = __webpack_require__(19);
+	var _react = __webpack_require__(21);
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _actionTypes = __webpack_require__(16);
+	var _actionTypes = __webpack_require__(18);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -1296,10 +1393,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_19__;
+	module.exports = __WEBPACK_EXTERNAL_MODULE_21__;
 
 /***/ }
 /******/ ])
