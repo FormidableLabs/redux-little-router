@@ -11,11 +11,15 @@ const locationDidChange = location => {
   };
 };
 
+let locationListener;
+
 export default history => {
   return () => next => action => {
-    history.listen(location => {
-      next(locationDidChange(location));
-    });
+    if (!locationListener) {
+      locationListener = history.listen(location => {
+        next(locationDidChange(location));
+      });
+    }
 
     switch (action.type) {
       case PUSH:

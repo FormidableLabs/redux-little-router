@@ -51,7 +51,7 @@
     "babel-preset-stage-2": "^6.5.0",
     "coveralls": "^2.11.9",
     "feather-route-matcher": "^2.0.1",
-    "history": "^2.0.1",
+    "history": "^3.0.0-2",
     "rimraf": "^2.5.2",
     "webpack": "^1.12.15"
   },
