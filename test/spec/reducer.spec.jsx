@@ -11,10 +11,16 @@ describe('Router reducer', () => {
   it('adds the pathname to the store', () => {
     const action = {
       type: LOCATION_CHANGED,
-      payload: '/rofl'
+      payload: {
+        url: '/rofl',
+        action: 'PUSH'
+      }
     };
     const result = routerReducer({}, mockCreateMatcher)({}, action);
-    expect(result).to.deep.equal({ pathname: '/rofl'});
+    expect(result).to.deep.equal({
+      pathname: '/rofl',
+      historyAction: 'PUSH'
+    });
   });
 
   it('is not affected by other action types', () => {

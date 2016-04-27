@@ -9,31 +9,36 @@ export default class MockHistory {
 
   push() {
     this.callback({
-      pathname: '/push'
+      pathname: '/push',
+      action: 'PUSH'
     });
   }
 
   replace() {
     this.callback({
-      pathname: '/replace'
+      pathname: '/replace',
+      action: 'REPLACE'
     });
   }
 
   go() {
     this.callback({
-      pathname: '/go'
+      pathname: '/go',
+      action: 'REPLACE'
     });
   }
 
   goBack() {
     this.callback({
-      pathname: '/goBack'
+      pathname: '/goBack',
+      action: 'POP'
     });
   }
 
   goForward() {
     this.callback({
-      pathname: '/goForward'
+      pathname: '/goForward',
+      action: 'PUSH'
     });
   }
 }

@@ -6,7 +6,10 @@ export default (routes, createMatcher = matcherFactory) => {
 
   return (state = {}, action) => {
     if (action.type === LOCATION_CHANGED) {
-      return {...matchRoute(action.payload)};
+      return {
+        ...matchRoute(action.payload.url),
+        historyAction: action.payload.action
+      };
     }
     return state;
   };
