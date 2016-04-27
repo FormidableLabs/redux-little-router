@@ -24,27 +24,45 @@ const testRouterMiddleware = (initialAction, done, assertion) => {
 
 describe('Router middleware', () => {
   const actions = {
-    [PUSH]: '/push',
-    [REPLACE]: '/replace',
-    [GO]: '/go',
-    [GO_BACK]: '/goBack',
-    [GO_FORWARD]: '/goForward'
+    [PUSH]: {
+      url: '/push',
+      action: 'PUSH'
+    },
+    [REPLACE]: {
+      url: '/replace',
+      action: 'REPLACE'
+    },
+    [GO]: {
+      url: '/go',
+      action: 'REPLACE'
+    },
+    [GO_BACK]: {
+      url: '/goBack',
+      action: 'POP'
+    },
+    [GO_FORWARD]: {
+      url: '/goForward',
+      action: 'PUSH'
+    }
   };
 
   Object.keys(actions).forEach(actionType => {
-    const expectedPath = actions[actionType];
+    const expected = actions[actionType];
 
     it(`dispatches location changes with ${actionType}`, done => {
       const action = {
         type: actionType,
         payload: {
-          pathname: expectedPath
+          pathname: expected.url
         }
       };
       testRouterMiddleware(action, done, resultAction => {
         expect(resultAction).to.deep.equal({
           type: LOCATION_CHANGED,
-          payload: expectedPath
+          payload: {
+            url: expected.url,
+            action: expected.action
+          }
         });
       });
     });
