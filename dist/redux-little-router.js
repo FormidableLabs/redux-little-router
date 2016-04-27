@@ -1230,7 +1230,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var action = arguments[1];
 	
 	    if (action.type === _actionTypes.LOCATION_CHANGED) {
-	      return _extends({}, matchRoute(action.payload));
+	      return _extends({}, matchRoute(action.payload.url), {
+	        historyAction: action.payload.action
+	      });
 	    }
 	    return state;
 	  };
@@ -1267,10 +1269,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	var locationDidChange = function locationDidChange(location) {
 	  var basename = location.basename;
 	  var pathname = location.pathname;
+	  var action = location.action;
 	
 	  return {
 	    type: _actionTypes.LOCATION_CHANGED,
-	    payload: ('' + (basename || '') + pathname).replace(/\/$/, '') // remove trailing slash
+	    payload: {
+	      action: action,
+	      url: ('' + (basename || '') + pathname).replace(/\/$/, '') // remove trailing slash
+	    }
 	  };
 	};
 	
