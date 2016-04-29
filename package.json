@@ -50,9 +50,9 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-2": "^6.5.0",
     "coveralls": "^2.11.9",
-    "feather-route-matcher": "^2.0.1",
     "history": "^3.0.0-2",
     "rimraf": "^2.5.2",
+    "url-pattern": "^1.0.1",
     "webpack": "^1.12.15"
   },
   "devDependencies": {

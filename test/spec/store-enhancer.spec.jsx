@@ -7,7 +7,8 @@ import MockHistory from './mocks/history';
 
 const mockCreateMatcher = () => () => {
   return {
-    pathname: '/changed'
+    params: {},
+    result: 'changed'
   };
 };
 
@@ -38,7 +39,7 @@ describe('Router store enhancer', () => {
     store.subscribe(() => {
       const state = store.getState();
       expect(state).to.have.deep.property(
-        'router.pathname', '/changed'
+        'router.current.result', 'changed'
       );
       done();
     });
@@ -60,7 +61,7 @@ describe('Router store enhancer', () => {
     store.subscribe(() => {
       const state = store.getState();
       expect(state).to.have.deep.property(
-        'router.pathname', '/changed'
+        'router.current.result', 'changed'
       );
       done();
     });

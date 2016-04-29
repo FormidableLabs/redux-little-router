@@ -1,5 +1,5 @@
 import { applyMiddleware } from 'redux';
-import { default as matcherFactory } from 'feather-route-matcher';
+import { default as matcherFactory } from './create-matcher';
 
 import routerReducer from './reducer';
 import routerMiddleware from './middleware';

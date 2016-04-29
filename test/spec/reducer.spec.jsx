@@ -3,7 +3,8 @@ import { LOCATION_CHANGED } from 'src/action-types';
 
 const mockCreateMatcher = () => () => {
   return {
-    pathname: '/rofl'
+    params: {},
+    result: 'rofl'
   };
 };
 
@@ -17,8 +18,14 @@ describe('Router reducer', () => {
       }
     };
     const result = routerReducer({}, mockCreateMatcher)({}, action);
+
     expect(result).to.deep.equal({
-      pathname: '/rofl',
+      current: {
+        params: {},
+        result: 'rofl',
+        url: '/rofl'
+      },
+      previous: undefined,
       historyAction: 'PUSH'
     });
   });
