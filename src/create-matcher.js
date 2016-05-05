@@ -1,4 +1,5 @@
 import UrlPattern from 'url-pattern';
+import find from 'lodash.find';
 
 export default routes => {
   const routeCache = Object.keys(routes).map(key => ({
@@ -7,8 +8,8 @@ export default routes => {
   }));
 
   return incomingRoute => {
-    const match = routeCache.find(
-      route => route.pattern.match(incomingRoute)
+    const match = find(routeCache, route =>
+      route.pattern.match(incomingRoute)
     );
     return {
       params: match.pattern.match(incomingRoute),

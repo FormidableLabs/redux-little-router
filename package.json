@@ -51,6 +51,7 @@
     "babel-preset-stage-2": "^6.5.0",
     "coveralls": "^2.11.9",
     "history": "^3.0.0-2",
+    "lodash.find": "^4.3.0",
     "rimraf": "^2.5.2",
     "url-pattern": "^1.0.1",
     "webpack": "^1.12.15"
