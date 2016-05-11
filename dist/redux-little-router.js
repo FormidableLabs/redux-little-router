@@ -59,7 +59,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.createMatcher = exports.Link = exports.routerReducer = exports.routerMiddleware = exports.createStoreWithRouter = undefined;
+	exports.LOCATION_CHANGED = exports.createMatcher = exports.Link = exports.routerReducer = exports.routerMiddleware = exports.createStoreWithRouter = undefined;
 	
 	var _storeEnhancer = __webpack_require__(1);
 	
@@ -81,6 +81,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createMatcher2 = _interopRequireDefault(_createMatcher);
 	
+	var _actionTypes = __webpack_require__(27);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	exports.createStoreWithRouter = _storeEnhancer2.default;
@@ -88,6 +90,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.routerReducer = _reducer2.default;
 	exports.Link = _link2.default;
 	exports.createMatcher = _createMatcher2.default;
+	exports.LOCATION_CHANGED = _actionTypes.LOCATION_CHANGED;
 
 /***/ },
 /* 1 */
@@ -1113,11 +1116,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return function (incomingRoute) {
 	    var match = (0, _lodash2.default)(routeCache, function (route) {
 	      return route.pattern.match(incomingRoute);
-	    });
-	    return {
+	    }) || null;
+	
+	    return match ? {
 	      params: match.pattern.match(incomingRoute),
 	      result: match.result
-	    };
+	    } : null;
 	  };
 	};
 
@@ -5153,7 +5157,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return function (action) {
 	        if (!locationListener) {
 	          locationListener = history.listen(function (location) {
-	            next(locationDidChange(location));
+	            if (location) {
+	              next(locationDidChange(location));
+	            }
 	          });
 	        }
 	
