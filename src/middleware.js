@@ -20,7 +20,9 @@ export default history => {
   return () => next => action => {
     if (!locationListener) {
       locationListener = history.listen(location => {
-        next(locationDidChange(location));
+        if (location) {
+          next(locationDidChange(location));
+        }
       });
     }
 
