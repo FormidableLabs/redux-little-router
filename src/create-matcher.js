@@ -10,10 +10,11 @@ export default routes => {
   return incomingRoute => {
     const match = find(routeCache, route =>
       route.pattern.match(incomingRoute)
-    );
-    return {
+    ) || null;
+
+    return match ? {
       params: match.pattern.match(incomingRoute),
       result: match.result
-    };
+    } : null;
   };
 };
