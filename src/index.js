@@ -3,11 +3,13 @@ import routerMiddleware from './middleware';
 import routerReducer from './reducer';
 import Link from './link';
 import createMatcher from './create-matcher';
+import { LOCATION_CHANGED } from './action-types';
 
 export {
   createStoreWithRouter,
   routerMiddleware,
   routerReducer,
   Link,
-  createMatcher
+  createMatcher,
+  LOCATION_CHANGED
 };
