@@ -3,11 +3,12 @@ import {
 } from './action-types';
 
 const locationDidChange = location => {
-  const { basename, pathname, action } = location;
+  const { basename, pathname, action, state } = location;
   return {
     type: LOCATION_CHANGED,
     payload: {
       action,
+      state,
       url: `${basename || ''}${pathname}`
         .replace(/\/$/, '') // remove trailing slash
     }
@@ -28,13 +29,13 @@ export default history => {
 
     switch (action.type) {
       case PUSH:
-        history.push(action.payload.pathname);
+        history.push(action.payload);
         break;
       case REPLACE:
-        history.replace(action.payload.pathname);
+        history.replace(action.payload);
         break;
       case GO:
-        history.go(action.payload.index);
+        history.go(action.payload);
         break;
       case GO_BACK:
         history.goBack();

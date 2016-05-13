@@ -10,35 +10,50 @@ export default class MockHistory {
   push() {
     this.callback({
       pathname: '/push',
-      action: 'PUSH'
+      action: 'PUSH',
+      state: {
+        bork: 'bork'
+      }
     });
   }
 
   replace() {
     this.callback({
       pathname: '/replace',
-      action: 'REPLACE'
+      action: 'REPLACE',
+      state: {
+        bork: 'bork'
+      }
     });
   }
 
   go() {
     this.callback({
       pathname: '/go',
-      action: 'REPLACE'
+      action: 'REPLACE',
+      state: {
+        bork: 'bork'
+      }
     });
   }
 
   goBack() {
     this.callback({
       pathname: '/goBack',
-      action: 'POP'
+      action: 'POP',
+      state: {
+        bork: 'bork'
+      }
     });
   }
 
   goForward() {
     this.callback({
       pathname: '/goForward',
-      action: 'PUSH'
+      action: 'PUSH',
+      state: {
+        bork: 'bork'
+      }
     });
   }
 }

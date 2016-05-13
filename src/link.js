@@ -1,11 +1,13 @@
 import React, { Component, PropTypes } from 'react';
-import { PUSH } from './action-types';
+import { PUSH, REPLACE } from './action-types';
 
 export default class Link extends Component {
   onClick(event) {
     event.preventDefault();
-    this.props.dispatch({
-      type: PUSH,
+    const { replaceState, dispatch } = this.props;
+
+    dispatch({
+      type: replaceState ? REPLACE : PUSH,
       payload: {
         pathname: this.props.href
       }
@@ -13,7 +15,7 @@ export default class Link extends Component {
   }
 
   render() {
-    const { href, history, children} = this.props;
+    const { href, history, children } = this.props;
     return (
       <a
         {...this.props}
@@ -30,5 +32,6 @@ Link.propTypes = {
   href: PropTypes.string,
   children: PropTypes.node,
   dispatch: PropTypes.func,
-  history: PropTypes.object
+  history: PropTypes.object,
+  replaceState: PropTypes.bool
 };
