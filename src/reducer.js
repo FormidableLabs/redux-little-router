@@ -9,10 +9,9 @@ export default (routes, createMatcher = matcherFactory) => {
       return {
         current: {
           ...matchRoute(action.payload.url),
-          url: action.payload.url
+          ...action.payload
         },
-        previous: state.current,
-        historyAction: action.payload.action
+        previous: state.current
       };
     }
     return state;

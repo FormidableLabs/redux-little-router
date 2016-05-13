@@ -49,11 +49,14 @@ describe('Router middleware', () => {
   Object.keys(actions).forEach(actionType => {
     const expected = actions[actionType];
 
-    it(`dispatches location changes with ${actionType}`, done => {
+    it(`dispatches location changes with ${actionType} and associated state`, done => {
       const action = {
         type: actionType,
         payload: {
-          pathname: expected.url
+          pathname: expected.url,
+          state: {
+            bork: 'bork'
+          }
         }
       };
       testRouterMiddleware(action, done, resultAction => {
@@ -61,7 +64,10 @@ describe('Router middleware', () => {
           type: LOCATION_CHANGED,
           payload: {
             url: expected.url,
-            action: expected.action
+            action: expected.action,
+            state: {
+              bork: 'bork'
+            }
           }
         });
       });

@@ -14,7 +14,10 @@ describe('Router reducer', () => {
       type: LOCATION_CHANGED,
       payload: {
         url: '/rofl',
-        action: 'PUSH'
+        action: 'PUSH',
+        state: {
+          bork: 'bork'
+        }
       }
     };
     const result = routerReducer({}, mockCreateMatcher)({}, action);
@@ -23,10 +26,13 @@ describe('Router reducer', () => {
       current: {
         params: {},
         result: 'rofl',
-        url: '/rofl'
+        url: '/rofl',
+        action: 'PUSH',
+        state: {
+          bork: 'bork'
+        }
       },
-      previous: undefined,
-      historyAction: 'PUSH'
+      previous: undefined
     });
   });
 
