@@ -59,7 +59,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.LOCATION_CHANGED = exports.createMatcher = exports.Link = exports.routerReducer = exports.routerMiddleware = exports.createStoreWithRouter = undefined;
+	exports.GO_BACK = exports.GO_FORWARD = exports.GO = exports.REPLACE = exports.PUSH = exports.LOCATION_CHANGED = exports.createMatcher = exports.Link = exports.routerReducer = exports.routerMiddleware = exports.createStoreWithRouter = undefined;
 	
 	var _storeEnhancer = __webpack_require__(1);
 	
@@ -91,6 +91,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.Link = _link2.default;
 	exports.createMatcher = _createMatcher2.default;
 	exports.LOCATION_CHANGED = _actionTypes.LOCATION_CHANGED;
+	exports.PUSH = _actionTypes.PUSH;
+	exports.REPLACE = _actionTypes.REPLACE;
+	exports.GO = _actionTypes.GO;
+	exports.GO_FORWARD = _actionTypes.GO_FORWARD;
+	exports.GO_BACK = _actionTypes.GO_BACK;
 
 /***/ },
 /* 1 */
@@ -5096,11 +5101,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    if (action.type === _actionTypes.LOCATION_CHANGED) {
 	      return {
-	        current: _extends({}, matchRoute(action.payload.url), {
-	          url: action.payload.url
-	        }),
-	        previous: state.current,
-	        historyAction: action.payload.action
+	        current: _extends({}, matchRoute(action.payload.url), action.payload),
+	        previous: state.current
 	      };
 	    }
 	    return state;
@@ -5139,11 +5141,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var basename = location.basename;
 	  var pathname = location.pathname;
 	  var action = location.action;
+	  var state = location.state;
 	
 	  return {
 	    type: _actionTypes.LOCATION_CHANGED,
 	    payload: {
 	      action: action,
+	      state: state,
 	      url: ('' + (basename || '') + pathname).replace(/\/$/, '') // remove trailing slash
 	    }
 	  };
@@ -5165,13 +5169,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        switch (action.type) {
 	          case _actionTypes.PUSH:
-	            history.push(action.payload.pathname);
+	            history.push(action.payload);
 	            break;
 	          case _actionTypes.REPLACE:
-	            history.replace(action.payload.pathname);
+	            history.replace(action.payload);
 	            break;
 	          case _actionTypes.GO:
-	            history.go(action.payload.index);
+	            history.go(action.payload);
 	            break;
 	          case _actionTypes.GO_BACK:
 	            history.goBack();
@@ -5230,8 +5234,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'onClick',
 	    value: function onClick(event) {
 	      event.preventDefault();
-	      this.props.dispatch({
-	        type: _actionTypes.PUSH,
+	      var _props = this.props;
+	      var replaceState = _props.replaceState;
+	      var dispatch = _props.dispatch;
+	
+	
+	      dispatch({
+	        type: replaceState ? _actionTypes.REPLACE : _actionTypes.PUSH,
 	        payload: {
 	          pathname: this.props.href
 	        }
@@ -5240,10 +5249,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _props = this.props;
-	      var href = _props.href;
-	      var history = _props.history;
-	      var children = _props.children;
+	      var _props2 = this.props;
+	      var href = _props2.href;
+	      var history = _props2.history;
+	      var children = _props2.children;
 	
 	      return _react2.default.createElement(
 	        'a',
@@ -5266,7 +5275,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  href: _react.PropTypes.string,
 	  children: _react.PropTypes.node,
 	  dispatch: _react.PropTypes.func,
-	  history: _react.PropTypes.object
+	  history: _react.PropTypes.object,
+	  replaceState: _react.PropTypes.bool
 	};
 
 /***/ },
