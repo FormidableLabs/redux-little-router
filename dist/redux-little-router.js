@@ -1119,12 +1119,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 	
 	  return function (incomingRoute) {
+	    var questionMarkIdx = incomingRoute.indexOf('?');
+	    var preQueryRoute = questionMarkIdx === -1 ? // eslint-disable-line no-magic-numbers
+	    incomingRoute : incomingRoute.slice(0, questionMarkIdx); // eslint-disable-line no-magic-numbers
+	
 	    var match = (0, _lodash2.default)(routeCache, function (route) {
-	      return route.pattern.match(incomingRoute);
+	      return route.pattern.match(preQueryRoute);
 	    }) || null;
 	
 	    return match ? {
-	      params: match.pattern.match(incomingRoute),
+	      params: match.pattern.match(preQueryRoute),
 	      result: match.result
 	    } : null;
 	  };
