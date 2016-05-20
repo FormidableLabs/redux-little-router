@@ -8,12 +8,17 @@ export default routes => {
   }));
 
   return incomingRoute => {
+    const questionMarkIdx = incomingRoute.indexOf('?');
+    const preQueryRoute = questionMarkIdx === -1 ? // eslint-disable-line no-magic-numbers
+      incomingRoute :
+      incomingRoute.slice(0, questionMarkIdx); // eslint-disable-line no-magic-numbers
+
     const match = find(routeCache, route =>
-      route.pattern.match(incomingRoute)
+      route.pattern.match(preQueryRoute)
     ) || null;
 
     return match ? {
-      params: match.pattern.match(incomingRoute),
+      params: match.pattern.match(preQueryRoute),
       result: match.result
     } : null;
   };
