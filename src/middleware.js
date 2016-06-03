@@ -4,8 +4,9 @@ import {
 
 export const locationDidChange = ({ location, matchRoute }) => {
   const { basename, pathname, action, state } = location;
+  const trailingSlash = /\/$/;
   const url = `${basename || ''}${pathname}`
-    .replace(/\/$/, ''); // remove trailing slash
+    .replace(trailingSlash, '');
 
   return {
     type: LOCATION_CHANGED,
