@@ -2,7 +2,7 @@ import { applyMiddleware } from 'redux';
 import { default as matcherFactory } from './create-matcher';
 
 import routerReducer from './reducer';
-import routerMiddleware from './middleware';
+import routerMiddleware, { initializeCurrentLocation } from './middleware';
 
 export default ({
   middleware,
@@ -17,19 +17,27 @@ export default ({
 
       return {
         ...reducer(vanillaState, action),
-        router: routerReducer(routes, createMatcher)(
-          state.router, action
-        )
+        router: routerReducer(state.router, action)
       };
     };
 
-    return createStore(
+    const store = createStore(
       enhancedReducer,
       initialState,
       applyMiddleware(
-        routerMiddleware(history),
+        routerMiddleware({
+          history, matchRoute: createMatcher(routes)
+        }),
         ...middleware,
       )
     );
+
+    const state = store.getState();
+    const initialLocation = state.router && state.router.current;
+    if (initialLocation) {
+      store.dispatch(initializeCurrentLocation(initialLocation));
+    }
+
+    return store;
   };
 };

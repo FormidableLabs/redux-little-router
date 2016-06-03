@@ -1,18 +1,13 @@
 import { routerReducer } from 'src';
 import { LOCATION_CHANGED } from 'src/action-types';
 
-const mockCreateMatcher = () => () => {
-  return {
-    params: {},
-    result: 'rofl'
-  };
-};
-
 describe('Router reducer', () => {
   it('adds the pathname to the store', () => {
     const action = {
       type: LOCATION_CHANGED,
       payload: {
+        params: {},
+        result: 'rofl',
         url: '/rofl',
         action: 'PUSH',
         state: {
@@ -20,7 +15,7 @@ describe('Router reducer', () => {
         }
       }
     };
-    const result = routerReducer({}, mockCreateMatcher)({}, action);
+    const result = routerReducer({}, action);
 
     expect(result).to.deep.equal({
       current: {
@@ -43,7 +38,7 @@ describe('Router reducer', () => {
         crazy: 'nonsense'
       }
     };
-    const result = routerReducer({}, mockCreateMatcher)({}, action);
+    const result = routerReducer({}, action);
     expect(result).to.deep.equal({});
   });
 });

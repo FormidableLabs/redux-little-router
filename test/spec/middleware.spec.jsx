@@ -1,10 +1,20 @@
 /* eslint-env mocha */
 import { routerMiddleware } from 'src';
+import createMatcher from 'src/create-matcher';
+
 import {
   LOCATION_CHANGED, PUSH, REPLACE, GO, GO_BACK, GO_FORWARD
 } from 'src/action-types';
 
 import MockHistory from './mocks/history';
+
+const fakeRoutes = {
+  '/push': 'push',
+  '/replace': 'replace',
+  '/go': 'go',
+  '/goBack': 'goBack',
+  '/goForward': 'goForward'
+};
 
 const testRouterMiddleware = (initialAction, done, assertion) => {
   const didDispatch = action => {
@@ -14,7 +24,10 @@ const testRouterMiddleware = (initialAction, done, assertion) => {
   const doDispatch = action => didDispatch(action);
   const doGetState = () => {};
 
-  const nextHandler = routerMiddleware(new MockHistory())({
+  const nextHandler = routerMiddleware({
+    history: new MockHistory(),
+    matchRoute: createMatcher(fakeRoutes)
+  })({
     dispatch: doDispatch,
     getState: doGetState
   })(doDispatch);
@@ -26,23 +39,28 @@ describe('Router middleware', () => {
   const actions = {
     [PUSH]: {
       url: '/push',
-      action: 'PUSH'
+      action: 'PUSH',
+      result: 'push'
     },
     [REPLACE]: {
       url: '/replace',
-      action: 'REPLACE'
+      action: 'REPLACE',
+      result: 'replace'
     },
     [GO]: {
       url: '/go',
-      action: 'REPLACE'
+      action: 'REPLACE',
+      result: 'go'
     },
     [GO_BACK]: {
       url: '/goBack',
-      action: 'POP'
+      action: 'POP',
+      result: 'goBack'
     },
     [GO_FORWARD]: {
       url: '/goForward',
-      action: 'PUSH'
+      action: 'PUSH',
+      result: 'goForward'
     }
   };
 
@@ -64,7 +82,9 @@ describe('Router middleware', () => {
           type: LOCATION_CHANGED,
           payload: {
             url: expected.url,
+            params: {},
             action: expected.action,
+            result: expected.result,
             state: {
               bork: 'bork'
             }
