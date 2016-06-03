@@ -1,5 +1,5 @@
 import createStoreWithRouter from './store-enhancer';
-import routerMiddleware from './middleware';
+import routerMiddleware, { locationDidChange } from './middleware';
 import routerReducer from './reducer';
 import Link from './link';
 import createMatcher from './create-matcher';
@@ -18,6 +18,7 @@ export {
   routerReducer,
   Link,
   createMatcher,
+  locationDidChange,
   LOCATION_CHANGED,
   PUSH,
   REPLACE,

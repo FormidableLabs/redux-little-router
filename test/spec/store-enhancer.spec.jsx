@@ -12,11 +12,10 @@ const mockCreateMatcher = () => () => {
   };
 };
 
-const storeWithMiddleware = middleware => {
+const storeWithMiddleware = (middleware, initialState = {}) => {
   const reducer = state => {
     return {...state, hello: 'world' };
   };
-  const initialState = {};
 
   return createStore(
     reducer,
