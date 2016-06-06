@@ -31,6 +31,9 @@ const history = createBrowserHistory();
 // Arbitrary data to add to the state tree when a route is
 // matched and dispatched. Useful for page titles and other
 // route-specific data.
+
+// Uses https://github.com/snd/url-pattern for URL matching
+// and parameter extraction.
 const routes = {
   '/': {
     title: 'Home'
@@ -83,12 +86,37 @@ export {
 
 Using the `<Link>` component is simple:
 
+```js
+<Link
+  className='anything'
+  href='/yo'
+  
+  // Pass these down from your smart component
+  // at the same time you create your Redux store
+  dispatch={this.props.dispatch}
+  history={this.props.history}
+>
+  Share Order
+</Link>
+```
+
+`<Link>` takes an optional valueless prop, `replaceState`, that changes the link navigation behavior from `pushState` to `replaceState` in the History API.
 
 ## Provided actions and state
 
 On location changes, the middleware dispatches a LOCATION_CHANGED action with the following payload:
 
 ```js
+// For a URL matching /messages/:user
+{
+  url: '/messages/a-user-has-no-name',
+  params: {
+    user: 'a-user-has-no-name'
+  },
+  result: {
+    arbitrary: 'data that you defined in your routes object!'
+  }
+}
 ```
 
 Your custom middleware can intercept this action to dispatch new actions in response to URL changes.
@@ -96,6 +124,28 @@ Your custom middleware can intercept this action to dispatch new actions in resp
 The reducer consumes this action and adds the following to the root of the state tree on the `router` property:
 
 ```js
+{
+  current: {
+    url: '/messages/a-user-has-no-name',
+    params: {
+      user: 'a-user-has-no-name'
+    },
+    result: {
+      arbitrary: 'data that you defined in your routes object!'
+    }
+  },
+  previous: {
+    url: '/messages',
+    params: {}.
+    result: {
+      more: 'arbitrary data that you defined in your routes object!'
+    }
+  }
+}
 ```
 
 Your custom reducers or selectors can derive a large portion of your app's state from the URLs in the `router` property.
+
+## Stability
+
+While the library's version number is high, we still consider this alpha software due to the likeliness of future breaking API changes.
