@@ -1,11 +1,33 @@
-import { applyMiddleware } from 'redux';
-import { default as matcherFactory } from './create-matcher';
+import exEnv from 'exenv';
 
+import { LOCATION_CHANGED } from './action-types';
+
+import { default as matcherFactory } from './create-matcher';
 import routerReducer from './reducer';
-import routerMiddleware, { initializeCurrentLocation } from './middleware';
+
+export const locationDidChange = ({ location, matchRoute }) => {
+  // Build the canonical URL
+  const { basename, pathname } = location;
+  const trailingSlash = /\/$/;
+  const url = `${basename || ''}${pathname}`
+    .replace(trailingSlash, '');
+
+  return {
+    type: LOCATION_CHANGED,
+    payload: {
+      ...location,
+      ...matchRoute(url),
+      url
+    }
+  };
+};
+
+export const initializeCurrentLocation = location => ({
+  type: LOCATION_CHANGED,
+  payload: location
+});
 
 export default ({
-  middleware,
   routes,
   history,
   createMatcher = matcherFactory
@@ -15,27 +37,39 @@ export default ({
       const vanillaState = {...state};
       delete vanillaState.router;
 
+      const newState = reducer(vanillaState, action);
+
+      // Support redux-loop
+      if (Array.isArray(newState)) {
+        const [nextState, nextEffects] = newState;
+        return [
+          {...nextState, router: routerReducer(state.router, action)},
+          nextEffects
+        ];
+      }
+
       return {
         ...reducer(vanillaState, action),
         router: routerReducer(state.router, action)
       };
     };
 
-    const store = createStore(
-      enhancedReducer,
-      initialState,
-      applyMiddleware(
-        routerMiddleware({
-          history, matchRoute: createMatcher(routes)
-        }),
-        ...middleware,
-      )
-    );
+    const store = createStore(enhancedReducer, initialState);
 
-    const state = store.getState();
-    const initialLocation = state.router && state.router.current;
-    if (initialLocation) {
-      store.dispatch(initializeCurrentLocation(initialLocation));
+    history.listen(location => {
+      if (location) {
+        store.dispatch(locationDidChange({
+          location, matchRoute: createMatcher(routes)
+        }));
+      }
+    });
+
+    if (exEnv.canUseDOM) {
+      const state = store.getState();
+      const initialLocation = state.router;
+      if (initialLocation) {
+        store.dispatch(initializeCurrentLocation(initialLocation));
+      }
     }
 
     return store;
