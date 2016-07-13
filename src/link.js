@@ -7,7 +7,7 @@ const LEFT_MOUSE_BUTTON = 0;
 const normalizeLocation = href => {
   if (typeof href === 'string') {
     const [pathname, query] = href.split('?');
-    return query ? { pathname, query} : { pathname };
+    return query ? { pathname, search: `?${query}` } : { pathname };
   }
   return href;
 };
@@ -18,7 +18,12 @@ const resolveQueryForLocation = ({ linkLocation, persistQuery, currentLocation }
 
   // Only use the query from state if it exists
   // and the href doesn't provide its own query
-  if (persistQuery && currentQuery && !linkLocation.query) {
+  if (
+    persistQuery &&
+    currentQuery &&
+    !linkLocation.search &&
+    !linkLocation.query
+  ) {
     return { pathname: linkLocation.pathname, query: currentQuery};
   }
 
@@ -51,6 +56,7 @@ const Link = (props, context) => {
     replaceState,
     children
   } = props;
+
   const { router } = context;
 
   const locationDescriptor =
@@ -65,7 +71,8 @@ const Link = (props, context) => {
 
   return (
     <a
-      {...props}
+      className={props.className}
+      style={props.style}
       href={router.history.createHref(location)}
       onClick={e => onClick({
         e,
@@ -83,6 +90,8 @@ Link.propTypes = {
   href: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   replaceState: PropTypes.bool,
   persistQuery: PropTypes.bool,
+  className: PropTypes.string,
+  style: PropTypes.object,
   children: PropTypes.node
 };
 

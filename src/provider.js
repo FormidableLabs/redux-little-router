@@ -14,7 +14,8 @@ export default ({ store, history }) => ComposedComponent => {
     }
 
     render() {
-      return <ComposedComponent />;
+      const { children, ...rest } = this.props; // eslint-disable-line no-unused-vars
+      return <ComposedComponent {...rest} />;
     }
   }
 

@@ -8,7 +8,7 @@ export default class MockHistory {
   }
 
   push() {
-    this.callback({
+    return this.callback && this.callback({
       pathname: '/push',
       action: 'PUSH',
       state: {
@@ -18,7 +18,7 @@ export default class MockHistory {
   }
 
   replace() {
-    this.callback({
+    return this.callback && this.callback({
       pathname: '/replace',
       action: 'REPLACE',
       state: {
@@ -28,7 +28,7 @@ export default class MockHistory {
   }
 
   go() {
-    this.callback({
+    return this.callback && this.callback({
       pathname: '/go',
       action: 'REPLACE',
       state: {
@@ -38,7 +38,7 @@ export default class MockHistory {
   }
 
   goBack() {
-    this.callback({
+    return this.callback && this.callback({
       pathname: '/goBack',
       action: 'POP',
       state: {
@@ -48,7 +48,7 @@ export default class MockHistory {
   }
 
   goForward() {
-    this.callback({
+    return this.callback && this.callback({
       pathname: '/goForward',
       action: 'PUSH',
       state: {
