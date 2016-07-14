@@ -53,6 +53,7 @@
     "coveralls": "^2.11.11",
     "exenv": "^1.2.1",
     "history": "^3.0.0",
+    "lodash.assign": "^4.0.9",
     "lodash.find": "^4.4.0",
     "rimraf": "^2.5.3",
     "url-pattern": "^1.0.1",

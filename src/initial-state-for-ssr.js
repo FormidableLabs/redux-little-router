@@ -1,7 +1,8 @@
 import createMatcher from './create-matcher';
+import assign from 'lodash.assign';
 
 export default ({ url, query, routes, history }) =>
-  Object.assign({},
+  assign({},
     history.createLocation({
       pathname: url,
       query
