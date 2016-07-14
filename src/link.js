@@ -30,12 +30,12 @@ const resolveQueryForLocation = ({ linkLocation, persistQuery, currentLocation }
   return linkLocation;
 };
 
-const clickedWithModifier = e =>
-  e.button === LEFT_MOUSE_BUTTON &&
-  (e.shiftKey || e.altKey || e.metaKey || e.ctrlKey);
+const isNotLeftClick = e => e.button !== LEFT_MOUSE_BUTTON;
+const hasModifier = e =>
+  Boolean(e.shiftKey || e.altKey || e.metaKey || e.ctrlKey);
 
 const onClick = ({e, location, replaceState, router}) => {
-  if (clickedWithModifier(e)) {
+  if (hasModifier(e) || isNotLeftClick(e)) {
     return;
   }
 
