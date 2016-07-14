@@ -34,8 +34,8 @@ const isNotLeftClick = e => e.button !== LEFT_MOUSE_BUTTON;
 const hasModifier = e =>
   Boolean(e.shiftKey || e.altKey || e.metaKey || e.ctrlKey);
 
-const onClick = ({e, location, replaceState, router}) => {
-  if (hasModifier(e) || isNotLeftClick(e)) {
+const onClick = ({e, target, location, replaceState, router}) => {
+  if (hasModifier(e) || isNotLeftClick(e) || target) {
     return;
   }
 
@@ -52,6 +52,7 @@ const onClick = ({e, location, replaceState, router}) => {
 const Link = (props, context) => {
   const {
     href,
+    target,
     persistQuery,
     replaceState,
     children
@@ -76,6 +77,7 @@ const Link = (props, context) => {
       href={router.history.createHref(location)}
       onClick={e => onClick({
         e,
+        target,
         location,
         replaceState,
         router
@@ -90,6 +92,7 @@ Link.propTypes = {
   href: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   replaceState: PropTypes.bool,
   persistQuery: PropTypes.bool,
+  target: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
   children: PropTypes.node
