@@ -2,23 +2,24 @@ import UrlPattern from 'url-pattern';
 import find from 'lodash.find';
 
 export default routes => {
-  const routeCache = Object.keys(routes).map(key => ({
-    pattern: new UrlPattern(key),
-    result: routes[key]
+  const routeDictionary = Object.keys(routes).map(route => ({
+    route,
+    pattern: new UrlPattern(route),
+    result: routes[route]
   }));
 
-  return incomingRoute => {
-    const questionMarkIdx = incomingRoute.indexOf('?');
-    const preQueryRoute = questionMarkIdx === -1 ? // eslint-disable-line no-magic-numbers
-      incomingRoute :
-      incomingRoute.slice(0, questionMarkIdx); // eslint-disable-line no-magic-numbers
+  return incomingUrl => {
+    // Discard query strings
+    const [route, , ] = incomingUrl.split('?');
 
-    const match = find(routeCache, route =>
-      route.pattern.match(preQueryRoute)
-    ) || null;
+    // Find the route that matches the URL
+    const match = find(routeDictionary, storedRoute =>
+      storedRoute.pattern.match(route)
+    );
 
+    // Return the matched params and user-defined result object
     return match ? {
-      params: match.pattern.match(preQueryRoute),
+      params: match.pattern.match(route),
       result: match.result
     } : null;
   };

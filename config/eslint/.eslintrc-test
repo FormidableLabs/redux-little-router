@@ -9,6 +9,7 @@ env:
 globals:
   expect: true
   sandbox: true
+  sinon: true
 
 rules:
   max-nested-callbacks: [2, 5]

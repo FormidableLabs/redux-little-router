@@ -18,14 +18,12 @@ describe('Router reducer', () => {
     const result = routerReducer({}, action);
 
     expect(result).to.deep.equal({
-      current: {
-        params: {},
-        result: 'rofl',
-        url: '/rofl',
-        action: 'PUSH',
-        state: {
-          bork: 'bork'
-        }
+      params: {},
+      result: 'rofl',
+      url: '/rofl',
+      action: 'PUSH',
+      state: {
+        bork: 'bork'
       },
       previous: undefined
     });
