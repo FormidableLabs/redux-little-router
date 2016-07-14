@@ -146,6 +146,10 @@ The reducer consumes this action and adds the following to the root of the state
 
 Your custom reducers or selectors can derive a large portion of your app's state from the URLs in the `router` property.
 
+## Environment
+
+`redux-little-router` requires an ES5 compatible environment (no IE8).
+
 ## Stability
 
 While the library's version number is high, we still consider this alpha software due to the likeliness of future breaking API changes.
