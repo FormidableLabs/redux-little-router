@@ -1,5 +1,3 @@
-import exEnv from 'exenv';
-
 import { LOCATION_CHANGED } from './action-types';
 
 import { default as matcherFactory } from './create-matcher';
