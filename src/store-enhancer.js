@@ -64,14 +64,6 @@ export default ({
       }
     });
 
-    if (exEnv.canUseDOM) {
-      const state = store.getState();
-      const initialLocation = state.router;
-      if (initialLocation) {
-        store.dispatch(initializeCurrentLocation(initialLocation));
-      }
-    }
-
     return store;
   };
 };
