@@ -59,7 +59,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.createMatcher = exports.locationDidChange = exports.routerReducer = exports.GO_BACK = exports.GO_FORWARD = exports.GO = exports.REPLACE = exports.PUSH = exports.LOCATION_CHANGED = exports.Fragment = exports.PersistentQueryLink = exports.Link = exports.provideRouter = exports.initialStateForSSR = exports.routerMiddleware = exports.createStoreWithRouter = undefined;
+	exports.createMatcher = exports.locationDidChange = exports.routerReducer = exports.GO_BACK = exports.GO_FORWARD = exports.GO = exports.REPLACE = exports.PUSH = exports.LOCATION_CHANGED = exports.Fragment = exports.PersistentQueryLink = exports.Link = exports.provideRouter = exports.initializeCurrentLocation = exports.initialStateForSSR = exports.routerMiddleware = exports.createStoreWithRouter = undefined;
 	
 	var _storeEnhancer = __webpack_require__(1);
 	
@@ -100,6 +100,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	createStoreWithRouter = _storeEnhancer2.default;
 	exports.routerMiddleware = _middleware2.default;
 	exports.initialStateForSSR = _initialStateForSsr2.default;
+	exports.initializeCurrentLocation = _storeEnhancer.initializeCurrentLocation;
 	exports.
 	
 	// React API
@@ -120,7 +121,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	// Low-level Redux utilities
 	routerReducer = _reducer2.default;
-	exports.locationDidChange = _middleware.locationDidChange;
+	exports.locationDidChange = _storeEnhancer.locationDidChange;
 	exports.createMatcher = _createMatcher2.default;
 
 /***/ },
