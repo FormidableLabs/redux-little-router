@@ -1,5 +1,3 @@
-import exEnv from 'exenv';
-
 import { LOCATION_CHANGED } from './action-types';
 
 import { default as matcherFactory } from './create-matcher';
@@ -63,14 +61,6 @@ export default ({
         }));
       }
     });
-
-    if (exEnv.canUseDOM) {
-      const state = store.getState();
-      const initialLocation = state.router;
-      if (initialLocation) {
-        store.dispatch(initializeCurrentLocation(initialLocation));
-      }
-    }
 
     return store;
   };
