@@ -1,5 +1,8 @@
-import createStoreWithRouter from './store-enhancer';
-import routerMiddleware, { locationDidChange } from './middleware';
+import createStoreWithRouter, {
+  locationDidChange,
+  initializeCurrentLocation
+} from './store-enhancer';
+import routerMiddleware from './middleware';
 import initialStateForSSR from './initial-state-for-ssr';
 
 import provideRouter from './provider';
@@ -23,6 +26,7 @@ export {
   createStoreWithRouter,
   routerMiddleware,
   initialStateForSSR,
+  initializeCurrentLocation,
 
   // React API
   provideRouter,
