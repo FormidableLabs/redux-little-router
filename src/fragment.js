@@ -5,13 +5,16 @@ const Fragment = (props, context) => {
   const { forRoute, forRoutes, withConditions, children } = props;
   const { router: location } = context.router.store.getState();
 
-  if (forRoute && !new UrlPattern(forRoute).match(location.url)) {
+  if (
+    forRoute &&
+    !new UrlPattern(forRoute).match(location.pathname)
+  ) {
     return null;
   }
 
   if (forRoutes) {
     const anyMatch = forRoutes.some(route =>
-      new UrlPattern(route).match(location.url)
+      new UrlPattern(route).match(location.pathname)
     );
 
     if (!anyMatch) {

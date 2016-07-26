@@ -4,6 +4,9 @@ import { PUSH, REPLACE } from './action-types';
 
 const LEFT_MOUSE_BUTTON = 0;
 
+const normalizeHref = location =>
+  `${location.basename || ''}${location.pathname}`;
+
 const normalizeLocation = href => {
   if (typeof href === 'string') {
     const [pathname, query] = href.split('?');
@@ -74,7 +77,7 @@ const Link = (props, context) => {
     <a
       className={props.className}
       style={props.style}
-      href={router.history.createHref(location)}
+      href={normalizeHref(location)}
       onClick={e => onClick({
         e,
         target,
