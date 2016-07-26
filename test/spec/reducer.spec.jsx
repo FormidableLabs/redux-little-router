@@ -9,6 +9,7 @@ describe('Router reducer', () => {
         params: {},
         result: 'rofl',
         url: '/rofl',
+        pathname: '/rofl',
         action: 'PUSH',
         state: {
           bork: 'bork'
@@ -21,6 +22,7 @@ describe('Router reducer', () => {
       params: {},
       result: 'rofl',
       url: '/rofl',
+      pathname: '/rofl',
       action: 'PUSH',
       state: {
         bork: 'bork'
