@@ -5,6 +5,7 @@ import routerReducer from './reducer';
 
 export const locationDidChange = ({ location, matchRoute }) => {
   // Build the canonical URL
+  // Don't use this for matching
   const { basename, pathname } = location;
   const trailingSlash = /\/$/;
   const url = `${basename || ''}${pathname}`
@@ -14,7 +15,7 @@ export const locationDidChange = ({ location, matchRoute }) => {
     type: LOCATION_CHANGED,
     payload: {
       ...location,
-      ...matchRoute(url),
+      ...matchRoute(pathname),
       url
     }
   };
