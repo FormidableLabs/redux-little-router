@@ -156,6 +156,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var matchRoute = _ref.matchRoute;
 	
 	  // Build the canonical URL
+	  // Don't use this for matching
 	  var basename = location.basename;
 	  var pathname = location.pathname;
 	
@@ -164,7 +165,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  return {
 	    type: _actionTypes.LOCATION_CHANGED,
-	    payload: _extends({}, location, matchRoute(url), {
+	    payload: _extends({}, location, matchRoute(pathname), {
 	      url: url
 	    })
 	  };
@@ -4585,7 +4586,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  if (action.type === _actionTypes.LOCATION_CHANGED) {
 	    // No-op the initial route action
-	    if (state && state.url === action.payload.url) {
+	    if (state && state.pathname === action.payload.pathname) {
 	      return state;
 	    }
 	
@@ -6013,6 +6014,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var LEFT_MOUSE_BUTTON = 0;
 	
+	var normalizeHref = function normalizeHref(location) {
+	  return '' + (location.basename || '') + location.pathname;
+	};
+	
 	var normalizeLocation = function normalizeLocation(href) {
 	  if (typeof href === 'string') {
 	    var _href$split = href.split('?');
@@ -6093,7 +6098,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    {
 	      className: props.className,
 	      style: props.style,
-	      href: router.history.createHref(location),
+	      href: normalizeHref(location),
 	      onClick: function onClick(e) {
 	        return _onClick({
 	          e: e,
@@ -6192,13 +6197,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var location = _context$router$store.router;
 	
 	
-	  if (forRoute && !new _urlPattern2.default(forRoute).match(location.url)) {
+	  if (forRoute && !new _urlPattern2.default(forRoute).match(location.pathname)) {
 	    return null;
 	  }
 	
 	  if (forRoutes) {
 	    var anyMatch = forRoutes.some(function (route) {
-	      return new _urlPattern2.default(route).match(location.url);
+	      return new _urlPattern2.default(route).match(location.pathname);
 	    });
 	
 	    if (!anyMatch) {
