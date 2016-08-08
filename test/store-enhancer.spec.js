@@ -25,7 +25,11 @@ const createStoreWithSpy = nextCreateStore =>
     return {...store, dispatch: dispatchSpy, dispatchSpy};
   };
 
-const fakeStore = (isLoop = false) => {
+const fakeStore = ({
+  useHistoryStub = true,
+  isLoop = false,
+  enhancerOptions = {}
+} = {}) => {
   const historyStub = sinon.stub(createMemoryHistory());
   const initialState = {
     router: {
@@ -34,9 +38,13 @@ const fakeStore = (isLoop = false) => {
   };
   const enhancers = [
     createStoreWithSpy,
-    createStoreWithRouter({
+    useHistoryStub ? createStoreWithRouter({
       history: historyStub,
-      routes: {}
+      routes: {},
+      ...enhancerOptions
+    }) : createStoreWithRouter({
+      routes: {},
+      ...enhancerOptions
     })
   ];
 
@@ -77,8 +85,60 @@ describe('Router store enhancer', () => {
     });
   });
 
+  it('can create its own browser history', done => {
+    const { store } = fakeStore({
+      useHistoryStub: false,
+      enhancerOptions: {
+        forServerRender: false
+      }
+    });
+
+    store.subscribe(() => {
+      const state = store.getState();
+      expect(state).to.have.deep.property('router.result')
+        .that.deep.equals({ name: 'channel' });
+      done();
+    });
+
+    store.dispatch({
+      type: LOCATION_CHANGED,
+      payload: {
+        pathname: '/home/messages/a-team/fool-pity',
+        result: {
+          name: 'channel'
+        }
+      }
+    });
+  });
+
+  it('can create its own server history', done => {
+    const { store } = fakeStore({
+      useHistoryStub: false,
+      enhancerOptions: {
+        forServerRender: true
+      }
+    });
+
+    store.subscribe(() => {
+      const state = store.getState();
+      expect(state).to.have.deep.property('router.result')
+        .that.deep.equals({ name: 'channel' });
+      done();
+    });
+
+    store.dispatch({
+      type: LOCATION_CHANGED,
+      payload: {
+        pathname: '/home/messages/a-team/fool-pity',
+        result: {
+          name: 'channel'
+        }
+      }
+    });
+  });
+
   it('supports Redux Loop', done => {
-    const { store } = fakeStore(true);
+    const { store } = fakeStore({ isLoop: true });
 
     store.subscribe(() => {
       const state = store.getState();

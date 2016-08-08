@@ -1,16 +1,11 @@
-import chai, { expect } from 'chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
+import { expect } from 'chai';
 import { mount } from 'enzyme';
 
 import React, { Component, PropTypes } from 'react';
-import createMemoryHistory from 'history/lib/createMemoryHistory';
 
 import provideRouter from '../src/provider';
 
 import { fakeStore } from './util';
-
-chai.use(sinonChai);
 
 describe('provideRouter', () => {
   it('adds router context to a child tree', () => {
@@ -26,8 +21,7 @@ describe('provideRouter', () => {
     };
 
     const MagicalMysteryRouter = provideRouter({
-      store: fakeStore(),
-      history: sinon.stub(createMemoryHistory())
+      store: fakeStore()
     })(MagicalMysteryComponent);
 
     const wrapper = mount(<MagicalMysteryRouter />);

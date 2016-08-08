@@ -77,7 +77,7 @@ const Link = (props, context) => {
       persistQuery
     });
 
-  const location = router.history
+  const location = router.store.history
     .createLocation(locationDescriptor);
 
   return (

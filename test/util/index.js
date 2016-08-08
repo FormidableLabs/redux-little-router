@@ -1,3 +1,6 @@
+import sinon from 'sinon';
+import createMemoryHistory from 'history/lib/createMemoryHistory';
+
 import createMatcher from '../../src/create-matcher';
 
 import routes from '../fixtures/routes';
@@ -11,28 +14,38 @@ export const captureErrors = (done, assertions) => {
   }
 };
 
-export const fakeStore = (
+export const fakeStore = ({
   assertion,
   pathname = '/home/messages/b-team',
-  query = { test: 'ing' }
-) => ({
-  getState() {
-    return {
-      router: {
-        pathname,
-        query,
-        search: '?test=ing',
-        action: 'POP'
-      }
-    };
-  },
+  query = { test: 'ing' },
+  fakeNewLocation
+} = {}) => {
+  const history = createMemoryHistory();
+  if (fakeNewLocation) {
+    sinon.stub(history, 'createLocation')
+      .returns(fakeNewLocation);
+  }
 
-  dispatch(action) {
-    assertion && assertion(action);
-  },
+  return {
+    getState() {
+      return {
+        router: {
+          pathname,
+          query,
+          search: '?test=ing',
+          action: 'POP'
+        }
+      };
+    },
 
-  matchRoute: createMatcher(routes)
-});
+    dispatch(action) {
+      assertion && assertion(action);
+    },
+
+    matchRoute: createMatcher(routes),
+    history
+  };
+};
 
 export const fakeContext = ({
   fakeNewLocation,
@@ -42,10 +55,12 @@ export const fakeContext = ({
 } = {}) => ({
   context: {
     router: {
-      store: fakeStore(assertion, pathname, query),
-      history: {
-        createLocation: () => fakeNewLocation || null
-      }
+      store: fakeStore({
+        assertion,
+        pathname,
+        query,
+        fakeNewLocation
+      })
     }
   }
 });

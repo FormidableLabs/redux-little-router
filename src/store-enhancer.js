@@ -1,3 +1,8 @@
+import createBrowserHistory from 'history/lib/createBrowserHistory';
+import createMemoryHistory from 'history/lib/createMemoryHistory';
+import useBasename from 'history/lib/useBasename';
+import useQueries from 'history/lib/useQueries';
+
 import {
   LOCATION_CHANGED,
   PUSH, REPLACE, GO,
@@ -26,11 +31,30 @@ export const initializeCurrentLocation = location => ({
   payload: location
 });
 
+const resolveHistory = ({
+  basename,
+  forServerRender
+}) => {
+  const historyFactory = forServerRender
+    ? createMemoryHistory
+    : createBrowserHistory;
+
+  return useBasename(useQueries(historyFactory))({
+    basename
+  });
+};
+
 export default ({
   routes,
-  history,
-  createMatcher = matcherFactory
+  basename = '/',
+  forServerRender = false,
+  createMatcher = matcherFactory,
+  history: userHistory
 }) => {
+  const history = userHistory || resolveHistory({
+    basename, forServerRender
+  });
+
   return createStore => (reducer, initialState, enhancer) => {
     const enhancedReducer = (state, action) => {
       const vanillaState = {...state};
@@ -92,6 +116,6 @@ export default ({
       }
     };
 
-    return {...store, dispatch, matchRoute};
+    return {...store, dispatch, history, matchRoute};
   };
 };
