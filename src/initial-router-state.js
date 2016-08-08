@@ -7,6 +7,5 @@ export default ({ url, query, routes, history }) =>
       pathname: url,
       query
     }),
-    createMatcher(routes)(url),
-    { url }
+    createMatcher(routes)(url)
   );

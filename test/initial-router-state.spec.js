@@ -3,7 +3,7 @@ import sinon from 'sinon';
 
 import createMemoryHistory from 'history/lib/createMemoryHistory';
 
-import initialStateForSSR from '../src/initial-state-for-ssr';
+import initialRouterState from '../src/initial-router-state';
 
 describe('Initial state for SSR', () => {
   it('provides the correct routes and query strings for the initial state', () => {
@@ -16,7 +16,7 @@ describe('Initial state for SSR', () => {
       }
     });
 
-    const initialState = initialStateForSSR({
+    const initialState = initialRouterState({
       history,
       routes: {},
       url: '/home/messages/b-team',
