@@ -4,7 +4,6 @@ import sinonChai from 'sinon-chai';
 
 import { compose, createStore } from 'redux';
 import { install, combineReducers } from 'redux-loop';
-import createMemoryHistory from 'history/lib/createMemoryHistory';
 
 import {
   LOCATION_CHANGED, PUSH, REPLACE,
@@ -33,7 +32,20 @@ const fakeStore = ({
   isLoop = false,
   enhancerOptions = {}
 } = {}) => {
-  const historyStub = sinon.stub(createMemoryHistory());
+  const historyStub = {
+    push: sinon.stub(),
+    replace: sinon.stub(),
+    go: sinon.stub(),
+    goBack: sinon.stub(),
+    goForward: sinon.stub(),
+    listen: sinon.stub(),
+    createLocation: () => ({
+      pathname: '/home',
+      query: {
+        yo: 'yo'
+      }
+    })
+  };
   const initialState = noInitialState ? {} : {
     router: {
       pathname: '/home/messages/a-team/pity-fool'
@@ -100,8 +112,21 @@ describe('Router store enhancer', () => {
     });
 
     expect(store.getState()).to.have.property('router')
-      .with.property('pathname', '/home')
-      .with.property('query', { yo: 'yo'});
+      .that.deep.equals({
+        pathname: '/home',
+        query: { yo: 'yo' },
+        route: '/home',
+        params: {},
+        result: { name: 'home' }
+      });
+  });
+
+  it('passes initial state through if no pathname or query are provided', () => {
+    const { store } = fakeStore();
+    expect(store.getState()).to.have.deep.property(
+      'router.pathname',
+      '/home/messages/a-team/pity-fool'
+    );
   });
 
   it('can create its own browser history', done => {
