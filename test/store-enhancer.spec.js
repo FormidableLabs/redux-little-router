@@ -16,6 +16,8 @@ import createStoreWithRouter, {
   initializeCurrentLocation
 } from '../src/store-enhancer';
 
+import routes from './fixtures/routes';
+
 chai.use(sinonChai);
 
 const createStoreWithSpy = nextCreateStore =>
@@ -27,11 +29,12 @@ const createStoreWithSpy = nextCreateStore =>
 
 const fakeStore = ({
   useHistoryStub = true,
+  noInitialState = false,
   isLoop = false,
   enhancerOptions = {}
 } = {}) => {
   const historyStub = sinon.stub(createMemoryHistory());
-  const initialState = {
+  const initialState = noInitialState ? {} : {
     router: {
       pathname: '/home/messages/a-team/pity-fool'
     }
@@ -40,10 +43,10 @@ const fakeStore = ({
     createStoreWithSpy,
     useHistoryStub ? createStoreWithRouter({
       history: historyStub,
-      routes: {},
+      routes,
       ...enhancerOptions
     }) : createStoreWithRouter({
-      routes: {},
+      routes,
       ...enhancerOptions
     })
   ];
@@ -83,6 +86,22 @@ describe('Router store enhancer', () => {
         }
       }
     });
+  });
+
+  it('creates initial routing state if a pathname or query are provided', () => {
+    const { store } = fakeStore({
+      noInitialState: true,
+      enhancerOptions: {
+        pathname: '/home',
+        query: {
+          yo: 'yo'
+        }
+      }
+    });
+
+    expect(store.getState()).to.have.property('router')
+      .with.property('pathname', '/home')
+      .with.property('query', { yo: 'yo'});
   });
 
   it('can create its own browser history', done => {

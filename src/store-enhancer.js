@@ -11,6 +11,7 @@ import {
 
 import { default as matcherFactory } from './create-matcher';
 import routerReducer from './reducer';
+import initialRouterState from './initial-router-state';
 
 export const locationDidChange = ({ location, matchRoute }) => {
   // Extract the pathname so that we don't match against the basename.
@@ -46,6 +47,8 @@ const resolveHistory = ({
 
 export default ({
   routes,
+  pathname,
+  query,
   basename = '/',
   forServerRender = false,
   createMatcher = matcherFactory,
@@ -80,7 +83,16 @@ export default ({
       };
     };
 
-    const store = createStore(enhancedReducer, initialState, enhancer);
+    const store = createStore(
+      enhancedReducer,
+      pathname || query ? {
+        ...initialState,
+        router: initialRouterState({
+          pathname, query, routes, history
+        }
+      )} : initialState,
+      enhancer
+    );
 
     const matchRoute = createMatcher(routes);
     history.listen(location => {

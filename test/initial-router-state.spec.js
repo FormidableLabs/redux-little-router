@@ -5,7 +5,7 @@ import createMemoryHistory from 'history/lib/createMemoryHistory';
 
 import initialRouterState from '../src/initial-router-state';
 
-describe('Initial state for SSR', () => {
+describe('Initial state', () => {
   it('provides the correct routes and query strings for the initial state', () => {
     const history = createMemoryHistory();
     sinon.stub(history, 'createLocation').returns({
@@ -19,7 +19,7 @@ describe('Initial state for SSR', () => {
     const initialState = initialRouterState({
       history,
       routes: {},
-      url: '/home/messages/b-team',
+      pathname: '/home/messages/b-team',
       query: {
         test: 'ing'
       }
