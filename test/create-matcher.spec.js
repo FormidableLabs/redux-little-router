@@ -1,4 +1,5 @@
-import { createMatcher } from 'src';
+import { expect } from 'chai';
+import { createMatcher } from '../src';
 
 const routes = {
   '/home': {
@@ -12,6 +13,9 @@ const routes = {
   },
   '/home/messages/:team/:channel': {
     name: 'channel'
+  },
+  '/home/:spookyparam': {
+    name: '3spooky5me'
   }
 };
 
@@ -49,6 +53,15 @@ describe('createMatcher', () => {
       },
       result: {
         name: 'channel'
+      }
+    });
+
+    expect(matchRoute('/home/doot')).to.deep.equal({
+      params: {
+        spookyparam: 'doot'
+      },
+      result: {
+        name: '3spooky5me'
       }
     });
   });

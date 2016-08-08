@@ -15,7 +15,11 @@ const normalizeLocation = href => {
   return href;
 };
 
-const resolveQueryForLocation = ({ linkLocation, persistQuery, currentLocation }) => {
+const resolveQueryForLocation = ({
+  linkLocation,
+  persistQuery,
+  currentLocation
+}) => {
   const currentQuery = currentLocation &&
     currentLocation.query;
 
@@ -27,7 +31,10 @@ const resolveQueryForLocation = ({ linkLocation, persistQuery, currentLocation }
     !linkLocation.search &&
     !linkLocation.query
   ) {
-    return { pathname: linkLocation.pathname, query: currentQuery};
+    return {
+      pathname: linkLocation.pathname,
+      query: currentQuery
+    };
   }
 
   return linkLocation;

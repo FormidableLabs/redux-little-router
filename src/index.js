@@ -2,7 +2,6 @@ import createStoreWithRouter, {
   locationDidChange,
   initializeCurrentLocation
 } from './store-enhancer';
-import routerMiddleware from './middleware';
 import initialStateForSSR from './initial-state-for-ssr';
 
 import provideRouter from './provider';
@@ -24,7 +23,6 @@ import {
 export {
   // High-level Redux API
   createStoreWithRouter,
-  routerMiddleware,
   initialStateForSSR,
   initializeCurrentLocation,
 

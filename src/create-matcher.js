@@ -19,6 +19,7 @@ export default routes => {
 
     // Return the matched params and user-defined result object
     return match ? {
+      route: match.route,
       params: match.pattern.match(route),
       result: match.result
     } : null;

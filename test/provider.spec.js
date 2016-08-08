@@ -1,10 +1,16 @@
-import React, { Component, PropTypes } from 'react';
+import chai, { expect } from 'chai';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 import { mount } from 'enzyme';
 
-import bootstrap from './util/bootstrap';
-import provideRouter from 'src/provider';
+import React, { Component, PropTypes } from 'react';
+import createMemoryHistory from 'history/lib/createMemoryHistory';
 
-const { storeFactory, history } = bootstrap();
+import provideRouter from '../src/provider';
+
+import { fakeStore } from './util';
+
+chai.use(sinonChai);
 
 describe('provideRouter', () => {
   it('adds router context to a child tree', () => {
@@ -19,12 +25,12 @@ describe('provideRouter', () => {
     };
 
     const MagicalMysteryRouter = provideRouter({
-      store: storeFactory(),
-      history
+      store: fakeStore(),
+      history: sinon.stub(createMemoryHistory())
     })(MagicalMysteryComponent);
 
     const wrapper = mount(<MagicalMysteryRouter />);
     const div = wrapper.find('div');
-    expect(div.node.textContent).to.equal('/home/messages/:team');
+    expect(div.node.textContent).to.equal('/home/messages/b-team');
   });
 });
