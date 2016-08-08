@@ -1,3 +1,7 @@
+import createMatcher from '../../src/create-matcher';
+
+import routes from '../fixtures/routes';
+
 export const captureErrors = (done, assertions) => {
   try {
     assertions();
@@ -7,33 +11,40 @@ export const captureErrors = (done, assertions) => {
   }
 };
 
-export const fakeStore = assertion => ({
+export const fakeStore = (
+  assertion,
+  pathname = '/home/messages/b-team',
+  query = { test: 'ing' }
+) => ({
   getState() {
     return {
       router: {
-        pathname: '/home/messages/b-team',
+        pathname,
+        query,
         search: '?test=ing',
-        hash: '',
-        state: undefined,
-        action: 'POP',
-        key: 'witlrs',
-        query: { test: 'ing' },
-        url: '/home/messages/b-team'
+        action: 'POP'
       }
     };
   },
 
   dispatch(action) {
     assertion && assertion(action);
-  }
+  },
+
+  matchRoute: createMatcher(routes)
 });
 
-export const fakeContext = ({ fakeNewLocation, assertion }) => ({
+export const fakeContext = ({
+  fakeNewLocation,
+  assertion,
+  pathname = '/home/messages/b-team',
+  query = { test: 'ing' }
+} = {}) => ({
   context: {
     router: {
-      store: fakeStore(assertion),
+      store: fakeStore(assertion, pathname, query),
       history: {
-        createLocation: () => fakeNewLocation
+        createLocation: () => fakeNewLocation || null
       }
     }
   }

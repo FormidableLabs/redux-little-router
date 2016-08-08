@@ -16,7 +16,8 @@ describe('provideRouter', () => {
   it('adds router context to a child tree', () => {
     class MagicalMysteryComponent extends Component {
       render() {
-        return <div>{this.context.router.store.getState().router.pathname}</div>;
+        const state = this.context.router.store.getState();
+        return <div>{state.router.pathname}</div>;
       }
     }
 
