@@ -71,21 +71,24 @@ export default ({
       switch (action.type) {
         case PUSH:
           history.push(action.payload);
-          break;
+          return null;
         case REPLACE:
           history.replace(action.payload);
-          break;
+          return null;
         case GO:
           history.go(action.payload);
-          break;
+          return null;
         case GO_BACK:
           history.goBack();
-          break;
+          return null;
         case GO_FORWARD:
           history.goForward();
-          break;
+          return null;
         default:
-          store.dispatch(action);
+          // We return the result of dispatch here
+          // to retain compatibility with enhancers
+          // that return a promise from dispatch.
+          return store.dispatch(action);
       }
     };
 
