@@ -1,5 +1,6 @@
-import { routerReducer } from 'src';
-import { LOCATION_CHANGED } from 'src/action-types';
+import { expect } from 'chai';
+import { routerReducer } from '../src';
+import { LOCATION_CHANGED } from '../src/action-types';
 
 describe('Router reducer', () => {
   it('adds the pathname to the store', () => {
@@ -28,6 +29,25 @@ describe('Router reducer', () => {
         bork: 'bork'
       },
       previous: undefined
+    });
+  });
+
+  it('does nothing if the action pathname is the same as the existing', () => {
+    const action = {
+      type: LOCATION_CHANGED,
+      payload: {
+        pathname: '/rofl',
+        other: 'stuff'
+      }
+    };
+    const result = routerReducer({
+      pathname: '/rofl',
+      other: 'things'
+    }, action);
+
+    expect(result).to.deep.equal({
+      pathname: '/rofl',
+      other: 'things'
     });
   });
 

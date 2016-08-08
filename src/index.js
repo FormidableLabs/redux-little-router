@@ -2,8 +2,7 @@ import createStoreWithRouter, {
   locationDidChange,
   initializeCurrentLocation
 } from './store-enhancer';
-import routerMiddleware from './middleware';
-import initialStateForSSR from './initial-state-for-ssr';
+import initialRouterState from './initial-router-state';
 
 import provideRouter from './provider';
 import { Link, PersistentQueryLink } from './link';
@@ -24,8 +23,7 @@ import {
 export {
   // High-level Redux API
   createStoreWithRouter,
-  routerMiddleware,
-  initialStateForSSR,
+  initialRouterState,
   initializeCurrentLocation,
 
   // React API

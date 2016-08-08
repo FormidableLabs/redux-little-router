@@ -1,10 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 
-export default ({ store, history }) => ComposedComponent => {
+export default ({ store }) => ComposedComponent => {
   class RouterProvider extends Component {
     constructor(props) {
       super(props);
-      this.router = { store, history };
+      this.router = { store };
     }
 
     getChildContext() {

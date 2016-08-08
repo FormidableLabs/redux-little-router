@@ -1,16 +1,18 @@
-import React, { Component, PropTypes } from 'react';
+import { expect } from 'chai';
 import { mount } from 'enzyme';
 
-import bootstrap from './util/bootstrap';
-import provideRouter from 'src/provider';
+import React, { Component, PropTypes } from 'react';
 
-const { storeFactory, history } = bootstrap();
+import provideRouter from '../src/provider';
+
+import { fakeStore } from './util';
 
 describe('provideRouter', () => {
   it('adds router context to a child tree', () => {
     class MagicalMysteryComponent extends Component {
       render() {
-        return <div>{this.context.router.store.getState().router.pathname}</div>;
+        const state = this.context.router.store.getState();
+        return <div>{state.router.pathname}</div>;
       }
     }
 
@@ -19,12 +21,11 @@ describe('provideRouter', () => {
     };
 
     const MagicalMysteryRouter = provideRouter({
-      store: storeFactory(),
-      history
+      store: fakeStore()
     })(MagicalMysteryComponent);
 
     const wrapper = mount(<MagicalMysteryRouter />);
     const div = wrapper.find('div');
-    expect(div.node.textContent).to.equal('/home/messages/:team');
+    expect(div.node.textContent).to.equal('/home/messages/b-team');
   });
 });

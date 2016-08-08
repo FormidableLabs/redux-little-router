@@ -1,20 +1,21 @@
 import React, { PropTypes } from 'react';
-import UrlPattern from 'url-pattern';
 
 const Fragment = (props, context) => {
   const { forRoute, forRoutes, withConditions, children } = props;
-  const { router: location } = context.router.store.getState();
+  const { store } = context.router;
+  const { matchRoute } = store;
+  const { router: location } = store.getState();
 
   if (
     forRoute &&
-    !new UrlPattern(forRoute).match(location.pathname)
+    matchRoute(location.pathname).route !== forRoute
   ) {
     return null;
   }
 
   if (forRoutes) {
     const anyMatch = forRoutes.some(route =>
-      new UrlPattern(route).match(location.pathname)
+      matchRoute(location.pathname).route === route
     );
 
     if (!anyMatch) {
