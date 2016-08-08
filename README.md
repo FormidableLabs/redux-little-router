@@ -14,31 +14,17 @@ Almost all of `redux-little-router`'s API is public. Check out the `export`s in 
 
 ## Redux usage
 
-To hook into Redux applications, `redux-little-router` uses the following:
-
-- A store enhancer that wraps the `history` module and adds current and previous router state to your store. The enhancer listens for location changes and dispatches rich actions containing the URL, parameters, and any custom data assigned to the route.
-- Middleware that intercepts navigation actions that manipulate the location using `history`.
-- A utility function, `initialStateForSSR`, that initializes state for the router given a URL and/or query object (pulled from an Express or Hapi route). 
+To hook into Redux applications, `redux-little-router` uses a store enhancer that wraps the `history` module and adds current and previous router state to your store. The enhancer listens for location changes and dispatches rich actions containing the URL, parameters, and any custom data assigned to the route. It also intercepts navigation actions and calls their equivalent method in `history`.
 
 ### Wiring up the boilerplate
 
-The following is an example of a `redux-little-router` setup that works on both the browser and the server. At the bare minimum, you'll need to install the store enhancer (`createStoreWithRouter`) and the middleware (`routerMiddleware`) into your Redux store.
+The following is an example of a `redux-little-router` setup that works on both the browser and the server. At the bare minimum, you'll need to install the store enhancer (`createStoreWithRouter`) into your Redux store.
 
 ```js
 import { compose, createStore } from 'redux';
-import {
-  createStoreWithRouter,
-  routerMiddleware,
-  initialStateForSSR
-} from 'redux-little-router';
-import createBrowserHistory from 'history/lib/createBrowserHistory';
+import { createStoreWithRouter } from 'redux-little-router';
 
 import yourReducer from './your-app';
-
-// A history instance for the store enhancer to wrap.
-// History enhancers like `useBasename` and `useQueries` are supported.
-// Use `createBrowserHistory` on the client and `createMemoryHistory` on the server.
-const history = createBrowserHistory();
 
 // Arbitrary data to add to the state tree when a route is
 // matched and dispatched. Useful for page titles and other
@@ -58,25 +44,47 @@ const routes = {
   }
 };
 
-// This is just a wrapper function for setting up router
-// boilerplate that works on both server and client.
-// You can pull `url` and `query` from your express or hapi routes!
-const initializeStore = ({ history, routes, url, query }) => {
-  const initialState = window.__SERVER_RENDERED_INITIAL_STATE || {
-    router: initialStateForSSR({ history, routes, url, query })
+// This is an example of initializing the router in a client-only
+// single-page app. Passing in at least the `pathname` will allow
+// `createStoreWithRouter` to automatically setup the initial state
+// for the first browser location.
+const clientOnlyStore = createStore(
+  yourReducer,
+  initialState,
+  createStoreWithRouter({
+    routes,
+    basename: '/example' // optional, the basename for all routes. defaults to '/',
+    pathname: '/home' // optional, the beginning URL
+    query: { // optional, the initial query string object
+      ex: 'ample'
+    }
+  })
+);
+
+// This is a wrapper function for setting up router boilerplate
+// for server-rendered universal React applications.
+
+// You can pull `url` and `query` from your express or hapi routes.
+// The below example uses a URL object from an express request.
+const initializeStore = ({ routes, requestUrl, requestQuery }) => {
+  // Grab the initial state the server attached to your template after render
+  const initialState = INITIAL_STATE_FROM_SERVER_RENDER;
+
+  const routerOptions = initialState ? {
+    routes,
+    basename: BASENAME_FROM_SERVER_RENDER
+  } : {
+    routes,
+    basename: requestUrl.baseUrl,
+    pathname: requestUrl.pathname,
+    query: initialQuery,
+    forServerRender: true // required for server renders!
   };
 
   return createStore(
     yourReducer,
     initialState,
-    compose(
-      createStoreWithRouter({
-        routes, history
-      }),
-      applyMiddleware(
-        routerMiddleware({ history })
-      )
-    )
+    createStoreWithRouter(routerOptions)
   );
 };
 ```
@@ -95,7 +103,7 @@ if (initialLocation) {
 
 ### Provided actions and state
 
-On location changes, the middleware dispatches a LOCATION_CHANGED action that contains at least the following properties:
+On location changes, the store enhancer dispatches a LOCATION_CHANGED action that contains at least the following properties:
 
 ```js
 // For a URL matching /messages/:user
@@ -214,7 +222,11 @@ import ReactDOM from 'react-dom';
 import { provideRouter } from 'redux-little-router';
 import YourAppComponent from './';
 
-const AppComponentWithRouter = provideRouter(YourAppComponent);
+import createYourStore from './state';
+
+const AppComponentWithRouter = provideRouter({
+  store: createYourStore()
+})(YourAppComponent);
 
 ReactDOM.render(<AppComponentWithRouter />, document.getElementById('root');
 ```
