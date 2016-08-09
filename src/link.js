@@ -9,7 +9,9 @@ const normalizeHref = location =>
 
 const normalizeLocation = href => {
   if (typeof href === 'string') {
-    const [pathname, query] = href.split('?');
+    const pathnameAndQuery = href.split('?');
+    const pathname = pathnameAndQuery[0]; // eslint-disable-line no-magic-numbers
+    const query = pathnameAndQuery[1]; // eslint-disable-line no-magic-numbers
     return query ? { pathname, search: `?${query}` } : { pathname };
   }
   return href;
