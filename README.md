@@ -10,7 +10,17 @@ The router follows three basic principles:
 
 While the core router does not depend on any view library, it provides flexible React bindings and components.
 
-Almost all of `redux-little-router`'s API is public. Check out the `export`s in [`index.js`](https://github.com/FormidableLabs/redux-little-router/blob/master/src/index.js).
+## Why another router?
+
+To understand why `redux-little-router` exists, check out our blog series, "Let the URL do the Talking":
+
+[Part 1](http://formidable.com/blog/2016/07/11/let-the-url-do-the-talking-part-1-the-pain-of-react-router-in-redux/)
+[Part 2](http://formidable.com/blog/2016/07/19/let-the-url-do-the-talking-part-2-bargaining-and-acceptance-with-redux-and-react-router/)
+[Part 3](http://formidable.com/blog/2016/07/25/let-the-url-do-the-talking-part-3-empower-the-url-with-redux-little-router/)
+
+While React Router is a great, well-supported library, it hoards URL state within the view layer and makes certain Redux patterns difficult, if not impossible.
+
+`redux-little-router` makes URL state a first-class citizen of your Redux store and abstracts cross-browser navigation and routing into a pure Redux API.
 
 ## Redux usage
 
