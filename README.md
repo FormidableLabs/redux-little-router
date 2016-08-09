@@ -53,8 +53,8 @@ const clientOnlyStore = createStore(
   initialState,
   createStoreWithRouter({
     routes,
-    basename: '/example' // optional, the basename for all routes. defaults to '/',
-    pathname: '/home' // optional, the beginning URL
+    basename: '/example', // optional, the basename for all routes. defaults to '/'
+    pathname: '/home', // optional, the beginning URL
     query: { // optional, the initial query string object
       ex: 'ample'
     }
