@@ -67,7 +67,8 @@ export default ({
 
       // Support redux-loop
       if (Array.isArray(newState)) {
-        const [nextState, nextEffects] = newState;
+        const nextState = newState[0]; // eslint-disable-line no-magic-numbers
+        const nextEffects = newState[1]; // eslint-disable-line no-magic-numbers
         return [
           {
             ...nextState,
