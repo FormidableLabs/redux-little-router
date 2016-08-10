@@ -137,7 +137,6 @@ The reducer consumes this action and adds the following to the root of the state
 
 ```js
 {
-
   url: '/messages/a-user-has-no-name',
   params: {
     user: 'a-user-has-no-name'
@@ -150,7 +149,7 @@ The reducer consumes this action and adds the following to the root of the state
   },
   previous: {
     url: '/messages',
-    params: {}.
+    params: {},
     result: {
       more: 'arbitrary data that you defined in your routes object!'
     }
