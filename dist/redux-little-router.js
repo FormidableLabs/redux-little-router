@@ -197,7 +197,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var pathname = _ref3.pathname;
 	  var query = _ref3.query;
 	  var _ref3$basename = _ref3.basename;
-	  var basename = _ref3$basename === undefined ? '/' : _ref3$basename;
+	  var basename = _ref3$basename === undefined ? '' : _ref3$basename;
 	  var _ref3$forServerRender = _ref3.forServerRender;
 	  var forServerRender = _ref3$forServerRender === undefined ? false : _ref3$forServerRender;
 	  var _ref3$createMatcher = _ref3.createMatcher;
