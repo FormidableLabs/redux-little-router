@@ -49,7 +49,7 @@ export default ({
   routes,
   pathname,
   query,
-  basename = '/',
+  basename = '',
   forServerRender = false,
   createMatcher = matcherFactory,
   history: userHistory
