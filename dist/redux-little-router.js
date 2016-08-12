@@ -221,12 +221,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	          var nextState = newState[0]; // eslint-disable-line no-magic-numbers
 	          var nextEffects = newState[1]; // eslint-disable-line no-magic-numbers
 	          return [_extends({}, nextState, {
-	            router: (0, _reducer2.default)(state.router, action)
+	            router: (0, _reducer2.default)(state && state.router, action)
 	          }), nextEffects];
 	        }
 	
 	        return _extends({}, reducer(vanillaState, action), {
-	          router: (0, _reducer2.default)(state.router, action)
+	          router: (0, _reducer2.default)(state && state.router, action)
 	        });
 	      };
 	
@@ -380,8 +380,46 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	// shim for using process in browser
-	
 	var process = module.exports = {};
+	
+	// cached from whatever global is present so that test runners that stub it
+	// don't break things.  But we need to wrap it in a try catch in case it is
+	// wrapped in strict mode code which doesn't define any globals.  It's inside a
+	// function because try/catches deoptimize in certain engines.
+	
+	var cachedSetTimeout;
+	var cachedClearTimeout;
+	
+	(function () {
+	    try {
+	        cachedSetTimeout = setTimeout;
+	    } catch (e) {
+	        cachedSetTimeout = function () {
+	            throw new Error('setTimeout is not defined');
+	        }
+	    }
+	    try {
+	        cachedClearTimeout = clearTimeout;
+	    } catch (e) {
+	        cachedClearTimeout = function () {
+	            throw new Error('clearTimeout is not defined');
+	        }
+	    }
+	} ())
+	function runTimeout(fun) {
+	    if (cachedSetTimeout === setTimeout) {
+	        return setTimeout(fun, 0);
+	    } else {
+	        return cachedSetTimeout.call(null, fun, 0);
+	    }
+	}
+	function runClearTimeout(marker) {
+	    if (cachedClearTimeout === clearTimeout) {
+	        clearTimeout(marker);
+	    } else {
+	        cachedClearTimeout.call(null, marker);
+	    }
+	}
 	var queue = [];
 	var draining = false;
 	var currentQueue;
@@ -406,7 +444,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (draining) {
 	        return;
 	    }
-	    var timeout = setTimeout(cleanUpNextTick);
+	    var timeout = runTimeout(cleanUpNextTick);
 	    draining = true;
 	
 	    var len = queue.length;
@@ -423,7 +461,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    currentQueue = null;
 	    draining = false;
-	    clearTimeout(timeout);
+	    runClearTimeout(timeout);
 	}
 	
 	process.nextTick = function (fun) {
@@ -435,7 +473,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    queue.push(new Item(fun, args));
 	    if (queue.length === 1 && !draining) {
-	        setTimeout(drainQueue, 0);
+	        runTimeout(drainQueue);
 	    }
 	};
 	
@@ -1852,13 +1890,13 @@ return /******/ (function(modules) { // webpackBootstrap
 			}
 	
 			if (val === null) {
-				return key;
+				return encode(key, opts);
 			}
 	
 			if (Array.isArray(val)) {
 				var result = [];
 	
-				val.slice().sort().forEach(function (val2) {
+				val.slice().forEach(function (val2) {
 					if (val2 === undefined) {
 						return;
 					}
