@@ -72,7 +72,7 @@ export default ({
         return [
           {
             ...nextState,
-            router: routerReducer(state.router, action)
+            router: routerReducer(state && state.router, action)
           },
           nextEffects
         ];
@@ -80,7 +80,7 @@ export default ({
 
       return {
         ...reducer(vanillaState, action),
-        router: routerReducer(state.router, action)
+        router: routerReducer(state && state.router, action)
       };
     };
 

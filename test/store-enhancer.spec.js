@@ -26,9 +26,15 @@ const createStoreWithSpy = nextCreateStore =>
     return {...store, dispatch: dispatchSpy, dispatchSpy};
   };
 
+const defaultFakeInitialState = {
+  router: {
+    pathname: '/home/messages/a-team/pity-fool'
+  }
+};
+
 const fakeStore = ({
+  initialState = defaultFakeInitialState,
   useHistoryStub = true,
-  noInitialState = false,
   isLoop = false,
   enhancerOptions = {}
 } = {}) => {
@@ -46,11 +52,7 @@ const fakeStore = ({
       }
     })
   };
-  const initialState = noInitialState ? {} : {
-    router: {
-      pathname: '/home/messages/a-team/pity-fool'
-    }
-  };
+
   const enhancers = [
     createStoreWithSpy,
     useHistoryStub ? createStoreWithRouter({
@@ -102,7 +104,28 @@ describe('Router store enhancer', () => {
 
   it('creates initial routing state if a pathname or query are provided', () => {
     const { store } = fakeStore({
-      noInitialState: true,
+      initialState: {},
+      enhancerOptions: {
+        pathname: '/home',
+        query: {
+          yo: 'yo'
+        }
+      }
+    });
+
+    expect(store.getState()).to.have.property('router')
+      .that.deep.equals({
+        pathname: '/home',
+        query: { yo: 'yo' },
+        route: '/home',
+        params: {},
+        result: { name: 'home' }
+      });
+  });
+
+  it('creates initial routing state if provided initial state is falsy', () => {
+    const { store } = fakeStore({
+      initialState: null,
       enhancerOptions: {
         pathname: '/home',
         query: {
