@@ -63,7 +63,7 @@ const clientOnlyStore = createStore(
   initialState,
   createStoreWithRouter({
     routes,
-    basename: '/example', // optional, the basename for all routes. defaults to '/'
+    basename: '/example', // optional, the basename for all routes
     pathname: '/home', // optional, the beginning URL
     query: { // optional, the initial query string object
       ex: 'ample'
@@ -166,6 +166,14 @@ Your custom reducers or selectors can derive a large portion of your app's state
 - A `<Fragment>` component that conditionally renders children based on current route and/or location conditions.
 - A `<Link>` component that sends navigation actions to the middleware when tapped or clicked. `<Link>` respects default modifier key and right-click behavior. A sibling component, `<PersistentQueryLink>`, persists the existing query string on navigation
 - A `provideRouter` HOC that passes down everything `<Fragment>` and `<Link>` need via context.
+
+`redux-little-router` assumes and requires that `react-redux` is installed for any of your components that consume `<Fragment>` or `<Link>`. You can access the router state using `react-redux`'s `connect()`:
+
+```js
+export default connect(state => ({
+  router: state.router
+}))(YourComponent);
+```
 
 ### `<Fragment>`
 Think of `<Fragment>` as the midpoint of a "flexibility continuum" that starts with raw switch statements and ends with React Router's `<Route>` component. Fragments can live anywhere within the React tree, making split-pane or nested UIs easy to work with.
