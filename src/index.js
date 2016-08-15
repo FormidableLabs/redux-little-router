@@ -3,7 +3,7 @@ import createStoreWithRouter, {
   initializeCurrentLocation
 } from './store-enhancer';
 
-import provideRouter from './provider';
+import provideRouter, { RouterProvider } from './provider';
 import { Link, PersistentQueryLink } from './link';
 import Fragment from './fragment';
 
@@ -26,6 +26,7 @@ export {
 
   // React API
   provideRouter,
+  RouterProvider,
   Link,
   PersistentQueryLink,
   Fragment,
