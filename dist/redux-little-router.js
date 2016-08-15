@@ -59,7 +59,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.createMatcher = exports.locationDidChange = exports.routerReducer = exports.GO_BACK = exports.GO_FORWARD = exports.GO = exports.REPLACE = exports.PUSH = exports.LOCATION_CHANGED = exports.Fragment = exports.PersistentQueryLink = exports.Link = exports.provideRouter = exports.initializeCurrentLocation = exports.createStoreWithRouter = undefined;
+	exports.createMatcher = exports.locationDidChange = exports.routerReducer = exports.GO_BACK = exports.GO_FORWARD = exports.GO = exports.REPLACE = exports.PUSH = exports.LOCATION_CHANGED = exports.Fragment = exports.PersistentQueryLink = exports.Link = exports.RouterProvider = exports.provideRouter = exports.initializeCurrentLocation = exports.createStoreWithRouter = undefined;
 	
 	var _storeEnhancer = __webpack_require__(1);
 	
@@ -95,6 +95,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	// React API
 	provideRouter = _provider2.default;
+	exports.RouterProvider = _provider.RouterProvider;
 	exports.Link = _link.Link;
 	exports.PersistentQueryLink = _link.PersistentQueryLink;
 	exports.Fragment = _fragment2.default;
@@ -380,46 +381,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	// shim for using process in browser
+	
 	var process = module.exports = {};
-	
-	// cached from whatever global is present so that test runners that stub it
-	// don't break things.  But we need to wrap it in a try catch in case it is
-	// wrapped in strict mode code which doesn't define any globals.  It's inside a
-	// function because try/catches deoptimize in certain engines.
-	
-	var cachedSetTimeout;
-	var cachedClearTimeout;
-	
-	(function () {
-	    try {
-	        cachedSetTimeout = setTimeout;
-	    } catch (e) {
-	        cachedSetTimeout = function () {
-	            throw new Error('setTimeout is not defined');
-	        }
-	    }
-	    try {
-	        cachedClearTimeout = clearTimeout;
-	    } catch (e) {
-	        cachedClearTimeout = function () {
-	            throw new Error('clearTimeout is not defined');
-	        }
-	    }
-	} ())
-	function runTimeout(fun) {
-	    if (cachedSetTimeout === setTimeout) {
-	        return setTimeout(fun, 0);
-	    } else {
-	        return cachedSetTimeout.call(null, fun, 0);
-	    }
-	}
-	function runClearTimeout(marker) {
-	    if (cachedClearTimeout === clearTimeout) {
-	        clearTimeout(marker);
-	    } else {
-	        cachedClearTimeout.call(null, marker);
-	    }
-	}
 	var queue = [];
 	var draining = false;
 	var currentQueue;
@@ -444,7 +407,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (draining) {
 	        return;
 	    }
-	    var timeout = runTimeout(cleanUpNextTick);
+	    var timeout = setTimeout(cleanUpNextTick);
 	    draining = true;
 	
 	    var len = queue.length;
@@ -461,7 +424,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    currentQueue = null;
 	    draining = false;
-	    runClearTimeout(timeout);
+	    clearTimeout(timeout);
 	}
 	
 	process.nextTick = function (fun) {
@@ -473,7 +436,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    queue.push(new Item(fun, args));
 	    if (queue.length === 1 && !draining) {
-	        runTimeout(drainQueue);
+	        setTimeout(drainQueue, 0);
 	    }
 	};
 	
@@ -1890,13 +1853,13 @@ return /******/ (function(modules) { // webpackBootstrap
 			}
 	
 			if (val === null) {
-				return encode(key, opts);
+				return key;
 			}
 	
 			if (Array.isArray(val)) {
 				var result = [];
 	
-				val.slice().forEach(function (val2) {
+				val.slice().sort().forEach(function (val2) {
 					if (val2 === undefined) {
 						return;
 					}
@@ -2606,6 +2569,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.RouterProvider = undefined;
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
@@ -2615,61 +2579,62 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
+	var RouterProvider = exports.RouterProvider = function (_Component) {
+	  _inherits(RouterProvider, _Component);
+	
+	  function RouterProvider(props) {
+	    _classCallCheck(this, RouterProvider);
+	
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(RouterProvider).call(this, props));
+	
+	    _this.router = {
+	      store: props.store
+	    };
+	    return _this;
+	  }
+	
+	  _createClass(RouterProvider, [{
+	    key: 'getChildContext',
+	    value: function getChildContext() {
+	      return {
+	        router: this.router
+	      };
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return this.props.children;
+	    }
+	  }]);
+	
+	  return RouterProvider;
+	}(_react.Component);
+	
+	RouterProvider.childContextTypes = {
+	  router: _react.PropTypes.object
+	};
+	
+	RouterProvider.propTypes = {
+	  children: _react.PropTypes.node,
+	  store: _react.PropTypes.object
+	};
+	
 	exports.default = function (_ref) {
 	  var store = _ref.store;
 	  return function (ComposedComponent) {
-	    var RouterProvider = function (_Component) {
-	      _inherits(RouterProvider, _Component);
-	
-	      function RouterProvider(props) {
-	        _classCallCheck(this, RouterProvider);
-	
-	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(RouterProvider).call(this, props));
-	
-	        _this.router = { store: store };
-	        return _this;
-	      }
-	
-	      _createClass(RouterProvider, [{
-	        key: 'getChildContext',
-	        value: function getChildContext() {
-	          return {
-	            router: this.router
-	          };
-	        }
-	      }, {
-	        key: 'render',
-	        value: function render() {
-	          var _props = this.props;
-	          var children = _props.children;
-	
-	          var rest = _objectWithoutProperties(_props, ['children']); // eslint-disable-line no-unused-vars
-	
-	
-	          return _react2.default.createElement(ComposedComponent, rest);
-	        }
-	      }]);
-	
-	      return RouterProvider;
-	    }(_react.Component);
-	
-	    RouterProvider.childContextTypes = {
-	      router: _react.PropTypes.object
+	    return function (props) {
+	      return _react2.default.createElement(
+	        RouterProvider,
+	        { store: store },
+	        _react2.default.createElement(ComposedComponent, props)
+	      );
 	    };
-	
-	    RouterProvider.propTypes = {
-	      children: _react.PropTypes.node
-	    };
-	
-	    return RouterProvider;
 	  };
 	};
 
