@@ -229,7 +229,7 @@ Alternatively, you can pass in a [location descriptor](https://github.com/ReactT
 
 `<Link>` takes an optional valueless prop, `replaceState`, that changes the link navigation behavior from `pushState` to `replaceState` in the History API.
 
-### `provideRouter`
+### `provideRouter` or `<RouterProvider>`
 
 Like React Router's `<Provider>`, you'll want to wrap `provideRouter` around your app's top-level component like so:
 
@@ -249,6 +249,24 @@ ReactDOM.render(<AppComponentWithRouter />, document.getElementById('root');
 ```
 
 This allows `<Fragment>` and `<Link>` to obtain their `history` and `dispatch` instances without manual prop passing.
+
+If you'd rather use a plain component instead of a higher-ordered component, use `<RouterProvider>` like so:
+
+```es6
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { RouterProvider } from 'redux-little-router';
+import YourAppComponent from './';
+
+import createYourStore from './state';
+
+ReactDOM.render(
+  <RouterProvider store={createYourStore()}>
+    <YourComponent />
+  </RouterProvider>
+  document.getElementById('root');
+)
+```
 
 ## Environment
 
