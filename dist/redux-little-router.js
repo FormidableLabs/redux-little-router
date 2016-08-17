@@ -87,31 +87,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	exports.
-	// High-level Redux API
-	createStoreWithRouter = _storeEnhancer2.default;
+	exports.createStoreWithRouter = _storeEnhancer2.default;
 	exports.initializeCurrentLocation = _storeEnhancer.initializeCurrentLocation;
-	exports.
-	
-	// React API
-	provideRouter = _provider2.default;
+	exports.provideRouter = _provider2.default;
 	exports.RouterProvider = _provider.RouterProvider;
 	exports.Link = _link.Link;
 	exports.PersistentQueryLink = _link.PersistentQueryLink;
 	exports.Fragment = _fragment2.default;
-	exports.
-	
-	// Public action types
-	LOCATION_CHANGED = _actionTypes.LOCATION_CHANGED;
+	exports.LOCATION_CHANGED = _actionTypes.LOCATION_CHANGED;
 	exports.PUSH = _actionTypes.PUSH;
 	exports.REPLACE = _actionTypes.REPLACE;
 	exports.GO = _actionTypes.GO;
 	exports.GO_FORWARD = _actionTypes.GO_FORWARD;
 	exports.GO_BACK = _actionTypes.GO_BACK;
-	exports.
-	
-	// Low-level Redux utilities
-	routerReducer = _reducer2.default;
+	exports.routerReducer = _reducer2.default;
 	exports.locationDidChange = _storeEnhancer.locationDidChange;
 	exports.createMatcher = _createMatcher2.default;
 
@@ -233,7 +222,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      var store = createStore(enhancedReducer, pathname || query ? _extends({}, initialState, {
 	        router: (0, _initialRouterState2.default)({
-	          pathname: pathname, query: query, routes: routes, history: history
+	          pathname: pathname, query: query || {}, routes: routes, history: history
 	        }) }) : initialState, enhancer);
 	
 	      var matchRoute = createMatcher(routes);
@@ -381,8 +370,74 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	// shim for using process in browser
-	
 	var process = module.exports = {};
+	
+	// cached from whatever global is present so that test runners that stub it
+	// don't break things.  But we need to wrap it in a try catch in case it is
+	// wrapped in strict mode code which doesn't define any globals.  It's inside a
+	// function because try/catches deoptimize in certain engines.
+	
+	var cachedSetTimeout;
+	var cachedClearTimeout;
+	
+	(function () {
+	    try {
+	        cachedSetTimeout = setTimeout;
+	    } catch (e) {
+	        cachedSetTimeout = function () {
+	            throw new Error('setTimeout is not defined');
+	        }
+	    }
+	    try {
+	        cachedClearTimeout = clearTimeout;
+	    } catch (e) {
+	        cachedClearTimeout = function () {
+	            throw new Error('clearTimeout is not defined');
+	        }
+	    }
+	} ())
+	function runTimeout(fun) {
+	    if (cachedSetTimeout === setTimeout) {
+	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedSetTimeout(fun, 0);
+	    } catch(e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+	            return cachedSetTimeout.call(null, fun, 0);
+	        } catch(e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+	            return cachedSetTimeout.call(this, fun, 0);
+	        }
+	    }
+	
+	
+	}
+	function runClearTimeout(marker) {
+	    if (cachedClearTimeout === clearTimeout) {
+	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedClearTimeout(marker);
+	    } catch (e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+	            return cachedClearTimeout.call(null, marker);
+	        } catch (e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+	            return cachedClearTimeout.call(this, marker);
+	        }
+	    }
+	
+	
+	
+	}
 	var queue = [];
 	var draining = false;
 	var currentQueue;
@@ -407,7 +462,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (draining) {
 	        return;
 	    }
-	    var timeout = setTimeout(cleanUpNextTick);
+	    var timeout = runTimeout(cleanUpNextTick);
 	    draining = true;
 	
 	    var len = queue.length;
@@ -424,7 +479,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    currentQueue = null;
 	    draining = false;
-	    clearTimeout(timeout);
+	    runClearTimeout(timeout);
 	}
 	
 	process.nextTick = function (fun) {
@@ -436,7 +491,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    queue.push(new Item(fun, args));
 	    if (queue.length === 1 && !draining) {
-	        setTimeout(drainQueue, 0);
+	        runTimeout(drainQueue);
 	    }
 	};
 	
@@ -1853,13 +1908,13 @@ return /******/ (function(modules) { // webpackBootstrap
 			}
 	
 			if (val === null) {
-				return key;
+				return encode(key, opts);
 			}
 	
 			if (Array.isArray(val)) {
 				var result = [];
 	
-				val.slice().sort().forEach(function (val2) {
+				val.slice().forEach(function (val2) {
 					if (val2 === undefined) {
 						return;
 					}
@@ -2015,7 +2070,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	exports.default = function (routes) {
-	  var routeDictionary = Object.keys(routes).map(function (route) {
+	  var routeList = Object.keys(routes).map(function (route) {
 	    return {
 	      route: route,
 	      pattern: new _urlPattern2.default(route),
@@ -2028,19 +2083,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var route = incomingUrl.split('?')[0]; // eslint-disable-line no-magic-numbers
 	
 	    // Find the route that matches the URL
-	    for (var key in routeDictionary) {
-	      if (routeDictionary.hasOwnProperty(key)) {
-	        var storedRoute = routeDictionary[key];
-	        var match = storedRoute.pattern.match(route);
+	    for (var i = 0; i < routeList.length; i++) {
+	      var storedRoute = routeList[i];
+	      var match = storedRoute.pattern.match(route);
 	
-	        if (match) {
-	          // Return the matched params and user-defined result object
-	          return {
-	            route: storedRoute.route,
-	            params: match,
-	            result: storedRoute.result
-	          };
-	        }
+	      if (match) {
+	        // Return the matched params and user-defined result object
+	        return {
+	          route: storedRoute.route,
+	          params: match,
+	          result: storedRoute.result
+	        };
 	      }
 	    }
 	
@@ -2523,7 +2576,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	
 	    return _extends({}, action.payload, {
-	      previous: state.current
+	      previous: state && state.current
 	    });
 	  }
 	  return state;
@@ -2618,11 +2671,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	RouterProvider.childContextTypes = {
 	  router: _react.PropTypes.object
-	};
-	
-	RouterProvider.propTypes = {
-	  children: _react.PropTypes.node,
-	  store: _react.PropTypes.object
 	};
 	
 	exports.default = function (_ref) {
@@ -2775,16 +2823,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  );
 	};
 	
-	Link.propTypes = {
-	  href: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.object]),
-	  replaceState: _react.PropTypes.bool,
-	  persistQuery: _react.PropTypes.bool,
-	  target: _react.PropTypes.string,
-	  className: _react.PropTypes.string,
-	  style: _react.PropTypes.object,
-	  children: _react.PropTypes.node
-	};
-	
 	Link.contextTypes = {
 	  router: _react.PropTypes.object
 	};
@@ -2882,12 +2920,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  );
 	};
 	
-	Fragment.propTypes = {
-	  forRoute: _react.PropTypes.string,
-	  forRoutes: _react.PropTypes.arrayOf(_react.PropTypes.string),
-	  withConditions: _react.PropTypes.func,
-	  children: _react.PropTypes.node
-	};
 	
 	Fragment.contextTypes = {
 	  router: _react.PropTypes.object
