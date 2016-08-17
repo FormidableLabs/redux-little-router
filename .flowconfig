@@ -1,0 +1,20 @@
+[ignore]
+dist/
+lib/
+.*/node_modules/fbjs/.*
+.*/__tests__/.*
+.*/__mocks__/.*
+.*/node_modules/flow-typed/src/.*
+
+[include]
+src/
+
+[libs]
+interfaces/
+node_modules/flow-typed/definitions
+
+[options]
+module.name_mapper='history\(.*\)' -> 'history'
+esproposal.class_static_fields=enable
+esproposal.class_instance_fields=enable
+suppress_comment= \\(.\\|\n\\)*\\$FlowIssue]

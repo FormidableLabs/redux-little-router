@@ -1,3 +1,4 @@
+// @flow
 import createStoreWithRouter, {
   locationDidChange,
   initializeCurrentLocation

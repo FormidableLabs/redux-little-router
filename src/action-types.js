@@ -1,3 +1,4 @@
+// @flow
 export const LOCATION_CHANGED = 'ROUTER_LOCATION_CHANGED';
 export const PUSH = 'ROUTER_PUSH';
 export const REPLACE = 'ROUTER_REPLACE';

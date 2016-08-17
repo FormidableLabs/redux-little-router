@@ -2,8 +2,12 @@
 extends:
   - "defaults/configurations/walmart/es6-react"
 
+parser: "babel-eslint"
+
 plugins:
   - "filenames"
+  - "babel"
+  - "flowtype"
 
 rules:
   filenames/filenames: [2, "^[a-z\\-\\.]+$"] # dash-cased filenames.
@@ -11,10 +15,11 @@ rules:
   spaced-comment: [2, "always"]
   indent: [2, 2, {"SwitchCase": 1}]
   jsx-quotes: [2, "prefer-single"]
-  arrow-parens: [1, "as-needed"]
+  arrow-parens: 0
   no-fallthrough: 2
   no-arrow-condition: 0
   no-confusing-arrow: [2, {"allowParens": false}]
+  flowtype/define-flow-type: warn
 
 env:
   es6: true

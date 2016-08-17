@@ -1,3 +1,18 @@
+// @flow
+import type {
+  StoreCreator,
+  StoreEnhancer,
+  Reducer,
+  State
+} from 'redux';
+
+import type {
+  Pathname,
+  Query,
+  Location,
+  History
+} from 'history';
+
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 import createMemoryHistory from 'history/lib/createMemoryHistory';
 import useBasename from 'history/lib/useBasename';
@@ -13,7 +28,14 @@ import { default as matcherFactory } from './create-matcher';
 import routerReducer from './reducer';
 import initialRouterState from './initial-router-state';
 
-export const locationDidChange = ({ location, matchRoute }) => {
+type LocationDidChangeArgs = {
+  location: Location,
+  matchRoute: Function
+};
+export const locationDidChange = ({
+  location,
+  matchRoute
+}: LocationDidChangeArgs) => {
   // Extract the pathname so that we don't match against the basename.
   // This avoids requiring basename-hardcoded routes.
   const { pathname } = location;
@@ -27,7 +49,7 @@ export const locationDidChange = ({ location, matchRoute }) => {
   };
 };
 
-export const initializeCurrentLocation = location => ({
+export const initializeCurrentLocation = (location: Location) => ({
   type: LOCATION_CHANGED,
   payload: location
 });
@@ -45,6 +67,16 @@ const resolveHistory = ({
   });
 };
 
+type StoreEnhancerArgs = {
+  routes: Object,
+  pathname: Pathname,
+  query?: Query,
+  basename?: Pathname,
+  forServerRender?: bool,
+  createMatcher?: Function,
+  history?: History
+};
+
 export default ({
   routes,
   pathname,
@@ -53,12 +85,16 @@ export default ({
   forServerRender = false,
   createMatcher = matcherFactory,
   history: userHistory
-}) => {
+}: StoreEnhancerArgs) => {
   const history = userHistory || resolveHistory({
     basename, forServerRender
   });
 
-  return createStore => (reducer, initialState, enhancer) => {
+  return (createStore: StoreCreator) => (
+    reducer: Reducer,
+    initialState: State,
+    enhancer: StoreEnhancer
+  ) => {
     const enhancedReducer = (state, action) => {
       const vanillaState = {...state};
       delete vanillaState.router;
@@ -89,7 +125,7 @@ export default ({
       pathname || query ? {
         ...initialState,
         router: initialRouterState({
-          pathname, query, routes, history
+          pathname, query: query || {}, routes, history
         }
       )} : initialState,
       enhancer

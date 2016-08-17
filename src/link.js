@@ -1,6 +1,19 @@
+// @flow
+import type { LocationDescriptor } from 'history';
+import type { RouterContext } from './provider';
 import React, { Component, PropTypes } from 'react';
 
 import { PUSH, REPLACE } from './action-types';
+
+type Props = {
+  href: string | LocationDescriptor,
+  replaceState: bool,
+  persistQuery: bool,
+  target: string,
+  className: string,
+  style: Object,
+  children: ReactPropTypes.node
+};
 
 const LEFT_MOUSE_BUTTON = 0;
 
@@ -61,7 +74,12 @@ const onClick = ({e, target, location, replaceState, router}) => {
   }
 };
 
-const Link = (props, context) => {
+const Link = (
+  props: Props,
+  context: {
+    router: RouterContext
+  }
+) => {
   const {
     href,
     target,
@@ -98,16 +116,6 @@ const Link = (props, context) => {
       {children}
     </a>
   );
-};
-
-Link.propTypes = {
-  href: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  replaceState: PropTypes.bool,
-  persistQuery: PropTypes.bool,
-  target: PropTypes.string,
-  className: PropTypes.string,
-  style: PropTypes.object,
-  children: PropTypes.node
 };
 
 Link.contextTypes = {

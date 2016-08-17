@@ -1,6 +1,22 @@
+// @flow
+import type { Location } from 'history';
+import type { RouterContext } from './provider';
+
 import React, { PropTypes } from 'react';
 
-const Fragment = (props, context) => {
+type Props = {
+  forRoute: string,
+  forRoutes: [string],
+  withConditions: (location: Location) => bool,
+  children: ReactPropTypes.node
+};
+
+const Fragment = (
+  props: Props,
+  context: {
+    router: RouterContext
+  }
+) => {
   const { forRoute, forRoutes, withConditions, children } = props;
   const { store } = context.router;
   const { matchRoute } = store;
@@ -28,13 +44,6 @@ const Fragment = (props, context) => {
   }
 
   return <div>{children}</div>;
-};
-
-Fragment.propTypes = {
-  forRoute: PropTypes.string,
-  forRoutes: PropTypes.arrayOf(PropTypes.string),
-  withConditions: PropTypes.func,
-  children: PropTypes.node
 };
 
 Fragment.contextTypes = {
