@@ -1,0 +1,11 @@
+.nyc_output/
+config/
+coverage/
+src/
+test/
+.babelrc
+.editorconfig
+.eslintrc
+.flowconfig
+.babelrc
+.travis.yml
