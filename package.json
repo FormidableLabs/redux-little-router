@@ -39,6 +39,7 @@
   "homepage": "https://github.com/FormidableLabs/redux-little-router#readme",
   "dependencies": {
     "history": "^3.0.0",
+    "rimraf": "^2.5.3",
     "url-pattern": "^1.0.1"
   },
   "devDependencies": {
@@ -75,7 +76,6 @@
     "redux-logger": "^2.6.1",
     "redux-loop": "^2.2.2",
     "redux-thunk": "^2.1.0",
-    "rimraf": "^2.5.3",
     "sinon": "^1.17.4",
     "sinon-chai": "^2.8.0",
     "watch": "^0.19.1",
