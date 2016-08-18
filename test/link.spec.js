@@ -173,6 +173,35 @@ describe('Router link component', () => {
 
         expect(spy).to.have.been.calledOnce;
       });
+
+      it('passes through DOM props, including aria attributes', () => {
+        const fakeNewLocation = {
+          pathname: '/home/things',
+          search: '',
+          action: 'PUSH',
+          query: {}
+        };
+
+        const wrapper = shallow(
+          <Link
+            href='/home/things'
+            aria-label='a11y'
+            className='classy'
+            style={{
+              fontFamily: 'Comic Sans'
+            }}
+          />,
+          fakeContext({ fakeNewLocation })
+        );
+
+        const props = wrapper.props();
+        expect(props).to.have.property('aria-label', 'a11y');
+        expect(props).to.have.property('className', 'classy');
+        expect(props).to.have.property('style')
+          .that.deep.equals({
+            fontFamily: 'Comic Sans'
+          });
+      });
     });
   });
 

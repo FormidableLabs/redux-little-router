@@ -85,7 +85,8 @@ const Link = (
     target,
     persistQuery,
     replaceState,
-    children
+    children,
+    ...rest
   } = props;
 
   const { router } = context;
@@ -102,8 +103,6 @@ const Link = (
 
   return (
     <a
-      className={props.className}
-      style={props.style}
       href={normalizeHref(location)}
       onClick={e => onClick({
         e,
@@ -112,6 +111,7 @@ const Link = (
         replaceState,
         router
       })}
+      {...rest}
     >
       {children}
     </a>
