@@ -231,7 +231,7 @@ Alternatively, you can pass in a [location descriptor](https://github.com/ReactT
 
 ### `provideRouter` or `<RouterProvider>`
 
-Like React Router's `<Provider>`, you'll want to wrap `provideRouter` around your app's top-level component like so:
+Like React Router's `<Router>` component, you'll want to wrap `provideRouter` around your app's top-level component like so:
 
 ```es6
 import React from 'react';
