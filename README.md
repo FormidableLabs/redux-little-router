@@ -36,9 +36,11 @@ import { createStoreWithRouter } from 'redux-little-router';
 
 import yourReducer from './your-app';
 
-// Arbitrary data to add to the state tree when a route is
-// matched and dispatched. Useful for page titles and other
-// route-specific data.
+// Define your routes in a route-to-anything hash like below.
+// The value of the route key can be any serializable data.
+// This data gets attached to the `router` key of the state
+// tree when its corresponding route is matched and dispatched.
+// Useful for page titles and other route-specific data.
 
 // Uses https://github.com/snd/url-pattern for URL matching
 // and parameter extraction.
@@ -62,9 +64,9 @@ const clientOnlyStore = createStore(
   yourReducer,
   initialState,
   createStoreWithRouter({
-    routes,
+    routes, // required
     basename: '/example', // optional, the basename for all routes
-    pathname: '/home', // optional, the beginning URL
+    pathname: '/home', // the beginning URL. Required for browser rendering.
     query: { // optional, the initial query string object
       ex: 'ample'
     }
