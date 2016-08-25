@@ -64,10 +64,15 @@ const clientOnlyStore = createStore(
   yourReducer,
   initialState,
   createStoreWithRouter({
-    routes, // required
-    basename: '/example', // optional, the basename for all routes
-    pathname: '/home', // the beginning URL. Required for client-only rendering.
-    query: { // optional, the initial query string object
+    // The configured routes. Required.
+    routes,
+    // The basename for all routes. Optional.
+    basename: '/example',
+    // The initial URL. Required in all cases except for when
+    // rehydrating the state tree on the client after a server render.
+    pathname: '/home',
+    // The initial query string object. Optional.
+    query: {
       ex: 'ample'
     }
   })
