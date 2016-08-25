@@ -18,20 +18,24 @@ const Fragment = (
   }
 ) => {
   const { forRoute, forRoutes, withConditions, children } = props;
-  const { store } = context.router;
-  const { matchRoute } = store;
-  const { router: location } = store.getState();
+  const { matchRoute } = context.router.store;
+  const { router: location } = context.router.store.getState();
+  const matchResult = matchRoute(location.pathname);
+
+  if (!matchResult) {
+    return null;
+  }
 
   if (
     forRoute &&
-    matchRoute(location.pathname).route !== forRoute
+    matchResult.route !== forRoute
   ) {
     return null;
   }
 
   if (forRoutes) {
     const anyMatch = forRoutes.some(route =>
-      matchRoute(location.pathname).route === route
+      matchResult.route === route
     );
 
     if (!anyMatch) {

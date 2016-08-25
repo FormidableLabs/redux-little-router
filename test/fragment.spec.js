@@ -35,6 +35,18 @@ describe('Fragment', () => {
     expect(wrapper.find('p')).to.have.lengthOf(0);
   });
 
+  it('renders nothing if the current URL does not match any of the routes', () => {
+    const wrapper = mount(
+      <Fragment forRoute='/home'>
+        <p>Nothing to see here!</p>
+      </Fragment>,
+      fakeContext({
+        pathname: '/homeFake'
+      })
+    );
+    expect(wrapper.find('p')).to.have.lengthOf(0);
+  });
+
   const multiRoutes = [
     '/home/messages/:team/:channel',
     '/home/messages/:team',
