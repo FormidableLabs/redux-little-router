@@ -66,7 +66,7 @@ const clientOnlyStore = createStore(
   createStoreWithRouter({
     routes, // required
     basename: '/example', // optional, the basename for all routes
-    pathname: '/home', // the beginning URL. Required for browser rendering.
+    pathname: '/home', // the beginning URL. Required for client-only rendering.
     query: { // optional, the initial query string object
       ex: 'ample'
     }
@@ -82,6 +82,9 @@ const initializeStore = ({ routes, requestUrl, requestQuery }) => {
   // Grab the initial state the server attached to your template after render
   const initialState = INITIAL_STATE_FROM_SERVER_RENDER;
 
+  // Notice that `pathname` isn't required when rehydrating
+  // the store since redux-little-router already added
+  // the pathname to the initial state.
   const routerOptions = initialState ? {
     routes,
     basename: BASENAME_FROM_SERVER_RENDER
