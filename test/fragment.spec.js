@@ -108,4 +108,45 @@ describe('Fragment', () => {
     );
     expect(wrapper.find('p')).to.have.lengthOf(0);
   });
+
+  it('renders if the current URL matches a given route component', () => {
+    const wrapper = mount(
+      <Fragment inRoute=':team'>
+        <p>As you know, the key to victory is the element of surprise. Surprise!</p>
+      </Fragment>,
+      fakeContext({
+        pathname: '/home/messages/a-team'
+      })
+    );
+    expect(wrapper.find('p').node.textContent).to.equal(
+      'As you know, the key to victory is the element of surprise. Surprise!'
+    );
+  });
+
+  it('renders nothing if the current URL does not match a given route component', () => {
+    const wrapper = mount(
+      <Fragment inRoute='messages'>
+        <p>Nothing to see here!</p>
+      </Fragment>,
+      fakeContext({
+        pathname: '/home'
+      })
+    );
+    expect(wrapper.find('p')).to.have.lengthOf(0);
+  });
+
+  it('renders if the current URL matches a given parent route component', () => {
+    const wrapper = mount(
+      <Fragment inRoute='home'>
+        <p>You win again, gravity!</p>
+      </Fragment>,
+      fakeContext({
+        pathname: '/home/messages/a-team'
+      })
+    );
+    expect(wrapper.find('p').node.textContent).to.equal(
+      'You win again, gravity!'
+    );
+  });
+
 });

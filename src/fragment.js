@@ -7,6 +7,7 @@ import React, { PropTypes } from 'react';
 type Props = {
   forRoute: string,
   forRoutes: [string],
+  inRoute: string,
   withConditions: (location: Location) => bool,
   children: ReactPropTypes.node
 };
@@ -17,7 +18,7 @@ const Fragment = (
     router: RouterContext
   }
 ) => {
-  const { forRoute, forRoutes, withConditions, children } = props;
+  const { forRoute, forRoutes, inRoute, withConditions, children } = props;
   const { store } = context.router;
   const { matchRoute } = store;
   const { router: location } = store.getState();
@@ -37,6 +38,13 @@ const Fragment = (
     if (!anyMatch) {
       return null;
     }
+  }
+
+  if (
+    inRoute &&
+    matchRoute(location.pathname).result.every(r => r.routeComponent !== inRoute)
+  ) {
+    return null;
   }
 
   if (withConditions && !withConditions(location)) {

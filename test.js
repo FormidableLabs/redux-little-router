@@ -1,11 +1,12 @@
 const UrlPattern = require('url-pattern');
+const pathJoin = require('path').join;
 
-const root = { name:'root' };
-const home = { route:'home', name:'home' };
-const messages = { route:'messages', name:'home' };
-const team = { route:':team', name:'team' };
-const channel = { route:':channel', name:'channel' };
-const spookyparam = { route:'spookyparam', name:'3spooky5me' };
+const root = { routeComponent: '/', name:'root' };
+const home = { routeComponent:'home', name:'home' };
+const messages = { routeComponent:'messages', name:'messages' };
+const team = { routeComponent:':team', name:'team' };
+const channel = { routeComponent:':channel', name:'channel' };
+const spookyparam = { routeComponent:':spookyparam', name:'3spooky5me' };
 
 const routes = Object.assign(root, {
   children: [Object.assign(home, {
@@ -13,25 +14,28 @@ const routes = Object.assign(root, {
       children: [Object.assign(team, {
         children: [Object.assign(channel, {})]
       })]
-    })]
-  }), Object.assign(spookyparam, {})]
+    }), Object.assign(spookyparam, {})]
+  })]
 });
 
-// Instead of building a flat route list, recursively match
-const traverseRoutes = (toMatch, route, parentPath='') => {
-  const path = parentPath === '/' ? `/${route.route}` : `${parentPath}/${route.route || ''}`;
+const traverseRoutes = (toMatch, routeComponent, parentPath='') => {
+  const path = pathJoin(parentPath, routeComponent.routeComponent);
   const pattern = new UrlPattern(path);
-
-  if (pattern.match(toMatch)) {
-    return route;
+  const match = pattern.match(toMatch);
+  if (match) {
+    return [{
+      route: path,
+      params: match,
+      routeComponent
+    }];
   }
 
-  const children = route.children;
+  const children = routeComponent.children;
   if (children) {
     for (const child of children) {
       const result = traverseRoutes(toMatch, child, path);
       if (result) {
-        return [route].concat(result)
+        return [routeComponent].concat(result)
       }
     }
   }

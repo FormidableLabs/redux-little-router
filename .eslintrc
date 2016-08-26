@@ -1,6 +1,4 @@
 ---
-extends:
-  - "defaults/configurations/walmart/es6-react"
 
 parser: "babel-eslint"
 
@@ -10,7 +8,7 @@ plugins:
   - "flowtype"
 
 rules:
-  filenames/filenames: [2, "^[a-z\\-\\.]+$"] # dash-cased filenames.
+  # filenames/filenames: [2, "^[a-z\\-\\.]+$"] # dash-cased filenames.
   quotes:              [2, "single"]
   spaced-comment: [2, "always"]
   indent: [2, 2, {"SwitchCase": 1}]
@@ -29,4 +27,3 @@ env:
 ecmaFeatures:
   module: true
   modules: true
-
