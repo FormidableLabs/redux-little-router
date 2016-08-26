@@ -15,7 +15,7 @@ import createStoreWithRouter, {
   initializeCurrentLocation
 } from '../src/store-enhancer';
 
-import routes from './fixtures/routes';
+import defaultRoutes from './fixtures/routes';
 
 chai.use(sinonChai);
 
@@ -34,6 +34,7 @@ const defaultFakeInitialState = {
 
 const fakeStore = ({
   initialState = defaultFakeInitialState,
+  routes = defaultRoutes,
   useHistoryStub = true,
   isLoop = false,
   enhancerOptions = {}
@@ -81,6 +82,22 @@ const fakeStore = ({
 };
 
 describe('Router store enhancer', () => {
+  it('throws if no routes are provided', () => {
+    expect(() => fakeStore({
+      routes: null
+    })).to.throw(Error);
+  });
+
+  it('throws if malformed routes are provided', () => {
+    expect(() => fakeStore({
+      routes: {
+        'jlshdkfjgh': {},
+        '/real-route': {},
+        'w': 'tf'
+      }
+    })).to.throw(Error);
+  });
+
   it('updates the pathname in the state tree after dispatching history actions', done => {
     const { store } = fakeStore();
 
