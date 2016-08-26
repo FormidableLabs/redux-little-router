@@ -2,6 +2,7 @@
 import type { Store } from 'redux';
 
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 
 export type RouterContext = { store: Store };
 
@@ -10,7 +11,7 @@ type Props = {
   children: ReactPropTypes.node
 };
 
-export class RouterProvider extends Component {
+class RouterProviderImpl extends Component {
   router: { store: Store };
 
   constructor(props: Props) {
@@ -31,13 +32,17 @@ export class RouterProvider extends Component {
   }
 }
 
-RouterProvider.childContextTypes = {
+RouterProviderImpl.childContextTypes = {
   router: PropTypes.object
 };
 
 type ProvideRouterArgs = {
   store: Object
 };
+
+export const RouterProvider = connect(state => ({
+  router: state.router
+}))(RouterProviderImpl);
 
 export default ({ store }: ProvideRouterArgs) =>
   (ComposedComponent: ReactClass<*>) => (props: Object) =>

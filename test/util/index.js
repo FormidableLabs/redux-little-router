@@ -27,6 +27,10 @@ export const fakeStore = ({
   }
 
   return {
+    subscribe() {
+
+    },
+
     getState() {
       return {
         router: {
