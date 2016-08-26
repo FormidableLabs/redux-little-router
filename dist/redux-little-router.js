@@ -149,6 +149,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	var README_MESSAGE = '\n  See the README for more information:\n  https://github.com/FormidableLabs/redux-little-router#wiring-up-the-boilerplate\n';
+	
 	var locationDidChange = exports.locationDidChange = function locationDidChange(_ref) {
 	  var location = _ref.location;
 	  var matchRoute = _ref.matchRoute;
@@ -193,6 +195,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _ref3$createMatcher = _ref3.createMatcher;
 	  var createMatcher = _ref3$createMatcher === undefined ? _createMatcher2.default : _ref3$createMatcher;
 	  var userHistory = _ref3.history;
+	
+	  if (!routes) {
+	    throw Error('\n      Missing route configuration. You must define your routes as\n      an object where the keys are routes and the values are any\n      route-specific data.\n\n      ' + README_MESSAGE + '\n    ');
+	  }
+	
+	  // eslint-disable-next-line no-magic-numbers
+	  if (!Object.keys(routes).every(function (route) {
+	    return route.indexOf('/') === 0;
+	  })) {
+	    throw Error('\n      The route configuration you provided is malformed. Make sure\n      that all of your routes start with a slash.\n\n      ' + README_MESSAGE + '\n    ');
+	  }
 	
 	  var history = userHistory || resolveHistory({
 	    basename: basename, forServerRender: forServerRender
@@ -2888,21 +2901,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var forRoutes = props.forRoutes;
 	  var withConditions = props.withConditions;
 	  var children = props.children;
-	  var store = context.router.store;
-	  var matchRoute = store.matchRoute;
+	  var matchRoute = context.router.store.matchRoute;
 	
-	  var _store$getState = store.getState();
+	  var _context$router$store = context.router.store.getState();
 	
-	  var location = _store$getState.router;
+	  var location = _context$router$store.router;
 	
+	  var matchResult = matchRoute(location.pathname);
 	
-	  if (forRoute && matchRoute(location.pathname).route !== forRoute) {
+	  if (!matchResult) {
+	    return null;
+	  }
+	
+	  if (forRoute && matchResult.route !== forRoute) {
 	    return null;
 	  }
 	
 	  if (forRoutes) {
 	    var anyMatch = forRoutes.some(function (route) {
-	      return matchRoute(location.pathname).route === route;
+	      return matchResult.route === route;
 	    });
 	
 	    if (!anyMatch) {
