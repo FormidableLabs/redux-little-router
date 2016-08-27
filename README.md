@@ -128,7 +128,7 @@ On location changes, the store enhancer dispatches a LOCATION_CHANGED action tha
 ```js
 // For a URL matching /messages/:user
 {
-  url: '/messages/a-user-has-no-name',
+  pathname: '/messages/a-user-has-no-name',
   params: {
     user: 'a-user-has-no-name'
   },
