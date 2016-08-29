@@ -2,7 +2,7 @@
 import type { Location } from 'history';
 import type { RouterContext } from './provider';
 
-import React, { PropTypes } from 'react';
+import { PropTypes } from 'react';
 
 type Props = {
   forRoute: string,
@@ -47,7 +47,7 @@ const Fragment = (
     return null;
   }
 
-  return <div>{children}</div>;
+  return children;
 };
 
 Fragment.contextTypes = {
