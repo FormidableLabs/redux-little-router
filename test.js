@@ -1,48 +1,48 @@
-const UrlPattern = require('url-pattern');
-const pathJoin = require('path').join;
-
-const root = { routeComponent: '/', name:'root' };
-const home = { routeComponent:'home', name:'home' };
-const messages = { routeComponent:'messages', name:'messages' };
-const team = { routeComponent:':team', name:'team' };
-const channel = { routeComponent:':channel', name:'channel' };
-const spookyparam = { routeComponent:':spookyparam', name:'3spooky5me' };
-
-const routes = Object.assign(root, {
-  children: [Object.assign(home, {
-    children: [Object.assign(messages, {
-      children: [Object.assign(team, {
-        children: [Object.assign(channel, {})]
-      })]
-    }), Object.assign(spookyparam, {})]
-  })]
-});
-
-const traverseRoutes = (toMatch, routeComponent, parentPath='') => {
-  const path = pathJoin(parentPath, routeComponent.routeComponent);
-  const pattern = new UrlPattern(path);
-  const match = pattern.match(toMatch);
-  if (match) {
-    return [{
-      route: path,
-      params: match,
-      routeComponent
-    }];
-  }
-
-  const children = routeComponent.children;
-  if (children) {
-    for (const child of children) {
-      const result = traverseRoutes(toMatch, child, path);
-      if (result) {
-        return [routeComponent].concat(result)
-      }
-    }
-  }
-};
-
-const x = traverseRoutes('/home/messages', routes);
-console.log(x);
+// const UrlPattern = require('url-pattern');
+// const pathJoin = require('path').join;
+//
+// const root = { routeComponent: '/', name:'root' };
+// const home = { routeComponent:'home', name:'home' };
+// const messages = { routeComponent:'messages', name:'messages' };
+// const team = { routeComponent:':team', name:'team' };
+// const channel = { routeComponent:':channel', name:'channel' };
+// const spookyparam = { routeComponent:':spookyparam', name:'3spooky5me' };
+//
+// const routes = Object.assign(root, {
+//   children: [Object.assign(home, {
+//     children: [Object.assign(messages, {
+//       children: [Object.assign(team, {
+//         children: [Object.assign(channel, {})]
+//       })]
+//     }), Object.assign(spookyparam, {})]
+//   })]
+// });
+//
+// const traverseRoutes = (toMatch, routeComponent, parentPath='') => {
+//   const path = pathJoin(parentPath, routeComponent.routeComponent);
+//   const pattern = new UrlPattern(path);
+//   const match = pattern.match(toMatch);
+//   if (match) {
+//     return [{
+//       route: path,
+//       params: match,
+//       routeComponent
+//     }];
+//   }
+//
+//   const children = routeComponent.children;
+//   if (children) {
+//     for (const child of children) {
+//       const result = traverseRoutes(toMatch, child, path);
+//       if (result) {
+//         return [routeComponent].concat(result)
+//       }
+//     }
+//   }
+// };
+//
+// const x = traverseRoutes('/home/messages', routes);
+// console.log(x);
 
 //
 //
@@ -73,3 +73,40 @@ console.log(x);
 //   }
 //
 // }
+
+
+// const root = () => ({ routeComponent: '/', name:'root' });
+// const home = () => ({ routeComponent:'home', name:'home' });
+// const messages = () => ({ routeComponent:'messages', name:'messages' });
+// const team = () => ({ routeComponent:':team', name:'team' });
+// const channel = () => ({ routeComponent:':channel', name:'channel' });
+// const spookyparam = () => ({ routeComponent:':spookyparam', name:'3spooky5me' });
+
+const root = { routeComponent: '/', name:'root' };
+const home = { routeComponent:'home', name:'home' };
+const messages = { routeComponent:'messages', name:'messages' };
+const team = { routeComponent:':team', name:'team' };
+const channel = { routeComponent:':channel', name:'channel' };
+const spookyparam = { routeComponent:':spookyparam', name:'3spooky5me' };
+
+function makeRoute(details, children) {
+  return Object.assign({}, details, children ? { children } : {});
+}
+
+const routes = makeRoute(root, [
+  makeRoute(home, [
+    makeRoute(messages, [
+      makeRoute(team, [
+        makeRoute(channel)
+      ])
+    ]),
+    makeRoute(spookyparam)
+  ])
+]);
+
+console.log(routes);
+console.log(routes.children[0]);
+console.log(routes.children[0].children[0]);
+console.log(routes.children[0].children[0].children[0]);
+console.log(routes.children[0].children[0].children[0].children[0]);
+console.log(routes.children[0].children[1]);
