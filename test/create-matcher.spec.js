@@ -116,5 +116,30 @@ describe('createMatcher', () => {
       ]
     });
 
+    expect(matchRoute('/home/global/channel-4')).to.deep.equal({
+      route: '/home/global/:channel',
+      params: {
+        channel: 'channel-4'
+      },
+      result: [
+        {
+          name: 'root',
+          routeComponent: '/'
+        },
+        {
+          name: 'home',
+          routeComponent: 'home'
+        },
+        {
+          name: 'global',
+          routeComponent: 'global'
+        },
+        {
+          name: 'channel',
+          routeComponent: ':channel'
+        }
+      ]
+    });
+
   });
 });

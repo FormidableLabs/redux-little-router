@@ -1,3 +1,31 @@
+const root = { routeComponent: '/', name:'root' };
+const home = { routeComponent:'home', name:'home' };
+const messages = { routeComponent:'messages', name:'messages' };
+const team = { routeComponent:':team', name:'team' };
+const channel = { routeComponent:':channel', name:'channel' };
+const spookyparam = { routeComponent:':spookyparam', name:'3spooky5me' };
+const global = { routeComponent:'global', name:'global' };
+
+// Attmempt 7 (Improvement on attempt 6. Seems the simplest)
+function makeRoute(details, ...children) {
+  return Object.assign({}, details, children ? { children } : {});
+}
+
+const routes =
+makeRoute(root,
+  makeRoute(home,
+    makeRoute(messages,
+      makeRoute(team,
+        makeRoute(channel)
+      )
+    ),
+    makeRoute(global,
+      makeRoute(channel)
+    ),
+    makeRoute(spookyparam)
+  )
+);
+
 // Original
 // const routes = {
 //   '/home': {
@@ -16,14 +44,6 @@
 //     name: '3spooky5me'
 //   }
 // };
-
-const root = { routeComponent: '/', name:'root' };
-const home = { routeComponent:'home', name:'home' };
-const messages = { routeComponent:'messages', name:'messages' };
-const team = { routeComponent:':team', name:'team' };
-const channel = { routeComponent:':channel', name:'channel' };
-const spookyparam = { routeComponent:':spookyparam', name:'3spooky5me' };
-
 
 // Attempt 1 (Not bad)
 // const routes =
@@ -151,22 +171,7 @@ const spookyparam = { routeComponent:':spookyparam', name:'3spooky5me' };
 // ]);
 
 
-// Attmempt 7 (Improvement on attempt 6. Seems the simplest)
-function makeRoute(details, ...children) {
-  return Object.assign({}, details, children ? { children } : {});
-}
 
-const routes =
-makeRoute(root,
-  makeRoute(home,
-    makeRoute(messages,
-      makeRoute(team,
-        makeRoute(channel)
-      )
-    ),
-    makeRoute(spookyparam)
-  )
-);
 
 
 // Attempt 8 (Alternate view to 7. On a single line unless there are multiple
