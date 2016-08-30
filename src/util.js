@@ -1,4 +1,4 @@
 // @flow
-export function makeRoute(details, ...children) {
+export function makeRoute(details: Object, ...children: Array<Object>) {
   return Object.assign({}, details, children ? { children } : {});
 }
