@@ -83,9 +83,10 @@
     "webpack-dev-server": "^1.14.1"
   },
   "peerDependencies": {
-    "redux": "^3.0.0",
     "react": "^0.14.0 || ^15.0.0-0",
-    "react-dom": "^0.14.0 || ^15.0.0-0"
+    "react-dom": "^0.14.0 || ^15.0.0-0",
+    "redux": "^3.0.0",
+    "react-redux": "^4.0.0"
   },
   "nyc": {
     "sourceMap": false,
