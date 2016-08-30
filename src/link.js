@@ -63,9 +63,12 @@ const hasModifier = e =>
 const handleClick = ({e, target, location, replaceState, router, onClick}) => {
   if (onClick) { onClick(e); }
 
-  if (hasModifier(e) || isNotLeftClick(e) || target) {
-    return;
-  }
+  if (hasModifier(e) || isNotLeftClick(e)) { return; }
+
+  if (e.defaultPrevented) { return; }
+
+  // If target prop is set (e.g. to "_blank"), let browser handle link.
+  if (target) { return; }
 
   e.preventDefault();
 
