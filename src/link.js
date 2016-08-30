@@ -6,13 +6,14 @@ import React, { Component, PropTypes } from 'react';
 import { PUSH, REPLACE } from './action-types';
 
 type Props = {
-  href: string | LocationDescriptor,
-  replaceState: bool,
-  persistQuery: bool,
-  target: string,
+  children: ReactPropTypes.node,
   className: string,
+  href: string | LocationDescriptor,
+  onClick: EventHandler,
+  persistQuery: bool,
+  replaceState: bool,
   style: Object,
-  children: ReactPropTypes.node
+  target: string
 };
 
 const LEFT_MOUSE_BUTTON = 0;
@@ -59,7 +60,9 @@ const isNotLeftClick = e => e.button && e.button !== LEFT_MOUSE_BUTTON;
 const hasModifier = e =>
   Boolean(e.shiftKey || e.altKey || e.metaKey || e.ctrlKey);
 
-const onClick = ({e, target, location, replaceState, router}) => {
+const handleClick = ({e, target, location, replaceState, router, onClick}) => {
+  if (onClick) { onClick(e); }
+
   if (hasModifier(e) || isNotLeftClick(e) || target) {
     return;
   }
@@ -81,11 +84,12 @@ const Link = (
   }
 ) => {
   const {
+    children,
     href,
-    target,
+    onClick,
     persistQuery,
     replaceState,
-    children,
+    target,
     ...rest
   } = props;
 
@@ -104,12 +108,13 @@ const Link = (
   return (
     <a
       href={normalizeHref(location)}
-      onClick={e => onClick({
+      onClick={e => handleClick({
         e,
-        target,
         location,
+        onClick,
         replaceState,
-        router
+        router,
+        target
       })}
       {...rest}
     >
