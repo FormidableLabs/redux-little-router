@@ -141,5 +141,22 @@ describe('createMatcher', () => {
       ]
     });
 
+    expect(matchRoute('/a/b/c/dee')).to.deep.equal({
+      route: '/a/b/c/:d',
+      params: {
+        d: 'dee'
+      },
+      result: [
+        {
+          name: 'root',
+          routeComponent: '/'
+        },
+        {
+          name: 'absolute',
+          routeComponent: 'a/b/c/:d'
+        }
+      ]
+    });
+
   });
 });

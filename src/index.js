@@ -20,6 +20,10 @@ import {
   GO_BACK
 } from './action-types';
 
+import {
+  makeRoute
+} from './util';
+
 export {
   // High-level Redux API
   createStoreWithRouter,
@@ -43,5 +47,8 @@ export {
   // Low-level Redux utilities
   routerReducer,
   locationDidChange,
-  createMatcher
+  createMatcher,
+
+  // Route utilities
+  makeRoute
 };
