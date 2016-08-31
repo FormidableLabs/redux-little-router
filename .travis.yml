@@ -25,6 +25,6 @@ script:
   - npm install redux@^3.0.0 react@^15.0.0-0 react-dom@^15.0.0-0 react-redux@^4.0.0
 
   - npm run check-cov
-  - node_modules/.bin/nyc report --reporter=text-lcov | node_modules/.bin/coveralls || echo "Coveralls upload failed"
+  - node_modules/.bin/nyc report --reporter=text-lcov | node_modules/.bin/codacy-coverage || echo "Codacy coverage upload failed"
 
   - npm run build
