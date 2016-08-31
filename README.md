@@ -1,5 +1,4 @@
-# redux-little-router [![Build Status](https://travis-ci.org/FormidableLabs/redux-little-router.svg?branch=master)](https://travis-ci.org/FormidableLabs/redux-little-router) [![Coverage Status](https://coveralls.io/repos/github/FormidableLabs/redux-little-router/badge.svg?branch=master)](https://coveralls.io/github/FormidableLabs/redux-little-router?branch=master)
-
+# redux-little-router [![Build Status](https://travis-ci.org/FormidableLabs/redux-little-router.svg?branch=master)](https://travis-ci.org/FormidableLabs/redux-little-router) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/7a6d3ed461d44fc0a83122dcda06728d)](https://www.codacy.com/app/tyler_9/redux-little-router?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=FormidableLabs/redux-little-router&amp;utm_campaign=Badge_Coverage) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7a6d3ed461d44fc0a83122dcda06728d)](https://www.codacy.com/app/tyler_9/redux-little-router?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=FormidableLabs/redux-little-router&amp;utm_campaign=Badge_Grade)
 `redux-little-router` is a tiny router for Redux applications that lets the URL do the talking.
 
 The router follows three basic principles:
