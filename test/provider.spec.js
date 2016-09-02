@@ -6,6 +6,7 @@ import React, { Component, PropTypes } from 'react';
 import provideRouter, { RouterProvider } from '../src/provider';
 
 import { fakeStore } from './util';
+import routesFixture from './fixtures/routes';
 
 describe('Router provider', () => {
   describe('provideRouter HoC', () => {
@@ -52,6 +53,65 @@ describe('Router provider', () => {
 
       const div = wrapper.find('div');
       expect(div.node.textContent).to.equal('/home/messages/b-team');
+    });
+
+    it('adds router location props to its child component', () => {
+      class MagicalMysteryComponent extends Component {
+        render() {
+          return <div>{this.props.router.pathname}</div>;
+        }
+      }
+
+      MagicalMysteryComponent.propTypes = {
+        router: PropTypes.object
+      };
+
+      const wrapper = mount(
+        <RouterProvider store={fakeStore()}>
+          <MagicalMysteryComponent />
+        </RouterProvider>
+      );
+
+      const div = wrapper.find('div');
+      expect(div.node.textContent).to.equal('/home/messages/b-team');
+    });
+
+    it('passes down unserializable route results', () => {
+      class NoopComponent extends Component {
+        render() {
+          return <p>lol</p>;
+        }
+      }
+
+      class MagicalMysteryComponent extends Component {
+        render() {
+          return <div>{this.props.router.pathname}</div>;
+        }
+      }
+
+      MagicalMysteryComponent.propTypes = {
+        router: PropTypes.object
+      };
+
+      const routesWithComponent = {
+        ...routesFixture,
+        '/home/messages/:team': {
+          ...routesFixture['/home/messages/:team'],
+          component: NoopComponent
+        }
+      };
+
+      const wrapper = mount(
+        <RouterProvider store={fakeStore({
+          routes: routesWithComponent
+        })}>
+          <MagicalMysteryComponent />
+        </RouterProvider>
+      );
+
+      const childProps = wrapper.find(MagicalMysteryComponent).props();
+      expect(childProps).to.have.deep.property('router.result.component')
+        .that.equals(NoopComponent);
     });
   });
 });

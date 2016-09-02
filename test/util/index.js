@@ -3,7 +3,7 @@ import createMemoryHistory from 'history/lib/createMemoryHistory';
 
 import createMatcher from '../../src/create-matcher';
 
-import routes from '../fixtures/routes';
+import defaultRoutes from '../fixtures/routes';
 
 export const captureErrors = (done, assertions) => {
   try {
@@ -18,6 +18,8 @@ export const fakeStore = ({
   assertion,
   pathname = '/home/messages/b-team',
   query = { test: 'ing' },
+  route = '/home/messages/:team',
+  routes = defaultRoutes,
   fakeNewLocation
 } = {}) => {
   const history = createMemoryHistory();
@@ -37,7 +39,8 @@ export const fakeStore = ({
           pathname,
           query,
           search: '?test=ing',
-          action: 'POP'
+          action: 'POP',
+          route
         }
       };
     },
@@ -46,8 +49,9 @@ export const fakeStore = ({
       assertion && assertion(action);
     },
 
-    matchRoute: createMatcher(routes),
-    history
+    routes,
+    history,
+    matchRoute: createMatcher(routes)
   };
 };
 
