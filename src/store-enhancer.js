@@ -190,6 +190,16 @@ export default ({
       }
     };
 
-    return {...store, dispatch, history, matchRoute};
+    return {
+      ...store,
+      dispatch,
+
+      // We attach routes here to allow <RouterProvider>
+      // to access unserializable properties of route results.
+      routes,
+
+      history,
+      matchRoute
+    };
   };
 };
