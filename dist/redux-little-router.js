@@ -272,7 +272,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      };
 	
-	      return _extends({}, store, { dispatch: dispatch, history: history, matchRoute: matchRoute });
+	      return _extends({}, store, {
+	        dispatch: dispatch,
+	
+	        // We attach routes here to allow <RouterProvider>
+	        // to access unserializable properties of route results.
+	        routes: routes,
+	
+	        history: history,
+	        matchRoute: matchRoute
+	      });
 	    };
 	  };
 	};
@@ -2637,6 +2646,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.RouterProvider = undefined;
 	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _react = __webpack_require__(30);
@@ -2677,7 +2688,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return this.props.children;
+	      var store = this.router.store;
+	
+	      var routerState = store.getState().router;
+	
+	      // Ensure that the router props from connect()
+	      // actually get to the child component(s)
+	      return (0, _react.cloneElement)(this.props.children, {
+	        router: _extends({}, routerState, {
+	
+	          // This is a hack to allow routes to define
+	          // unserializable things like components
+	          result: store.routes[routerState.route]
+	        })
+	      });
 	    }
 	  }]);
 	
