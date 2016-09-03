@@ -1,0 +1,60 @@
+.container {
+  max-width: 1024px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+}
+
+.tagline {
+  text-align: center;
+}
+
+.primary {
+  font-size: 36px;
+}
+
+.secondary {
+  font-size: 16px;
+}
+
+.nav {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 20px;
+}
+
+.nav a {
+  color: #fff;
+  margin: 0 16px;
+  position: relative;
+  text-decoration: none;
+}
+
+.nav a::after {
+  position: absolute;
+  content: '';
+  right: 0px;
+  bottom: -6px;
+  left: 0px;
+  height: 2px;
+  background: #FBB13C;
+}
+
+.gallery {
+  display: flex;
+  flex-direction: row;
+  padding-top: 20px;
+}
+
+.column {
+  display: flex;
+  flex-basis: 50%;
+  flex-direction: column;
+  flex-wrap: wrap;
+  font-size: 0;
+}
+
+.image {
+  width: 100%;
+}
