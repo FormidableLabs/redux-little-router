@@ -2,6 +2,7 @@
 dist/
 lib/
 .*/node_modules/fbjs/.*
+.*/node_modules/systemjs-builder/.*
 .*/__tests__/.*
 .*/__mocks__/.*
 .*/node_modules/flow-typed/src/.*
