@@ -1,0 +1,27 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #218380;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #fff;
+  font-family: 'Source Code Pro', monospace;
+}
+
+p {
+  color: #fff;
+  font-family: 'Work Sans', sans-serif;
+  line-height: 1.4;
+}
+
+a {
+  font-family: 'Source Code Pro', monospace;
+}
