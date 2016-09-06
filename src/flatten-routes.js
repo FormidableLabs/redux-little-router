@@ -1,8 +1,19 @@
+import assign from 'lodash.assign';
+
 const filterObject = (target, predicate) =>
   Object.keys(target).reduce((acc, key) => {
     return predicate(key)
       ? {...acc, [key]: target[key]}
       : acc;
+  }, {});
+
+const mapObject = (target, transformKey, transformValue) =>
+  Object.keys(target).reduce((acc, key) => {
+    const newKey = transformKey ?
+      transformKey(key) : key;
+    const newValue = transformValue ?
+      transformValue(target[key]) : target[key];
+    return {...acc, [newKey]: newValue};
   }, {});
 
 const onlyRoutes = routes =>
@@ -11,32 +22,26 @@ const onlyRoutes = routes =>
 const withoutRoutes = routes =>
   filterObject(routes, key => key.indexOf('/') !== 0);
 
-const mapKeys = (target, transform) =>
-  Object.keys(target).reduce((acc, key) => ({
-    ...acc, [transform(key)]: target[key]
-  }), {});
-
-const removeChildRoutes = childRoutes =>
-  Object.keys(childRoutes).reduce((_acc, key) => ({
-    ..._acc, [key]: withoutRoutes(childRoutes[key])
-  }), {});
-
-const flattenRoutes = (routes, parent, acc = {}) => {
+const flattenRoutes = (routes, acc = {}) => {
   Object.keys(routes).forEach(key => {
     const baseRoute = key === '/' ? '' : key;
     flattenRoutes(
-      mapKeys(
+      mapObject(
         onlyRoutes(routes[key]),
-        route => `${baseRoute}${route}`
+        routeKey => `${baseRoute}${routeKey}`,
+        routeValue => ({
+          ...routeValue,
+          parent: {
+            ...withoutRoutes(routes[key]),
+            route: key
+          }
+        })
       ),
-      routes,
       acc
     );
   });
 
-  Object.assign(
-    acc, parent, removeChildRoutes(routes)
-  );
+  assign(acc, mapObject(routes, null, withoutRoutes));
 
   return acc;
 };

@@ -40,6 +40,7 @@
   "homepage": "https://github.com/FormidableLabs/redux-little-router#readme",
   "dependencies": {
     "history": "^3.0.0",
+    "lodash.assign": "^4.2.0",
     "url-pattern": "^1.0.1"
   },
   "devDependencies": {

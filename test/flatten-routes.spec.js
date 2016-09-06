@@ -56,31 +56,95 @@ describe('Route flattening', () => {
 
     expect(flattenRoutes(nestedRoutes)).to.deep.equal({
       '/messages/:user/:thing': {
-        'title': 'Thing'
+        'title': 'Thing',
+        'parent': {
+          'title': 'Messages by User',
+          'parent': {
+            'title': 'Messages',
+            'parent': {
+              'title': 'Home',
+              'route': '/'
+            },
+            'route': '/messages'
+          },
+          'route': '/messages/:user'
+        }
       },
       '/messages/:user': {
-        'title': 'Messages by User'
+        'title': 'Messages by User',
+        'parent': {
+          'title': 'Messages',
+          'parent': {
+            'title': 'Home',
+            'route': '/'
+          },
+          'route': '/messages'
+        }
       },
       '/lmao/:ayy': {
-        'title': 'lmaos with ayys'
+        'title': 'lmaos with ayys',
+        'parent': {
+          'title': 'lmao',
+          'parent': {
+            'title': 'Home',
+            'route': '/'
+          },
+          'route': '/lmao'
+        }
       },
       '/nested/a/:f': {
-        'title': 'f'
+        'title': 'f',
+        'parent': {
+          'title': 'a',
+          'parent': {
+            'title': 'Nested',
+            'parent': {
+              'title': 'Home',
+              'route': '/'
+            },
+            'route': '/nested'
+          },
+          'route': '/nested/a'
+        }
       },
       '/nested/a': {
-        'title': 'a'
+        'title': 'a',
+        'parent': {
+          'title': 'Nested',
+          'parent': {
+            'title': 'Home',
+            'route': '/'
+          },
+          'route': '/nested'
+        }
       },
       '/messages': {
-        'title': 'Messages'
+        'title': 'Messages',
+        'parent': {
+          'title': 'Home',
+          'route': '/'
+        }
       },
       '/lmao': {
-        'title': 'lmao'
+        'title': 'lmao',
+        'parent': {
+          'title': 'Home',
+          'route': '/'
+        }
       },
       '/things/stuff': {
-        'title': 'flat route!'
+        'title': 'flat route!',
+        'parent': {
+          'title': 'Home',
+          'route': '/'
+        }
       },
       '/nested': {
-        'title': 'Nested'
+        'title': 'Nested',
+        'parent': {
+          'title': 'Home',
+          'route': '/'
+        }
       },
       '/': {
         'title': 'Home'
