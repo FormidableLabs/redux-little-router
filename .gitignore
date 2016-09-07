@@ -16,3 +16,4 @@ config/local*
 # Build
 lib
 coverage
+.nyc_output
