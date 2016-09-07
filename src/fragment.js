@@ -2,13 +2,24 @@
 import type { Location } from 'history';
 import type { RouterContext } from './provider';
 
-import { PropTypes } from 'react';
+import React, { PropTypes } from 'react';
+import visitChildren from './visit-children';
 
 type Props = {
   forRoute: string,
   forRoutes: [string],
   withConditions: (location: Location) => bool,
   children: ReactPropTypes.node
+};
+
+const flattenFragmentRoutes = (children, forRoute) => {
+  const routes = [forRoute];
+  visitChildren(children, child => {
+    if (child.props && child.props.forRoute) {
+      routes.push(child.props.forRoute);
+    }
+  });
+  return routes;
 };
 
 const Fragment = (
@@ -47,7 +58,7 @@ const Fragment = (
     return null;
   }
 
-  return children;
+  return <div>{children}</div>;
 };
 
 Fragment.contextTypes = {
