@@ -59,6 +59,7 @@ export const fakeContext = ({
   fakeNewLocation,
   assertion,
   pathname = '/home/messages/b-team',
+  route = '/home/messages/:team',
   query = { test: 'ing' }
 } = {}) => ({
   context: {
@@ -67,6 +68,7 @@ export const fakeContext = ({
         assertion,
         pathname,
         query,
+        route,
         fakeNewLocation
       })
     }

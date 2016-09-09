@@ -1,4 +1,6 @@
-export default {
+import flattenRoutes from '../../src/util/flatten-routes';
+
+export default flattenRoutes({
   '/home': {
     name: 'home'
   },
@@ -13,5 +15,21 @@ export default {
   },
   '/home/:spookyparam': {
     name: '3spooky5me'
+  },
+  '/': {
+    '/this': {
+      name: 'this',
+      '/is': {
+        name: 'is',
+        '/nested': {
+          name: 'nested',
+          '/:times': {
+            '/times': {
+              name: 'times'
+            }
+          }
+        }
+      }
+    }
   }
-};
+});

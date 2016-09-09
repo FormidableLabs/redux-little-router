@@ -4,7 +4,7 @@ import type {
   History
 } from 'history';
 
-import createMatcher from './create-matcher';
+import createMatcher from '../create-matcher';
 
 type Args = {
   pathname: string,

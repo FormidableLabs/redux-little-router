@@ -24,10 +24,11 @@ import {
   GO_BACK, GO_FORWARD
 } from './action-types';
 
-import flattenRoutes from './flatten-routes';
 import { default as matcherFactory } from './create-matcher';
 import routerReducer from './reducer';
-import initialRouterState from './initial-router-state';
+
+import flattenRoutes from './util/flatten-routes';
+import initialRouterState from './util/initial-router-state';
 
 const README_MESSAGE = `
   See the README for more information:

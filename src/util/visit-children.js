@@ -14,6 +14,11 @@ const visitChildren = (children, visit) => {
   }
 
   visit(children);
+
+  Children.forEach(
+    children.props.children,
+    grandchildren => visitChildren(grandchildren, visit)
+  );
 };
 
 export default visitChildren;
