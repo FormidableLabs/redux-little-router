@@ -228,7 +228,7 @@ import { RelativeFragment as Fragment } from 'redux-little-router';
 import { AbsoluteFragment as Fragment } from 'redux-little-router';
 ```
 
-`<RelativeFragment>` lets you nest fragments to match your UI hierarchy to your route hierarchy, much like the `<Route>` component does in `react-router`. Given a URL of `/home/bio/ken-m`, and the following elements:
+`<RelativeFragment>` lets you nest fragments to match your UI hierarchy to your route hierarchy, much like the `<Route>` component does in `react-router`. Given a URL of `/home/bio/dat-boi`, and the following elements:
 
 ```js
 <RelativeFragment forRoute='/home'>
