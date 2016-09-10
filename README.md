@@ -225,7 +225,7 @@ Using the `<Link>` component is simple:
 </Link>
 ```
 
-Alternatively, you can pass in a [location descriptor](https://github.com/ReactTraining/history/blob/master/docs/Location.md#location-descriptors) to `href`. This is useful for passing query objects:
+Alternatively, you can pass in a [location descriptor](https://github.com/mjackson/history/blob/9a5102c38a161f00c6ea027a88b87b0328b5dc93/docs/Location.md#location-descriptors) to `href`. This is useful for passing query objects:
 
 ```es6
 <Link className='anything' href={{
