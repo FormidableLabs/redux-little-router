@@ -3,6 +3,9 @@
   "env": {
     "mocha": true
   },
+  "globals": {
+    "sandbox": true
+  },
   "rules": {
     "no-unused-expressions": "off"
   }
