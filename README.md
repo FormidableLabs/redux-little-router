@@ -19,6 +19,8 @@ To understand why `redux-little-router` exists, check out our blog series, "Let 
 
 While React Router is a great, well-supported library, it hoards URL state within the view layer and makes certain Redux patterns difficult, if not impossible. [This chart](http://imgur.com/a/Trlzw) outlines a major issue in accessing URL state from outside of React Router.
 
+`react-router-redux` is meant _only_ to enable time-travel debugging in React Router and doesn't allow you to safely access URL state. `redux-router`, while allowing you to access URL state, is experimental, lags behind React Router releases, and recommends `react-router-redux` in its `README`.
+
 `redux-little-router` makes URL state a first-class citizen of your Redux store and abstracts cross-browser navigation and routing into a pure Redux API.
 
 ## Redux usage
