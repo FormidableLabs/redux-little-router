@@ -1,5 +1,4 @@
 import chai, { expect } from 'chai';
-import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
 import { compose, createStore } from 'redux';
@@ -22,7 +21,7 @@ chai.use(sinonChai);
 const createStoreWithSpy = nextCreateStore =>
   (reducer, initialState, enhancer) => {
     const store = nextCreateStore(reducer, initialState, enhancer);
-    const dispatchSpy = sinon.spy(store, 'dispatch');
+    const dispatchSpy = sandbox.spy(store, 'dispatch');
     return {...store, dispatch: dispatchSpy, dispatchSpy};
   };
 
@@ -40,12 +39,12 @@ const fakeStore = ({
   enhancerOptions = {}
 } = {}) => {
   const historyStub = {
-    push: sinon.stub(),
-    replace: sinon.stub(),
-    go: sinon.stub(),
-    goBack: sinon.stub(),
-    goForward: sinon.stub(),
-    listen: sinon.stub(),
+    push: sandbox.stub(),
+    replace: sandbox.stub(),
+    go: sandbox.stub(),
+    goBack: sandbox.stub(),
+    goForward: sandbox.stub(),
+    listen: sandbox.stub(),
     createLocation: () => ({
       pathname: '/home',
       query: {
@@ -252,7 +251,7 @@ describe('Router store enhancer', () => {
           test: 'ing'
         }
       },
-      matchRoute: sinon.stub().returns({
+      matchRoute: sandbox.stub().returns({
         params: {
           fakeParam: 'things'
         },

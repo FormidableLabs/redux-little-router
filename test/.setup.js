@@ -1,6 +1,7 @@
 require('babel-register')();
 
 var jsdom = require('jsdom').jsdom;
+var sinon = require('sinon');
 
 var exposedProperties = ['window', 'navigator', 'document'];
 
@@ -18,3 +19,11 @@ global.navigator = {
 };
 
 documentRef = document;
+
+beforeEach(function() {
+  global.sandbox = sinon.sandbox.create();
+});
+
+afterEach(function() {
+  global.sandbox.restore();
+});

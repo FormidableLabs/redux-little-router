@@ -1,6 +1,5 @@
 /* eslint-disable max-nested-callbacks */
 import { expect } from 'chai';
-import sinon from 'sinon';
 
 import React from 'react';
 import { shallow, mount } from 'enzyme';
@@ -117,7 +116,7 @@ describe('Router link component', () => {
             fakeContext({ fakeNewLocation })
           );
 
-          const spy = sinon.spy();
+          const spy = sandbox.spy();
           wrapper.find('a').simulate('click', {
             ...standardClickEvent,
             [modifierKey]: true,
@@ -141,7 +140,7 @@ describe('Router link component', () => {
           fakeContext({ fakeNewLocation })
         );
 
-        const spy = sinon.spy();
+        const spy = sandbox.spy();
         wrapper.find('a').simulate('click', {
           ...standardClickEvent,
           button: 1,
@@ -164,7 +163,7 @@ describe('Router link component', () => {
           fakeContext({ fakeNewLocation })
         );
 
-        const spy = sinon.spy();
+        const spy = sandbox.spy();
         wrapper.find('a').simulate('click', {
           ...standardClickEvent,
           button: 0,
