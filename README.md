@@ -106,7 +106,7 @@ const initializeStore = ({ routes, requestUrl, requestQuery }) => {
     routes,
     basename: requestUrl.baseUrl,
     pathname: requestUrl.pathname,
-    query: initialQuery,
+    query: requestQuery,
     forServerRender: true // required for server renders!
   };
 
