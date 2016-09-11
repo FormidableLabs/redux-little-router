@@ -2,7 +2,7 @@ import { expect } from 'chai';
 
 import createMemoryHistory from 'history/lib/createMemoryHistory';
 
-import initialRouterState from '../src/initial-router-state';
+import initialRouterState from '../src/util/initial-router-state';
 
 describe('Initial state', () => {
   it('provides the correct routes and query strings for the initial state', () => {

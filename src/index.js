@@ -6,7 +6,7 @@ import createStoreWithRouter, {
 
 import provideRouter, { RouterProvider } from './provider';
 import { Link, PersistentQueryLink } from './link';
-import Fragment from './fragment';
+import { AbsoluteFragment, RelativeFragment } from './fragment';
 
 import routerReducer from './reducer';
 import createMatcher from './create-matcher';
@@ -20,6 +20,8 @@ import {
   GO_BACK
 } from './action-types';
 
+const Fragment = AbsoluteFragment;
+
 export {
   // High-level Redux API
   createStoreWithRouter,
@@ -31,6 +33,8 @@ export {
   Link,
   PersistentQueryLink,
   Fragment,
+  AbsoluteFragment,
+  RelativeFragment,
 
   // Public action types
   LOCATION_CHANGED,

@@ -121,5 +121,10 @@ export default {
       'http://imgs.xkcd.com/comics/hipsters.png',
       'http://blogs.wfmt.com/offmic/files/2015/07/mozart-hipster-thumb-572xauto-338291.jpg'
     ]
+  },
+  '/this': {
+    '/is': {
+      '/nested': {}
+    }
   }
 };

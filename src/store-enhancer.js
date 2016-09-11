@@ -26,7 +26,9 @@ import {
 
 import { default as matcherFactory } from './create-matcher';
 import routerReducer from './reducer';
-import initialRouterState from './initial-router-state';
+
+import flattenRoutes from './util/flatten-routes';
+import initialRouterState from './util/initial-router-state';
 
 const README_MESSAGE = `
   See the README for more information:
@@ -83,7 +85,7 @@ type StoreEnhancerArgs = {
 };
 
 export default ({
-  routes,
+  routes: nestedRoutes,
   pathname,
   query,
   basename = '',
@@ -91,7 +93,7 @@ export default ({
   createMatcher = matcherFactory,
   history: userHistory
 }: StoreEnhancerArgs) => {
-  if (!routes) {
+  if (!nestedRoutes) {
     throw Error(`
       Missing route configuration. You must define your routes as
       an object where the keys are routes and the values are any
@@ -102,7 +104,10 @@ export default ({
   }
 
   // eslint-disable-next-line no-magic-numbers
-  if (!Object.keys(routes).every(route => route.indexOf('/') === 0)) {
+  if (
+    !Object.keys(nestedRoutes)
+      .every(route => route.indexOf('/') === 0)
+  ) {
     throw Error(`
       The route configuration you provided is malformed. Make sure
       that all of your routes start with a slash.
@@ -110,6 +115,8 @@ export default ({
       ${README_MESSAGE}
     `);
   }
+
+  const routes = flattenRoutes(nestedRoutes);
 
   const history = userHistory || resolveHistory({
     basename, forServerRender

@@ -10,7 +10,7 @@ export default (routes: Object) => {
 
   return (incomingUrl: string) => {
     // Discard query strings
-    const route = incomingUrl.split('?')[0]; // eslint-disable-line no-magic-numbers
+    const route = incomingUrl.split('?')[0];
 
     // Find the route that matches the URL
     for (let i = 0; i < routeList.length; i++) {

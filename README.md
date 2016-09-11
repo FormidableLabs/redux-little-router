@@ -46,14 +46,22 @@ import yourReducer from './your-app';
 // Uses https://github.com/snd/url-pattern for URL matching
 // and parameter extraction.
 const routes = {
-  '/': {
-    title: 'Home'
-  },
   '/messages': {
     title: 'Message'
   },
   '/messages/:user': {
     title: 'Message History'
+  },
+  // You can also define nested route objects!
+  // Just make sure each route key starts with a slash.
+  '/': {
+    title: 'Home',
+    '/bio': {
+      title: 'Biographies',
+      '/:name': {
+        title: 'Biography for:'
+      }
+    }
   }
 };
 
@@ -138,6 +146,11 @@ On location changes, the store enhancer dispatches a LOCATION_CHANGED action tha
   },
   result: {
     arbitrary: 'data that you defined in your routes object!'
+    parent: { // for nested routes only
+      // contains the result of the parent route,
+      // which contains each other parent route's
+      // result recursively
+    }
   }
 }
 ```
@@ -199,15 +212,7 @@ The simplest fragment is one that displays when a route is active:
 </Fragment>
 ```
 
-You can also specify a fragment that displays on multiple routes:
-
-```es6
-<Fragment forRoutes={['/home/messages', '/home']}>
-  <p>This displays in a couple of places!</p>
-</Fragment>
-```
-
-Finally, you can match a fragment against anything in the current `location` object:
+You can also match a fragment against anything in the current `location` object:
 
 ```es6
 <Fragment withConditions={location => location.query.superuser}>
@@ -215,7 +220,57 @@ Finally, you can match a fragment against anything in the current `location` obj
 </Fragment>
 ```
 
-You can also use `withConditions` in conjunction with either `forRoute` or `forRoutes`.
+You can use `withConditions` in conjunction with `forRoute` to set strict conditions for when a `<Fragment>` should display.
+
+Two types of fragments exist: `<RelativeFragment>` (new to 9.0.0) and `<AbsoluteFragment>`. You can use either by doing the following:
+
+```js
+import { RelativeFragment as Fragment } from 'redux-little-router';
+// or
+import { AbsoluteFragment as Fragment } from 'redux-little-router';
+```
+
+`<RelativeFragment>` lets you nest fragments to match your UI hierarchy to your route hierarchy, much like the `<Route>` component does in `react-router`. Given a URL of `/home/bio/dat-boi`, and the following elements:
+
+```js
+<RelativeFragment forRoute='/home'>
+  <h1>Home</h1>
+  <RelativeFragment forRoute='/bio'>
+    <h2>Bios</h2>
+    <RelativeFragment forRoute='/dat-boi'>
+      <h3>Dat Boi</h3>
+      <p>Something something whaddup</p>
+    </RelativeFragment>
+  </RelativeFragment>
+</RelativeFragment>
+```
+
+...React will render:
+
+```js
+<div>
+  <h1>Home</h1>
+    <div>
+      <h2>Bios</h2>
+        <div>
+          <h3>Dat Boi</h3>
+          <p>Something something whaddup<p>
+        </div>
+    </div>
+</div>
+```
+
+`<AbsoluteFragment>`s do not communicate with their parent or child routes like `<RelativeFragment>`s do. The route you pass to `forRoute` must match an exact route in your routes configuration, and are analgous to absolute URLs (they are not "relative" to the `forRoute`s of any other fragment in the hierarchy).
+
+`<AbsoluteFragment>` accepts an additional `forRoutes` prop that allows the fragment to display on multiple routes:
+
+```es6
+<Fragment forRoutes={['/home/messages', '/home']}>
+  <p>This displays in a couple of places!</p>
+</Fragment>
+```
+
+When in doubt, use `<RelativeFragment>`. `<AbsoluteFragment>` may be deprecated in a future release.
 
 ### `<Link>`
 

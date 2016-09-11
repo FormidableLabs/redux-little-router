@@ -1,7 +1,7 @@
 /* eslint-disable no-magic-numbers */
 import React, { PropTypes } from 'react';
 import chunk from 'lodash.chunk';
-import { Link, Fragment } from '../src';
+import { Link, Fragment, RelativeFragment } from '../src';
 import styles from './demo.css';
 
 const COLUMN_COUNT = 2;
@@ -41,6 +41,20 @@ const Demo = ({ router }) => {
   const demoRoutes = ['/cheese', '/cat', '/dog', '/hipster'];
   return (
     <div className={styles.container}>
+      <RelativeFragment forRoute='/this'>
+        <p>this</p>
+        <RelativeFragment forRoute='/is'>
+          <p>is</p>
+          <RelativeFragment forRoute='/nested'>
+            <p>nested af</p>
+          </RelativeFragment>
+        </RelativeFragment>
+      </RelativeFragment>
+
+      <Link href='/this'>this</Link>
+      <Link href='/this/is'>is</Link>
+      <Link href='/this/is/nested'>nested</Link>
+
       <h1 className={styles.tagline}>
         <span className={styles.secondary}>A Compendium of</span>
         <br />
