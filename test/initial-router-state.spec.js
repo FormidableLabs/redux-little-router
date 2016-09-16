@@ -27,6 +27,6 @@ describe('Initial state', () => {
     expect(initialState).to.have.property('pathname', '/home/messages/b-team');
     expect(initialState).to.have.property('search', '?test=ing');
     expect(initialState).to.have.property('query')
-      .that.deep.equals({test: 'ing'});
+      .that.deep.equals({ test: 'ing' });
   });
 });

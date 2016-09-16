@@ -10,7 +10,7 @@ type RelativeProps = {
   matchRoute: Function,
   forRoute?: string,
   withConditions?: (location: Location) => bool,
-  children: ReactPropTypes.node
+  children: React.Element<*>
 };
 
 type AbsoluteProps = RelativeProps & {
@@ -44,8 +44,6 @@ const absolute = (ComposedComponent: ReactClass<*>) => {
 
 const relative = (ComposedComponent: ReactClass<*>) => {
   class RelativeFragment extends Component {
-    props: RelativeProps;
-
     getChildContext() {
       return {
         // Append the parent route if this isn't the first
@@ -56,6 +54,8 @@ const relative = (ComposedComponent: ReactClass<*>) => {
             : this.props.forRoute
       };
     }
+
+    props: RelativeProps;
 
     render() {
       const { forRoute, children, ...rest } = this.props;
@@ -118,7 +118,7 @@ const Fragment = (props: Props) => {
     return null;
   }
 
-  if (props.forRoutes) {
+  if (Array.isArray(props.forRoutes)) {
     const anyMatch = props.forRoutes.some(route =>
       matchResult.route === route
     );

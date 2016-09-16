@@ -3,7 +3,7 @@ import assign from 'lodash.assign';
 const filterObject = (target, predicate) =>
   Object.keys(target).reduce((acc, key) => {
     return predicate(key)
-      ? {...acc, [key]: target[key]}
+      ? { ...acc, [key]: target[key] }
       : acc;
   }, {});
 
@@ -13,7 +13,7 @@ const mapObject = (target, transformKey, transformValue) =>
       transformKey(key) : key;
     const newValue = transformValue ?
       transformValue(target[key]) : target[key];
-    return {...acc, [newKey]: newValue};
+    return { ...acc, [newKey]: newValue };
   }, {});
 
 const onlyRoutes = routes =>

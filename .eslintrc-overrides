@@ -1,0 +1,7 @@
+---
+rules:
+  quotes: [2, "single"]
+  arrow-parens: 0
+
+env:
+  mocha: true

@@ -1,12 +1,16 @@
-{
-  "extends": "../.eslintrc",
-  "env": {
-    "mocha": true
-  },
-  "globals": {
-    "sandbox": true
-  },
-  "rules": {
-    "no-unused-expressions": "off"
-  }
-}
+---
+extends:
+  - "formidable/configurations/es6-react-test"
+  - "../.eslintrc"
+
+env:
+  mocha: true
+
+globals:
+  sandbox: true
+
+rules:
+  no-unused-expressions: "off"
+  jsx-quotes: [2, "prefer-single"]
+  react/no-multi-comp: "off"
+

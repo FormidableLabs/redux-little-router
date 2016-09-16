@@ -13,12 +13,10 @@ export type RouterContext = { store: Store };
 
 type Props = {
   store: Object,
-  children: ReactPropTypes.node
+  children: React.Element<*>
 };
 
 class RouterProviderImpl extends Component {
-  router: { store: Store };
-
   constructor(props: Props) {
     super(props);
     this.router = {
@@ -31,6 +29,8 @@ class RouterProviderImpl extends Component {
       router: this.router
     };
   }
+
+  router: { store: Store };
 
   render() {
     const { store } = this.router;
