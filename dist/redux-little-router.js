@@ -86,33 +86,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var Fragment = _fragment.AbsoluteFragment;
-	exports.
-	// High-level Redux API
-	createStoreWithRouter = _storeEnhancer2.default;
+	exports.createStoreWithRouter = _storeEnhancer2.default;
 	exports.initializeCurrentLocation = _storeEnhancer.initializeCurrentLocation;
-	exports.
-	
-	// React API
-	provideRouter = _provider2.default;
+	exports.provideRouter = _provider2.default;
 	exports.RouterProvider = _provider.RouterProvider;
 	exports.Link = _link.Link;
 	exports.PersistentQueryLink = _link.PersistentQueryLink;
 	exports.Fragment = Fragment;
 	exports.AbsoluteFragment = _fragment.AbsoluteFragment;
 	exports.RelativeFragment = _fragment.RelativeFragment;
-	exports.
-	
-	// Public action types
-	LOCATION_CHANGED = _actionTypes.LOCATION_CHANGED;
+	exports.LOCATION_CHANGED = _actionTypes.LOCATION_CHANGED;
 	exports.PUSH = _actionTypes.PUSH;
 	exports.REPLACE = _actionTypes.REPLACE;
 	exports.GO = _actionTypes.GO;
 	exports.GO_FORWARD = _actionTypes.GO_FORWARD;
 	exports.GO_BACK = _actionTypes.GO_BACK;
-	exports.
-	
-	// Low-level Redux utilities
-	routerReducer = _reducer2.default;
+	exports.routerReducer = _reducer2.default;
 	exports.locationDidChange = _storeEnhancer.locationDidChange;
 	exports.createMatcher = _createMatcher2.default;
 
@@ -246,7 +235,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }), nextEffects];
 	        }
 	
-	        return _extends({}, reducer(vanillaState, action), {
+	        return _extends({}, newState, {
 	          router: (0, _reducer2.default)(state && state.router, action)
 	        });
 	      };
@@ -438,17 +427,45 @@ return /******/ (function(modules) { // webpackBootstrap
 	} ())
 	function runTimeout(fun) {
 	    if (cachedSetTimeout === setTimeout) {
+	        //normal enviroments in sane situations
 	        return setTimeout(fun, 0);
-	    } else {
-	        return cachedSetTimeout.call(null, fun, 0);
 	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedSetTimeout(fun, 0);
+	    } catch(e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+	            return cachedSetTimeout.call(null, fun, 0);
+	        } catch(e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+	            return cachedSetTimeout.call(this, fun, 0);
+	        }
+	    }
+	
+	
 	}
 	function runClearTimeout(marker) {
 	    if (cachedClearTimeout === clearTimeout) {
-	        clearTimeout(marker);
-	    } else {
-	        cachedClearTimeout.call(null, marker);
+	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
 	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedClearTimeout(marker);
+	    } catch (e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+	            return cachedClearTimeout.call(null, marker);
+	        } catch (e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+	            return cachedClearTimeout.call(this, marker);
+	        }
+	    }
+	
+	
+	
 	}
 	var queue = [];
 	var draining = false;
@@ -4368,10 +4385,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var objectTag = '[object Object]';
 	
 	/** Used for built-in method references. */
-	var objectProto = Object.prototype;
+	var funcProto = Function.prototype,
+	    objectProto = Object.prototype;
 	
 	/** Used to resolve the decompiled source of functions. */
-	var funcToString = Function.prototype.toString;
+	var funcToString = funcProto.toString;
 	
 	/** Used to check objects for own properties. */
 	var hasOwnProperty = objectProto.hasOwnProperty;
@@ -4381,7 +4399,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	/**
 	 * Used to resolve the
-	 * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
 	 * of values.
 	 */
 	var objectToString = objectProto.toString;
@@ -4395,8 +4413,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @since 0.8.0
 	 * @category Lang
 	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a plain object,
-	 *  else `false`.
+	 * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
 	 * @example
 	 *
 	 * function Foo() {
@@ -4438,17 +4455,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var overArg = __webpack_require__(44);
 	
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeGetPrototype = Object.getPrototypeOf;
-	
-	/**
-	 * Gets the `[[Prototype]]` of `value`.
-	 *
-	 * @private
-	 * @param {*} value The value to query.
-	 * @returns {null|Object} Returns the `[[Prototype]]`.
-	 */
-	var getPrototype = overArg(nativeGetPrototype, Object);
+	/** Built-in value references. */
+	var getPrototype = overArg(Object.getPrototypeOf, Object);
 	
 	module.exports = getPrototype;
 
@@ -4458,7 +4466,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	/**
-	 * Creates a function that invokes `func` with its first argument transformed.
+	 * Creates a unary function that invokes `func` with its argument transformed.
 	 *
 	 * @private
 	 * @param {Function} func The function to wrap.
