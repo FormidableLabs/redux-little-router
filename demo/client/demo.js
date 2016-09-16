@@ -1,7 +1,7 @@
 /* eslint-disable no-magic-numbers */
 import React, { PropTypes } from 'react';
 import chunk from 'lodash.chunk';
-import { Link, Fragment, RelativeFragment } from '../src';
+import { Link, Fragment, RelativeFragment } from '../../src';
 import styles from './demo.css';
 
 const COLUMN_COUNT = 2;
@@ -33,10 +33,11 @@ const Gallery = ({ images, columns, ...rest }) => (
 );
 
 Gallery.propTypes = {
-  images: PropTypes.arrayOf(PropTypes.string),
-  columns: PropTypes.number
+  columns: PropTypes.number,
+  images: PropTypes.arrayOf(PropTypes.string)
 };
 
+// eslint-disable-next-line react/no-multi-comp
 const Demo = ({ router }) => {
   const demoRoutes = ['/cheese', '/cat', '/dog', '/hipster'];
   return (
