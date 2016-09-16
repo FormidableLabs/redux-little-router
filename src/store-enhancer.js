@@ -147,7 +147,7 @@ export default ({
       }
 
       return {
-        ...reducer(vanillaState, action),
+        ...newState,
         router: routerReducer(state && state.router, action)
       };
     };

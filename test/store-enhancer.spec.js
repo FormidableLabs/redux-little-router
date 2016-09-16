@@ -31,9 +31,12 @@ const defaultFakeInitialState = {
   }
 };
 
+const defaultReducer = store => store;
+
 const fakeStore = ({
   initialState = defaultFakeInitialState,
   routes = defaultRoutes,
+  reducer = defaultReducer,
   useHistoryStub = true,
   isLoop = false,
   enhancerOptions = {}
@@ -72,7 +75,7 @@ const fakeStore = ({
   const store = createStore(
     isLoop ? combineReducers({
       stuff: state => state
-    }) : state => state,
+    }) : reducer,
     initialState,
     compose(...enhancers)
   );
@@ -80,6 +83,7 @@ const fakeStore = ({
   return { store, historyStub };
 };
 
+// eslint-disable-next-line max-statements
 describe('Router store enhancer', () => {
   it('throws if no routes are provided', () => {
     expect(() => fakeStore({
@@ -349,5 +353,14 @@ describe('Router store enhancer', () => {
       expect(historyStub[method]).to.not.have.been.called;
     });
     expect(store.dispatchSpy).to.be.calledOnce;
+  });
+
+  it('calls the reducer once for each action', () => {
+    const reducerSpy = sandbox.spy();
+    const { store } = fakeStore({ reducer: reducerSpy });
+    store.dispatch({ type: 'CUSTOM_ACTION' });
+    expect(reducerSpy).to.be.calledTwice;
+    expect(reducerSpy.firstCall).to.have.been.calledWith({}, { type: '@@redux/INIT' });
+    expect(reducerSpy.secondCall).to.have.been.calledWith({}, { type: 'CUSTOM_ACTION' });
   });
 });
