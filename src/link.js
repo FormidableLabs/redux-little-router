@@ -6,7 +6,7 @@ import React, { Component, PropTypes } from 'react';
 import { PUSH, REPLACE } from './action-types';
 
 type Props = {
-  children: ReactPropTypes.node,
+  children: React.Element<*>,
   className: string,
   href: string | LocationDescriptor,
   onClick: EventHandler,
@@ -60,7 +60,14 @@ const isNotLeftClick = e => e.button && e.button !== LEFT_MOUSE_BUTTON;
 const hasModifier = e =>
   Boolean(e.shiftKey || e.altKey || e.metaKey || e.ctrlKey);
 
-const handleClick = ({e, target, location, replaceState, router, onClick}) => {
+const handleClick = ({
+  e,
+  target,
+  location,
+  replaceState,
+  router,
+  onClick
+}) => {
   if (onClick) { onClick(e); }
 
   if (hasModifier(e) || isNotLeftClick(e)) { return; }

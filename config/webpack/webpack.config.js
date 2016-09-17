@@ -1,25 +1,25 @@
 'use strict';
 
-var path = require('path');
-var webpack = require('webpack');
+const path = require('path');
+const webpack = require('webpack');
 
 // Replace with `__dirname` if using in project root.
-var ROOT = process.cwd();
-var SRC = path.join(ROOT, 'src');
-var CLIENT = path.join(ROOT, 'test');
+const ROOT = process.cwd();
+const SRC = path.join(ROOT, 'src');
+const CLIENT = path.join(ROOT, 'test');
 
 // **Little Hacky**: Infer the filename and library name from the package name.
 //
 // Assumptions:
 // - `package.json`'s `name` field is name of dist files.
 // - PascalCased version of that name is exported class name.
-var PKG = require(path.join(ROOT, 'package.json'));
-var libPath = (PKG.name || '').toLowerCase();
+const PKG = require(path.join(ROOT, 'package.json'));
+const libPath = (PKG.name || '').toLowerCase();
 if (!libPath) { throw new Error('Need package.json:name field'); }
 // PascalCase (with first character capitalized).
-var libName = libPath
+const libName = libPath
   .replace(/^\s+|\s+$/g, '')
-  .replace(/(^|[-_ ])+(.)/g, function (match, first, second) {
+  .replace(/(^|[-_ ])+(.)/g, (match, first, second) => {
     // Second match group is the character we want to change. Throw away first.
     return second.toUpperCase();
   });
@@ -48,7 +48,7 @@ module.exports = {
   ],
   output: {
     path: path.join(ROOT, 'dist'),
-    filename: libPath + '.min.js',
+    filename: `${libPath}.min.js`,
     library: libName,
     libraryTarget: 'umd'
   },
@@ -81,6 +81,8 @@ module.exports = {
       // is in condtionals like: `if (process.env.NODE_ENV === 'production')`
       'process.env.NODE_ENV': JSON.stringify('production')
     }),
-    new webpack.SourceMapDevToolPlugin({filename: '[file].map'})
+    new webpack.SourceMapDevToolPlugin({
+      filename: '[file].map'
+    })
   ]
 };

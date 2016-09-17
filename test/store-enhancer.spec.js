@@ -22,7 +22,7 @@ const createStoreWithSpy = nextCreateStore =>
   (reducer, initialState, enhancer) => {
     const store = nextCreateStore(reducer, initialState, enhancer);
     const dispatchSpy = sandbox.spy(store, 'dispatch');
-    return {...store, dispatch: dispatchSpy, dispatchSpy};
+    return { ...store, dispatch: dispatchSpy, dispatchSpy };
   };
 
 const defaultFakeInitialState = {

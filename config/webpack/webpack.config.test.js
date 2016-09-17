@@ -2,12 +2,12 @@
 /**
  * Webpack frontend test configuration.
  */
-var path = require('path');
-var prodCfg = require('./webpack.config');
+const path = require('path');
+const prodCfg = require('./webpack.config');
 
 // Replace with `__dirname` if using in project root.
-var ROOT = process.cwd();
-var _ = require('lodash'); // devDependency
+const ROOT = process.cwd();
+const _ = require('lodash'); // devDependency
 
 module.exports = {
   cache: true,
