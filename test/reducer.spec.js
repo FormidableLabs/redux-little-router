@@ -28,7 +28,7 @@ describe('Router reducer', () => {
       state: {
         bork: 'bork'
       },
-      previous: undefined
+      previous: {}
     });
   });
 

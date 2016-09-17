@@ -10,10 +10,17 @@ export default (state: ?Location | Object = {}, action: Action) => {
       return state;
     }
 
-    return {
-      ...action.payload,
-      previous: state && state.current
-    };
+    // Extract the previous state, but dump the
+    // previous state's previous state so that the
+    // state tree doesn't keep growing indefinitely
+    if (state) {
+      // eslint-disable-next-line no-unused-vars
+      const { previous, ...oldState } = state;
+      return {
+        ...action.payload,
+        previous: oldState
+      };
+    }
   }
   return state;
 };
