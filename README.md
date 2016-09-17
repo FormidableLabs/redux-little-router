@@ -138,6 +138,7 @@ On location changes, the store enhancer dispatches a LOCATION_CHANGED action tha
 // For a URL matching /messages/:user
 {
   pathname: '/messages/a-user-has-no-name',
+  route: '/messages/:user',
   params: {
     user: 'a-user-has-no-name'
   },
@@ -161,7 +162,8 @@ The reducer consumes this action and adds the following to the root of the state
 
 ```js
 {
-  url: '/messages/a-user-has-no-name',
+  pathname: '/messages/a-user-has-no-name',
+  route: '/messages/:user',
   params: {
     user: 'a-user-has-no-name'
   },
@@ -169,13 +171,17 @@ The reducer consumes this action and adds the following to the root of the state
     some: 'thing'
   },
   result: {
-    arbitrary: 'data that you defined in your routes object!'
+    arbitrary: 'data that you defined in your routes object!',
+    parent: { /* the parent route's result */ },
   },
   previous: {
-    url: '/messages',
+    pathname: '/messages',
+    route: '/messages',
     params: {},
+    query: {},
     result: {
       more: 'arbitrary data that you defined in your routes object!'
+      parent: { /* the parent route's result */ }
     }
   }
 }
