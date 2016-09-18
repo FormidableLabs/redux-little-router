@@ -348,4 +348,8 @@ ReactDOM.render(
 
 ## Stability
 
-`redux-little-router` is **alpha software**. Expect minor breaking API changes.
+We consider `redux-little-router` to be _stable_. Any API changes will be incremental.
+
+## Versioning
+
+`redux-little-router` follows *strict semver*. Don't be alarmed by the high version number! Major version bumps represent _any_ breaking change, no matter how small, and do not represent a major shift in direction. We strive to make breaking changes small and compartmentalized.
