@@ -1,0 +1,18 @@
+---
+extends:
+  - "formidable/configurations/es6-react"
+  - "../../.eslintrc-overrides"
+
+env:
+  browser: true
+
+parser: "babel-eslint"
+
+plugins:
+  - "babel"
+  - "flowtype"
+
+rules:
+  jsx-quotes: [2, "prefer-single"]
+  flowtype/define-flow-type: warn
+
