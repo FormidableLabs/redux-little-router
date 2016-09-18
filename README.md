@@ -266,6 +266,17 @@ import { AbsoluteFragment as Fragment } from 'redux-little-router';
 </div>
 ```
 
+`<RelativeFragment>` makes basic component-per-page navigation easy:
+
+```js
+<Fragment forRoute='/'>
+  <Fragment forRoute='/home'><Home /></Fragment>
+  <Fragment forRoute='/about'><About /></Fragment>
+  <Fragment forRoute='/messages'><Messages /></Fragment>
+  <Fragment forRoute='/feed'><Feed /></Fragment>
+</Route>
+```
+
 `<AbsoluteFragment>`s do not communicate with their parent or child routes like `<RelativeFragment>`s do. The route you pass to `forRoute` must match an exact route in your routes configuration, and are analgous to absolute URLs (they are not "relative" to the `forRoute`s of any other fragment in the hierarchy).
 
 `<AbsoluteFragment>` accepts an additional `forRoutes` prop that allows the fragment to display on multiple routes:
