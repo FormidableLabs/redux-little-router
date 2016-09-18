@@ -1,6 +1,8 @@
+// @flow
+import type { Element } from 'react';
 import { Children } from 'react';
 
-const visitChildren = (children, visit) => {
+const visitChildren = (children: Element<*>, visit: Function) => {
   if (Children.count(children) > 1) {
     Children.forEach(
       children,

@@ -61,4 +61,15 @@ describe('Router reducer', () => {
     const result = routerReducer({}, action);
     expect(result).to.deep.equal({});
   });
+
+  it('does not throw on undefined locations', () => {
+    const action = {
+      type: 'NOT_MY_ACTION_NOT_MY_PROBLEM',
+      payload: {
+        crazy: 'nonsense'
+      }
+    };
+    const result = routerReducer(undefined, action);
+    expect(result).to.deep.equal({});
+  });
 });

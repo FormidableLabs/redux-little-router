@@ -4,7 +4,7 @@ import './global.css';
 import { render } from 'react-dom';
 import { createStore, compose } from 'redux';
 
-import { createStoreWithRouter } from '../../src';
+import { routerForBrowser } from '../../src';
 
 import routes from './routes';
 import wrap from './wrap';
@@ -16,10 +16,7 @@ const store = createStore(
   // initial state the hbs template inserted
   window.__INITIAL_STATE || {},
   compose(
-    createStoreWithRouter({
-      routes,
-      pathname: window.location.pathname
-    }),
+    routerForBrowser({ routes }),
     window.devToolsExtension ?
       window.devToolsExtension() : f => f
   )
