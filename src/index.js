@@ -7,6 +7,7 @@ import createStoreWithRouter, {
 import provideRouter, { RouterProvider } from './provider';
 import { Link, PersistentQueryLink } from './link';
 import { AbsoluteFragment, RelativeFragment } from './fragment';
+import PlaceholderFragment from './placeholder-fragment';
 
 import routerReducer from './reducer';
 import createMatcher from './create-matcher';
@@ -35,6 +36,7 @@ export {
   Fragment,
   AbsoluteFragment,
   RelativeFragment,
+  PlaceholderFragment,
 
   // Public action types
   LOCATION_CHANGED,
