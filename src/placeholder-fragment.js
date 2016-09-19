@@ -7,7 +7,9 @@ type Props = {
   forRoute?: string,
   forRoutes?: Array<string>,
   withConditions?: (location: Location) => bool,
-  children: React.Element<*>
+  children: React.Element<*>,
+  componentKey: string,
+  componentPropsKey?: string
 };
 
 type Context = {
@@ -19,7 +21,9 @@ const PlaceholderFragment = (props: Props, context: Context ) => {
     forRoute,
     forRoutes,
     withConditions,
-    children
+    children,
+    componentKey = 'component',
+    componentPropsKey = 'componentProps'
   } = props;
 
   const { store } = context.router;
@@ -53,10 +57,12 @@ const PlaceholderFragment = (props: Props, context: Context ) => {
     return null;
   }
 
-  if (matchResult && matchResult.result && matchResult.result.component) {
+  if (matchResult && matchResult.result && matchResult.result.hasOwnProperty(componentKey)) {
     return React.createElement(
-      matchResult.result.component,
-      matchResult.result.componentProps ? matchResult.result.componentProps : {},
+      matchResult.result[componentKey],
+      matchResult.result.hasOwnProperty(componentPropsKey) ?
+        matchResult.result[componentPropsKey] :
+        {},
       children
     );
   }
