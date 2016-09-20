@@ -53,6 +53,8 @@ app.use(webpackDevMiddleware(compiler, {
   }
 }));
 
+app.get('/favicon.ico', (req, res) => res.end());
+
 app.get('/*', (req, res) => {
   const initialState = {};
   const store = createStore(

@@ -30,6 +30,22 @@ export default flattenRoutes({
           }
         }
       }
+    },
+    '/cheese': {
+      '/gifs': {},
+      '/:type': {}
+    },
+    '/dog': {
+      '/gifs': {},
+      '/:type': {}
+    },
+    '/cat': {
+      '/gifs': {},
+      '/:type': {}
+    },
+    '/hipster': {
+      '/gifs': {},
+      '/:type': {}
     }
   }
 });
