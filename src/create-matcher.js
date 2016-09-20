@@ -18,7 +18,7 @@ const find = (list, predicate) => {
 };
 
 const wildcardMatcher = (routeList: Array<RouteCache>) =>
-  (incomingUrl: string, routeToMatch: string) => {
+  (incomingUrl: string, routeToMatch: string = '') => {
     // Discard query strings
     const pathname = incomingUrl.split('?')[0];
 
