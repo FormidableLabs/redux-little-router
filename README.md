@@ -197,7 +197,7 @@ Your custom reducers or selectors can derive a large portion of your app's state
 - A `<Link>` component that sends navigation actions to the middleware when tapped or clicked. `<Link>` respects default modifier key and right-click behavior. A sibling component, `<PersistentQueryLink>`, persists the existing query string on navigation
 - A `provideRouter` HOC that passes down everything `<Fragment>` and `<Link>` need via context.
 
-`redux-little-router` assumes and requires that your root component is wrapped in `<Provider>` from  `react-redux`. Both `provideRouter` and `<RouterProvider>` automatically `connect()` to updates from the router state.
+`redux-little-router` assumes and requires that your root component is a direct or indirect child of `<Provider>` from  `react-redux`. Both `provideRouter` and `<RouterProvider>` automatically `connect()` to updates from the router state.
 
 You can inspect the router state in any child component by using `connect()`:
 
