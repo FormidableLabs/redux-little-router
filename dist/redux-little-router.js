@@ -247,6 +247,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }) : initialState, enhancer);
 	
 	      var matchRoute = createMatcher(routes);
+	      var matchWildcardRoute = createMatcher(routes, true);
+	
 	      history.listen(function (location) {
 	        if (location) {
 	          store.dispatch(locationDidChange({
@@ -288,7 +290,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        routes: routes,
 	
 	        history: history,
-	        matchRoute: matchRoute
+	        matchRoute: matchRoute,
+	        matchWildcardRoute: matchWildcardRoute
 	      });
 	    };
 	  };
@@ -2119,23 +2122,55 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	exports.default = function (routes) {
-	  var routeList = Object.keys(routes).map(function (route) {
-	    return {
-	      route: route,
-	      pattern: new _urlPattern2.default(route),
-	      result: routes[route]
-	    };
-	  });
+	var find = function find(list, predicate) {
+	  for (var i = 0; i < list.length; i++) {
+	    var item = list[i];
+	    if (predicate(item)) {
+	      return item;
+	    }
+	  }
+	  return null;
+	};
 	
+	
+	var wildcardMatcher = function wildcardMatcher(routeList) {
+	  return function (incomingUrl) {
+	    var routeToMatch = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
+	
+	    // Discard query strings
+	    var pathname = incomingUrl.split('?')[0];
+	
+	    var storedRoute = find(routeList, function (route) {
+	      return route.route === routeToMatch;
+	    });
+	
+	    if (!storedRoute) {
+	      return null;
+	    }
+	
+	    var match = storedRoute.pattern.match(pathname);
+	
+	    if (match) {
+	      return {
+	        route: storedRoute.route,
+	        params: match,
+	        result: storedRoute.result
+	      };
+	    }
+	
+	    return null;
+	  };
+	};
+	
+	var eagerMatcher = function eagerMatcher(routeList) {
 	  return function (incomingUrl) {
 	    // Discard query strings
-	    var route = incomingUrl.split('?')[0];
+	    var pathname = incomingUrl.split('?')[0];
 	
 	    // Find the route that matches the URL
 	    for (var i = 0; i < routeList.length; i++) {
 	      var storedRoute = routeList[i];
-	      var match = storedRoute.pattern.match(route);
+	      var match = storedRoute.pattern.match(pathname);
 	
 	      if (match) {
 	        // Return the matched params and user-defined result object
@@ -2149,6 +2184,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    return null;
 	  };
+	};
+	
+	exports.default = function (routes) {
+	  var wildcard = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+	
+	  var routeList = Object.keys(routes).sort().reverse().map(function (route) {
+	    return {
+	      route: route,
+	      pattern: new _urlPattern2.default(
+	      // Prepend with wildcards if requested
+	      '' + route + (wildcard && '*' || '')),
+	      result: routes[route]
+	    };
+	  });
+	
+	  return wildcard ? wildcardMatcher(routeList) : eagerMatcher(routeList);
 	};
 
 /***/ },
@@ -5254,10 +5305,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _extractFragmentRoutes = __webpack_require__(58);
-	
-	var _extractFragmentRoutes2 = _interopRequireDefault(_extractFragmentRoutes);
-	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
@@ -5318,17 +5365,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return {
 	          // Append the parent route if this isn't the first
 	          // RelativeFragment in the hierarchy.
-	          parentRoute: this.context.parentRoute && this.context.parentRoute !== this.props.forRoute ? '' + this.context.parentRoute + this.props.forRoute : this.props.forRoute
+	          parentRoute: this.context.parentRoute && this.context.parentRoute !== '/' && this.context.parentRoute !== this.props.forRoute ? '' + this.context.parentRoute + this.props.forRoute : this.props.forRoute
 	        };
 	      }
 	    }, {
 	      key: 'render',
 	      value: function render() {
 	        var _props = this.props;
-	        var forRoute = _props.forRoute;
 	        var children = _props.children;
+	        var forRoute = _props.forRoute;
 	
-	        var rest = _objectWithoutProperties(_props, ['forRoute', 'children']);
+	        var rest = _objectWithoutProperties(_props, ['children', 'forRoute']);
 	
 	        var _context = this.context;
 	        var router = _context.router;
@@ -5338,14 +5385,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        var location = store.getState().router;
 	
-	        var mergedForRoutes = (0, _extractFragmentRoutes2.default)(children, forRoute).map(function (route) {
-	          return '' + (parentRoute || '') + route;
-	        });
+	        var routePrefix = parentRoute && parentRoute !== '/' ? parentRoute : '';
 	
 	        return _react2.default.createElement(ComposedComponent, _extends({
 	          location: location,
-	          matchRoute: store.matchRoute,
-	          forRoutes: mergedForRoutes,
+	          matchRoute: store.matchWildcardRoute,
+	          forRoute: forRoute && '' + routePrefix + forRoute,
 	          children: children
 	        }, rest));
 	      }
@@ -5378,7 +5423,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var children = props.children;
 	
 	
-	  var matchResult = matchRoute(location.pathname);
+	  var matchResult = matchRoute(location.pathname, forRoute);
 	
 	  if (!matchResult) {
 	    return null;
@@ -5411,74 +5456,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var AbsoluteFragment = exports.AbsoluteFragment = absolute(Fragment);
 	var RelativeFragment = exports.RelativeFragment = relative(Fragment);
-
-/***/ },
-/* 58 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _visitChildren = __webpack_require__(59);
-	
-	var _visitChildren2 = _interopRequireDefault(_visitChildren);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	exports.default = function (children, forRoute) {
-	  var routes = [forRoute];
-	
-	  (0, _visitChildren2.default)(children, function (child) {
-	    if (child.props && child.props.forRoute) {
-	      routes.push(child.props.forRoute);
-	    }
-	  });
-	
-	  return routes.map(function (route, index, routesArray) {
-	    return routesArray.slice(0, index + 1).reduce(function (prev, curr) {
-	      return (
-	        // ignore the root slash
-	        '' + (prev !== '/' ? prev : '') + curr
-	      );
-	    }, '');
-	  }).reverse();
-	};
-
-/***/ },
-/* 59 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _react = __webpack_require__(32);
-	
-	var visitChildren = function visitChildren(children, visit) {
-	  if (_react.Children.count(children) > 1) {
-	    _react.Children.forEach(children, function (grandchildren) {
-	      return visitChildren(grandchildren, visit);
-	    });
-	    return;
-	  }
-	
-	  if (!children || !children.props) {
-	    return;
-	  }
-	
-	  visit(children);
-	
-	  _react.Children.forEach(children.props.children, function (grandchildren) {
-	    return visitChildren(grandchildren, visit);
-	  });
-	};
-	
-	exports.default = visitChildren;
 
 /***/ }
 /******/ ])
