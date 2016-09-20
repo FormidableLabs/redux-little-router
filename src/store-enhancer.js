@@ -164,6 +164,8 @@ export default ({
     );
 
     const matchRoute = createMatcher(routes);
+    const matchWildcardRoute = createMatcher(routes, true);
+
     history.listen(location => {
       if (location) {
         store.dispatch(locationDidChange({
@@ -206,7 +208,8 @@ export default ({
       routes,
 
       history,
-      matchRoute
+      matchRoute,
+      matchWildcardRoute
     };
   };
 };

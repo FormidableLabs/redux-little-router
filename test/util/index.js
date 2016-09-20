@@ -51,7 +51,8 @@ export const fakeStore = ({
 
     routes,
     history,
-    matchRoute: createMatcher(routes)
+    matchRoute: createMatcher(routes),
+    matchWildcardRoute: createMatcher(routes, true)
   };
 };
 

@@ -3,8 +3,6 @@ import type { Location } from 'history';
 
 import React, { Component, PropTypes } from 'react';
 
-import extractFragmentRoutes from './util/extract-fragment-routes';
-
 type RelativeProps = {
   location: Location,
   matchRoute: Function,
@@ -49,6 +47,7 @@ const relative = (ComposedComponent: ReactClass<*>) => {
         // Append the parent route if this isn't the first
         // RelativeFragment in the hierarchy.
         parentRoute: this.context.parentRoute &&
+          this.context.parentRoute !== '/' &&
           this.context.parentRoute !== this.props.forRoute
             ? `${this.context.parentRoute}${this.props.forRoute}`
             : this.props.forRoute
@@ -58,21 +57,20 @@ const relative = (ComposedComponent: ReactClass<*>) => {
     props: RelativeProps;
 
     render() {
-      const { forRoute, children, ...rest } = this.props;
+      const { children, forRoute, ...rest } = this.props;
       const { router, parentRoute } = this.context;
       const { store } = router;
 
       const location = store.getState().router;
 
-      const mergedForRoutes =
-        extractFragmentRoutes(children, forRoute)
-          .map(route => `${parentRoute || ''}${route}`);
+      const routePrefix = parentRoute &&
+        parentRoute !== '/' ? parentRoute : '';
 
       return (
         <ComposedComponent
           location={location}
-          matchRoute={store.matchRoute}
-          forRoutes={mergedForRoutes}
+          matchRoute={store.matchWildcardRoute}
+          forRoute={forRoute && `${routePrefix}${forRoute}`}
           children={children}
           {...rest}
         />
@@ -105,11 +103,9 @@ const Fragment = (props: Props) => {
     children
   } = props;
 
-  const matchResult = matchRoute(location.pathname);
+  const matchResult = matchRoute(location.pathname, forRoute);
 
-  if (!matchResult) {
-    return null;
-  }
+  if (!matchResult) { return null; }
 
   if (
     forRoute &&

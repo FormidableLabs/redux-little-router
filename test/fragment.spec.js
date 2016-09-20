@@ -183,4 +183,166 @@ describe('RelativeFragment', () => {
         .to.be.false;
     });
   });
+
+  describe('basic page-by-page routing', () => {
+    // eslint-disable-next-line no-extra-parens
+    const element = (
+      <RelativeFragment forRoute='/'>
+        <h1>App Title</h1>
+        <RelativeFragment forRoute='/cheese'>
+          <p>Cheese</p>
+          <RelativeFragment forRoute='/:type'>
+            <p>Cheese Type</p>
+          </RelativeFragment>
+          <RelativeFragment forRoute='/gifs'>
+            <p>Cheese Gifs</p>
+          </RelativeFragment>
+        </RelativeFragment>
+        <RelativeFragment forRoute='/dog'>
+          <p>Dog</p>
+          <RelativeFragment forRoute='/:type'>
+            <p>Dog Type</p>
+          </RelativeFragment>
+          <RelativeFragment forRoute='/gifs'>
+            <p>Dog Gifs</p>
+          </RelativeFragment>
+        </RelativeFragment>
+        <RelativeFragment forRoute='/cat'>
+          <p>Cat</p>
+          <RelativeFragment forRoute='/:type'>
+            <p>Cat Type</p>
+          </RelativeFragment>
+          <RelativeFragment forRoute='/gifs'>
+            <p>Cat Gifs</p>
+          </RelativeFragment>
+        </RelativeFragment>
+        <RelativeFragment forRoute='/hipster'>
+          <p>Hipster</p>
+          <RelativeFragment forRoute='/:type'>
+            <p>Hipster Type</p>
+          </RelativeFragment>
+          <RelativeFragment forRoute='/gifs'>
+            <p>Hipster Gifs</p>
+          </RelativeFragment>
+        </RelativeFragment>
+      </RelativeFragment>
+    );
+
+    const contexts = [
+      {
+        pathname: '/',
+        route: '/',
+        assertion: wrapper => {
+          expect(wrapper.containsMatchingElement(<h1>App Title</h1>))
+            .to.be.true;
+        }
+      },
+      {
+        pathname: '/cheese',
+        route: '/cheese',
+        assertion: wrapper => {
+          expect(wrapper.containsMatchingElement(<p>Cheese</p>))
+            .to.be.true;
+        }
+      },
+      {
+        pathname: '/cheese/gorgonzola',
+        route: '/cheese/:type',
+        assertion: wrapper => {
+          expect(wrapper.containsMatchingElement(<p>Cheese Type</p>))
+            .to.be.true;
+        }
+      },
+      {
+        pathname: '/cheese/gifs',
+        route: '/cheese/gifs',
+        assertion: wrapper => {
+          expect(wrapper.containsMatchingElement(<p>Cheese Gifs</p>))
+            .to.be.true;
+        }
+      },
+      {
+        pathname: '/dog',
+        route: '/dog',
+        assertion: wrapper => {
+          expect(wrapper.containsMatchingElement(<p>Dog</p>))
+            .to.be.true;
+        }
+      },
+      {
+        pathname: '/dog/vizsla',
+        route: '/dog/:type',
+        assertion: wrapper => {
+          expect(wrapper.containsMatchingElement(<p>Dog Type</p>))
+            .to.be.true;
+        }
+      },
+      {
+        pathname: '/dog/gifs',
+        route: '/dog/gifs',
+        assertion: wrapper => {
+          expect(wrapper.containsMatchingElement(<p>Dog Gifs</p>))
+            .to.be.true;
+        }
+      },
+      {
+        pathname: '/cat',
+        route: '/cat',
+        assertion: wrapper => {
+          expect(wrapper.containsMatchingElement(<p>Cat</p>))
+            .to.be.true;
+        }
+      },
+      {
+        pathname: '/cat/persian',
+        route: '/cat/:type',
+        assertion: wrapper => {
+          expect(wrapper.containsMatchingElement(<p>Cat Type</p>))
+            .to.be.true;
+        }
+      },
+      {
+        pathname: '/cat/gifs',
+        route: '/cat/gifs',
+        assertion: wrapper => {
+          expect(wrapper.containsMatchingElement(<p>Cat Gifs</p>))
+            .to.be.true;
+        }
+      },
+      {
+        pathname: '/hipster',
+        route: '/hipster',
+        assertion: wrapper => {
+          expect(wrapper.containsMatchingElement(<p>Hipster</p>))
+            .to.be.true;
+        }
+      },
+      {
+        pathname: '/hipster/freegan',
+        route: '/hipster/:type',
+        assertion: wrapper => {
+          expect(wrapper.containsMatchingElement(<p>Hipster Type</p>))
+            .to.be.true;
+        }
+      },
+      {
+        pathname: '/hipster/gifs',
+        route: '/hipster/gifs',
+        assertion: wrapper => {
+          expect(wrapper.containsMatchingElement(<p>Hipster Gifs</p>))
+            .to.be.true;
+        }
+      }
+    ];
+
+    contexts.forEach(context => {
+      const { pathname, route, assertion } = context;
+      const wrapper = mount(element, fakeContext({
+        pathname,
+        route
+      }));
+
+      it(`${pathname} ${route}`, () => assertion(wrapper));
+    });
+  });
 });
