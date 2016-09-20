@@ -183,4 +183,44 @@ describe('RelativeFragment', () => {
         .to.be.false;
     });
   });
+
+  it('does support traditional nesting', () => {
+    const wrapper = mount(
+      <RelativeFragment forRoute='/play'>
+        <RelativeFragment forRoute='/c/:code'>
+          <p>code</p>
+        </RelativeFragment>
+        <RelativeFragment forRoute=''>
+          <p>none</p>
+        </RelativeFragment>
+      </RelativeFragment>,
+      fakeContext({
+        pathname: '/play/c/123',
+        route: '/play/c/:code'
+      })
+    );
+
+    expect(wrapper.containsMatchingElement(<p>code</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>none</p>)).to.be.false;
+  });
+  
+  it('does support default route', () => {
+    const wrapper = mount(
+      <RelativeFragment forRoute='/play'>
+        <RelativeFragment forRoute='/c/:code'>
+          <p>code</p>
+        </RelativeFragment>
+        <RelativeFragment forRoute='/'>
+          <p>none</p>
+        </RelativeFragment>
+      </RelativeFragment>,
+      fakeContext({
+        pathname: '/play',
+        route: '/play'
+      })
+    );
+
+    expect(wrapper.containsMatchingElement(<p>code</p>)).to.be.false;
+    expect(wrapper.containsMatchingElement(<p>none</p>)).to.be.true;
+  });
 });
