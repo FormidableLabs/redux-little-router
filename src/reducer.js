@@ -2,7 +2,7 @@
 import type { Action } from 'redux';
 import type { Location } from 'history';
 import { LOCATION_CHANGED } from './action-types';
-import isEqual from 'lodash.isEqual';
+import isEqual from 'lodash.isequal';
 
 export default (state: ?Location | Object = {}, action: Action) => {
   if (action.type === LOCATION_CHANGED) {
