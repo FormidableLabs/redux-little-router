@@ -46,7 +46,6 @@
   "dependencies": {
     "history": "^3.0.0",
     "lodash.assign": "^4.2.0",
-    "lodash.isequal": "^4.4.0",
     "url-pattern": "^1.0.1"
   },
   "devDependencies": {
