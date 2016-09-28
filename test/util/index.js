@@ -29,9 +29,7 @@ export const fakeStore = ({
   }
 
   return {
-    subscribe() {
-
-    },
+    subscribe() {},
 
     getState() {
       return {

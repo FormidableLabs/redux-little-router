@@ -6,7 +6,11 @@ import { LOCATION_CHANGED } from './action-types';
 export default (state: ?Location | Object = {}, action: Action) => {
   if (action.type === LOCATION_CHANGED) {
     // No-op the initial route action
-    if (state && state.pathname === action.payload.pathname) {
+    if (
+      state &&
+      state.pathname === action.payload.pathname &&
+      state.search === action.payload.search
+    ) {
       return state;
     }
 

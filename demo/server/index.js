@@ -11,7 +11,8 @@ hook({
 require('babel-register')();
 
 const fs = require('fs');
-const app = require('express')();
+const express = require('express');
+const app = express();
 
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpack = require('webpack');
@@ -25,8 +26,8 @@ const renderToString = require('react-dom/server')
   .renderToString;
 
 const createStore = require('redux').createStore;
-const createStoreWithRouter = require('../../src')
-  .createStoreWithRouter;
+const routerForExpress = require('../../src')
+  .routerForExpress;
 
 const routes = require('../client/routes').default;
 const wrap = require('../client/wrap').default;
@@ -38,6 +39,8 @@ const templateFile = fs.readFileSync(path.join(__dirname, './index.hbs'));
 const template = Handlebars.compile(templateFile.toString());
 
 const compiler = webpack(config);
+
+app.use(express.static('public'));
 
 app.use(webpackDevMiddleware(compiler, {
   contentBase: './demo',
@@ -53,18 +56,16 @@ app.use(webpackDevMiddleware(compiler, {
   }
 }));
 
-app.get('/favicon.ico', (req, res) => res.end());
+app.use('/favicon.ico', (req, res) => res.end());
 
 app.get('/*', (req, res) => {
   const initialState = {};
   const store = createStore(
     state => state,
     initialState,
-    createStoreWithRouter({
+    routerForExpress({
       routes,
-      pathname: req.path,
-      query: req.query,
-      forServerRender: true
+      request: req
     })
   );
 
@@ -78,7 +79,6 @@ app.get('/*', (req, res) => {
     css, js, content
   }));
 });
-
 
 app.listen(PORT, error => {
   if (error) {

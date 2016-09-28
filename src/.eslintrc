@@ -5,6 +5,9 @@ extends:
 
 parser: "babel-eslint"
 
+env:
+  browser: true
+
 plugins:
   - "babel"
   - "flowtype"
