@@ -31,7 +31,7 @@ To hook into Redux applications, `redux-little-router` uses a store enhancer tha
 
 ### Wiring up the boilerplate
 
-The following is an example of a `redux-little-router` setup that works for browser-rendered applications. For a server rendering example, check out our [advanced docs](ADVANCED.MD).
+The following is an example of a `redux-little-router` setup that works for browser-rendered applications. For a server rendering example, check out our [advanced docs](ADVANCED.md).
 
 ```js
 import { compose, createStore } from 'redux';
