@@ -9,10 +9,7 @@ import {
   GO, GO_BACK, GO_FORWARD
 } from '../src/action-types';
 
-import createStoreWithRouter, {
-  locationDidChange,
-  initializeCurrentLocation
-} from '../src/store-enhancer';
+import createStoreWithRouter from '../src/store-enhancer';
 
 import defaultRoutes from './fixtures/routes';
 
@@ -37,9 +34,13 @@ const fakeStore = ({
   initialState = defaultFakeInitialState,
   routes = defaultRoutes,
   reducer = defaultReducer,
-  useHistoryStub = true,
-  isLoop = false,
-  enhancerOptions = {}
+  location = {
+    pathname: '/home',
+    query: {
+      yo: 'yo'
+    }
+  },
+  isLoop = false
 } = {}) => {
   const historyStub = {
     push: sandbox.stub(),
@@ -58,13 +59,10 @@ const fakeStore = ({
 
   const enhancers = [
     createStoreWithSpy,
-    useHistoryStub ? createStoreWithRouter({
-      history: historyStub,
+    createStoreWithRouter({
       routes,
-      ...enhancerOptions
-    }) : createStoreWithRouter({
-      routes,
-      ...enhancerOptions
+      location,
+      history: historyStub
     })
   ];
 
@@ -122,10 +120,12 @@ describe('Router store enhancer', () => {
     });
   });
 
-  it('creates initial routing state if a pathname or query are provided', () => {
+  it('merges user-provided initial state with initial routing state', () => {
     const { store } = fakeStore({
-      initialState: {},
-      enhancerOptions: {
+      initialState: {
+        not: 'my state'
+      },
+      location: {
         pathname: '/home',
         query: {
           yo: 'yo'
@@ -133,7 +133,9 @@ describe('Router store enhancer', () => {
       }
     });
 
-    expect(store.getState()).to.have.property('router')
+    const state = store.getState();
+    expect(state).to.have.property('not', 'my state');
+    expect(state).to.have.property('router')
       .that.deep.equals({
         pathname: '/home',
         query: { yo: 'yo' },
@@ -146,7 +148,7 @@ describe('Router store enhancer', () => {
   it('creates initial routing state if provided initial state is falsy', () => {
     const { store } = fakeStore({
       initialState: null,
-      enhancerOptions: {
+      location: {
         pathname: '/home',
         query: {
           yo: 'yo'
@@ -162,66 +164,6 @@ describe('Router store enhancer', () => {
         params: {},
         result: { name: 'home' }
       });
-  });
-
-  it('passes initial state through if no pathname or query are provided', () => {
-    const { store } = fakeStore();
-    expect(store.getState()).to.have.deep.property(
-      'router.pathname',
-      '/home/messages/a-team/pity-fool'
-    );
-  });
-
-  it('can create its own browser history', done => {
-    const { store } = fakeStore({
-      useHistoryStub: false,
-      enhancerOptions: {
-        forServerRender: false
-      }
-    });
-
-    store.subscribe(() => {
-      const state = store.getState();
-      expect(state).to.have.deep.property('router.result')
-        .that.deep.equals({ name: 'channel' });
-      done();
-    });
-
-    store.dispatch({
-      type: LOCATION_CHANGED,
-      payload: {
-        pathname: '/home/messages/a-team/fool-pity',
-        result: {
-          name: 'channel'
-        }
-      }
-    });
-  });
-
-  it('can create its own server history', done => {
-    const { store } = fakeStore({
-      useHistoryStub: false,
-      enhancerOptions: {
-        forServerRender: true
-      }
-    });
-
-    store.subscribe(() => {
-      const state = store.getState();
-      expect(state).to.have.deep.property('router.result')
-        .that.deep.equals({ name: 'channel' });
-      done();
-    });
-
-    store.dispatch({
-      type: LOCATION_CHANGED,
-      payload: {
-        pathname: '/home/messages/a-team/fool-pity',
-        result: {
-          name: 'channel'
-        }
-      }
-    });
   });
 
   it('supports Redux Loop', done => {
@@ -242,67 +184,6 @@ describe('Router store enhancer', () => {
           name: 'channel'
         }
       }
-    });
-  });
-
-  it('combines the location descriptor and the route match into a LOCATION_CHANGED action', () => {
-    const locationChangedAction = locationDidChange({
-      location: {
-        action: 'PUSH',
-        basename: '/test',
-        pathname: '/things',
-        query: {
-          test: 'ing'
-        }
-      },
-      matchRoute: sandbox.stub().returns({
-        params: {
-          fakeParam: 'things'
-        },
-        result: {
-          title: 'things'
-        }
-      })
-    });
-
-    expect(locationChangedAction).to.deep.equal({
-      type: LOCATION_CHANGED,
-      payload: {
-        action: 'PUSH',
-        basename: '/test',
-        pathname: '/things',
-        query: {
-          test: 'ing'
-        },
-        params: {
-          fakeParam: 'things'
-        },
-        result: {
-          title: 'things'
-        }
-      }
-    });
-  });
-
-  it('creates a LOCATION_CHANGED action for an existing location/match result combo', () => {
-    const expectedLocation = {
-      action: 'PUSH',
-      basename: '/test',
-      pathname: '/things',
-      query: {
-        test: 'ing'
-      },
-      params: {
-        fakeParam: 'things'
-      },
-      result: {
-        title: 'things'
-      }
-    };
-    const initialLocationAction = initializeCurrentLocation(expectedLocation);
-    expect(initialLocationAction).to.deep.equal({
-      type: LOCATION_CHANGED,
-      payload: expectedLocation
     });
   });
 

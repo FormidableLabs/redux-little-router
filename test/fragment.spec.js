@@ -104,6 +104,22 @@ describe('AbsoluteFragment', () => {
       'In the game of chess, you can never let your adversary see your pieces.'
     );
   });
+
+  it('does not render if the current location does not match a predicate function', () => {
+    const wrapper = mount(
+      <AbsoluteFragment withConditions={
+        location => location.query.ayy === 'jk'
+      }>
+        <p>In the game of chess, you can never let your adversary see your pieces.</p>
+      </AbsoluteFragment>,
+      fakeContext({
+        query: {
+          ayy: 'lmao'
+        }
+      })
+    );
+    expect(wrapper.get(0)).to.be.falsy;
+  });
 });
 
 describe('RelativeFragment', () => {

@@ -1,8 +1,8 @@
 // @flow
-import createStoreWithRouter, {
-  locationDidChange,
-  initializeCurrentLocation
-} from './store-enhancer';
+import routerForBrowser from './browser-router';
+import routerForExpress from './express-router';
+import createStoreWithRouter from './store-enhancer';
+import { locationDidChange, initializeCurrentLocation } from './action-creators';
 
 import provideRouter, { RouterProvider } from './provider';
 import { Link, PersistentQueryLink } from './link';
@@ -24,7 +24,8 @@ const Fragment = AbsoluteFragment;
 
 export {
   // High-level Redux API
-  createStoreWithRouter,
+  routerForBrowser,
+  routerForExpress,
   initializeCurrentLocation,
 
   // React API
@@ -46,6 +47,7 @@ export {
 
   // Low-level Redux utilities
   routerReducer,
+  createStoreWithRouter,
   locationDidChange,
   createMatcher
 };

@@ -1,3 +1,4 @@
+// @flow
 import assign from 'lodash.assign';
 
 const filterObject = (target, predicate) =>
@@ -22,7 +23,7 @@ const onlyRoutes = routes =>
 const withoutRoutes = routes =>
   filterObject(routes, key => key.indexOf('/') !== 0);
 
-const flattenRoutes = (routes, acc = {}) => {
+const flattenRoutes = (routes: Object, acc: Object = {}) => {
   Object.keys(routes).forEach(key => {
     const baseRoute = key === '/' ? '' : key;
     flattenRoutes(

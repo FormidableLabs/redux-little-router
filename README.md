@@ -31,11 +31,11 @@ To hook into Redux applications, `redux-little-router` uses a store enhancer tha
 
 ### Wiring up the boilerplate
 
-The following is an example of a `redux-little-router` setup that works on both the browser and the server. At the bare minimum, you'll need to install the store enhancer (`createStoreWithRouter`) into your Redux store.
+The following is an example of a `redux-little-router` setup that works for browser-rendered applications. For a server rendering example, check out our [advanced docs](ADVANCED.MD).
 
 ```js
 import { compose, createStore } from 'redux';
-import { createStoreWithRouter } from 'redux-little-router';
+import { routerForBrowser } from 'redux-little-router';
 
 import yourReducer from './your-app';
 
@@ -67,57 +67,17 @@ const routes = {
   }
 };
 
-// This is an example of initializing the router in a client-only
-// single-page app. Passing in at least the `pathname` will allow
-// `createStoreWithRouter` to automatically setup the initial state
-// for the first browser location.
+// Install the router into the store for a browser-only environment
 const clientOnlyStore = createStore(
   yourReducer,
   initialState,
-  createStoreWithRouter({
+  routerForBrowser({
     // The configured routes. Required.
     routes,
     // The basename for all routes. Optional.
-    basename: '/example',
-    // The initial URL. Required in all cases except for when
-    // rehydrating the state tree on the client after a server render.
-    pathname: '/home',
-    // The initial query string object. Optional.
-    query: {
-      ex: 'ample'
-    }
+    basename: '/example'
   })
 );
-
-// This is a wrapper function for setting up router boilerplate
-// for server-rendered universal React applications.
-
-// You can pull `url` and `query` from your express or hapi routes.
-// The below example uses a URL object from an express request.
-const initializeStore = ({ routes, requestUrl, requestQuery }) => {
-  // Grab the initial state the server attached to your template after render
-  const initialState = INITIAL_STATE_FROM_SERVER_RENDER;
-
-  // Notice that `pathname` isn't required when rehydrating
-  // the store since redux-little-router already added
-  // the pathname to the initial state.
-  const routerOptions = initialState ? {
-    routes,
-    basename: BASENAME_FROM_SERVER_RENDER
-  } : {
-    routes,
-    basename: requestUrl.baseUrl,
-    pathname: requestUrl.pathname,
-    query: requestQuery,
-    forServerRender: true // required for server renders!
-  };
-
-  return createStore(
-    yourReducer,
-    initialState,
-    createStoreWithRouter(routerOptions)
-  );
-};
 ```
 
 Often, you'll want to update state or trigger side effects after loading the initial URL. To maintain compatibility with other store enhancers (particularly ones that handle side effects, like `redux-loop` or `redux-saga`), we require this optional initial dispatch to happen in userland code by doing the following:
@@ -214,7 +174,7 @@ Think of `<Fragment>` as the midpoint of a "flexibility continuum" that starts w
 
 The simplest fragment is one that displays when a route is active:
 
-```es6
+```js
 <Fragment forRoute='/home/messages/:team'>
   <p>This is the team messages page!</p>
 </Fragment>
@@ -222,7 +182,7 @@ The simplest fragment is one that displays when a route is active:
 
 You can also match a fragment against anything in the current `location` object:
 
-```es6
+```js
 <Fragment withConditions={location => location.query.superuser}>
   <p>Superusers see this on all routes!</p>
 </Fragment>
@@ -283,7 +243,7 @@ import { AbsoluteFragment as Fragment } from 'redux-little-router';
 
 `<AbsoluteFragment>` accepts an additional `forRoutes` prop that allows the fragment to display on multiple routes:
 
-```es6
+```js
 <Fragment forRoutes={['/home/messages', '/home']}>
   <p>This displays in a couple of places!</p>
 </Fragment>
@@ -295,7 +255,7 @@ When in doubt, use `<RelativeFragment>`. `<AbsoluteFragment>` may be deprecated 
 
 Using the `<Link>` component is simple:
 
-```es6
+```js
 <Link className='anything' href='/yo'>
   Share Order
 </Link>
@@ -303,7 +263,7 @@ Using the `<Link>` component is simple:
 
 Alternatively, you can pass in a [location descriptor](https://github.com/mjackson/history/blob/9a5102c38a161f00c6ea027a88b87b0328b5dc93/docs/Location.md#location-descriptors) to `href`. This is useful for passing query objects:
 
-```es6
+```js
 <Link className='anything' href={{
   pathname: '/home/messages/a-team?test=ing',
   query: {
@@ -320,7 +280,7 @@ Alternatively, you can pass in a [location descriptor](https://github.com/mjacks
 
 Like React Router's `<Router>` component, you'll want to wrap `provideRouter` around your app's top-level component like so:
 
-```es6
+```js
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { provideRouter } from 'redux-little-router';
@@ -339,7 +299,7 @@ This allows `<Fragment>` and `<Link>` to obtain their `history` and `dispatch` i
 
 If you'd rather use a plain component instead of a higher-ordered component, use `<RouterProvider>` like so:
 
-```es6
+```js
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { RouterProvider } from 'redux-little-router';
