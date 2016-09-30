@@ -5,8 +5,7 @@ import { compose, createStore, applyMiddleware } from 'redux';
 import { install, combineReducers } from 'redux-loop';
 
 import {
-  LOCATION_CHANGED, PUSH, REPLACE,
-  GO, GO_BACK, GO_FORWARD
+  LOCATION_CHANGED, PUSH
 } from '../src/action-types';
 
 import createStoreWithRouter from '../src/store-enhancer';
