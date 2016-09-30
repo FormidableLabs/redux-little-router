@@ -2,6 +2,7 @@
 import routerForBrowser from './browser-router';
 import routerForExpress from './express-router';
 import createStoreWithRouter from './store-enhancer';
+import routerMiddleware from './middleware';
 import { locationDidChange, initializeCurrentLocation } from './action-creators';
 
 import provideRouter, { RouterProvider } from './provider';
@@ -26,6 +27,7 @@ export {
   // High-level Redux API
   routerForBrowser,
   routerForExpress,
+  routerMiddleware,
   initializeCurrentLocation,
 
   // React API

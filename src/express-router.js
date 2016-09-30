@@ -4,6 +4,7 @@ import useBasename from 'history/lib/useBasename';
 import useQueries from 'history/lib/useQueries';
 
 import installRouter from './store-enhancer';
+import routerMiddleware from './middleware';
 
 type ServerRouterArgs = {
   routes: Object,
@@ -25,5 +26,8 @@ export default ({ routes, request }: ServerRouterArgs) => {
     query: request.query
   });
 
-  return installRouter({ routes, history, location });
+  return {
+    routerEnhancer: installRouter({ routes, history, location }),
+    routerMiddleware: routerMiddleware({ history })
+  };
 };

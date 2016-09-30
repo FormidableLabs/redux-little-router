@@ -25,13 +25,17 @@ const encode = require('ent/encode');
 const renderToString = require('react-dom/server')
   .renderToString;
 
-const createStore = require('redux').createStore;
+const redux = require('redux');
 const routerForExpress = require('../../src')
   .routerForExpress;
 
 const routes = require('../client/routes').default;
 const wrap = require('../client/wrap').default;
 const Root = require('../client/demo').default;
+
+const createStore = redux.createStore;
+const compose = redux.compose;
+const applyMiddleware = redux.applyMiddleware;
 
 const PORT = 4567;
 
@@ -60,13 +64,17 @@ app.use('/favicon.ico', (req, res) => res.end());
 
 app.get('/*', (req, res) => {
   const initialState = {};
+  const router = routerForExpress({
+    routes,
+    request: req
+  });
   const store = createStore(
     state => state,
     initialState,
-    routerForExpress({
-      routes,
-      request: req
-    })
+    compose(
+      router.routerEnhancer,
+      applyMiddleware(router.routerMiddleware)
+    )
   );
 
   const content = renderToString(wrap(store)(Root));

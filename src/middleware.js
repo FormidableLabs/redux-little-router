@@ -3,27 +3,24 @@ import {
   GO_BACK, GO_FORWARD
 } from './action-types';
 
-export default (store, history) => action => {
+export default ({ history }) => () => next => action => {
   switch (action.type) {
   case PUSH:
     history.push(action.payload);
-    return null;
+    break;
   case REPLACE:
     history.replace(action.payload);
-    return null;
+    break;
   case GO:
     history.go(action.payload);
-    return null;
+    break;
   case GO_BACK:
     history.goBack();
-    return null;
+    break;
   case GO_FORWARD:
     history.goForward();
-    return null;
+    break;
   default:
-    // We return the result of dispatch here
-    // to retain compatibility with enhancers
-    // that return a promise from dispatch.
-    return store.dispatch(action);
+    next(action);
   }
 };
