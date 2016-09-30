@@ -27,7 +27,7 @@ While React Router is a great, well-supported library, it hoards URL state withi
 
 ## Redux usage
 
-To hook into Redux applications, `redux-little-router` uses a store enhancer that wraps the `history` module and adds current and previous router state to your store. The enhancer listens for location changes and dispatches rich actions containing the URL, parameters, and any custom data assigned to the route. It also intercepts navigation actions and calls their equivalent method in `history`.
+To hook into Redux applications, `redux-little-router` uses a store enhancer that wraps the `history` module and adds current and previous router state to your store. The enhancer listens for location changes and dispatches rich actions containing the URL, parameters, and any custom data assigned to the route. `redux-little-router` also adds a middleware that intercepts navigation actions and calls their equivalent method in `history`.
 
 ### Wiring up the boilerplate
 
@@ -67,16 +67,26 @@ const routes = {
   }
 };
 
-// Install the router into the store for a browser-only environment
+// Install the router into the store for a browser-only environment.
+// routerForBrowser is a factory method that returns a store
+// enhancer and a middleware.
+const {
+  routerEnhancer,
+  routerMiddleware  
+} = routerForBrowser({
+  // The configured routes. Required.
+  routes,
+  // The basename for all routes. Optional.
+  basename: '/example'
+})
+
 const clientOnlyStore = createStore(
   yourReducer,
   initialState,
-  routerForBrowser({
-    // The configured routes. Required.
-    routes,
-    // The basename for all routes. Optional.
-    basename: '/example'
-  })
+  compose(
+    routerEnhancer,
+    applyMiddleware(routerMiddleware)
+  )
 );
 ```
 
