@@ -10,6 +10,24 @@ import {
 
 chai.use(sinonChai);
 
+const REFRAGULATE = 'REFRAGULATE';
+
+// Used to test that other middleware can dispatch
+// router actions and trigger history updates
+const consumerMiddleware = ({ dispatch }) => next => action => {
+  if (action.type === REFRAGULATE) {
+    dispatch({
+      type: PUSH,
+      payload: {
+        pathname: '/'
+      }
+    });
+    return;
+  }
+
+  next(action);
+};
+
 const init = () => {
   const historyStub = {
     push: sandbox.stub(),
@@ -25,7 +43,8 @@ const init = () => {
     applyMiddleware(
       routerMiddleware({
         history: historyStub
-      })
+      }),
+      consumerMiddleware
     )
   );
 
@@ -66,5 +85,15 @@ describe('Router middleware', () => {
       const method = actionMethodMap[actionType];
       expect(historyStub[method]).to.not.have.been.called;
     });
+  });
+
+  it('passes normal actions through the dispatch chain', () => {
+    const { store, historyStub } = init();
+    store.dispatch({
+      type: REFRAGULATE,
+      payload: {}
+    });
+
+    expect(historyStub.push).to.have.been.called.once;
   });
 });
