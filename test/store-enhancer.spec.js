@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
-import { compose, createStore } from 'redux';
+import { compose, createStore, applyMiddleware } from 'redux';
 import { install, combineReducers } from 'redux-loop';
 
 import {
@@ -10,6 +10,7 @@ import {
 } from '../src/action-types';
 
 import createStoreWithRouter from '../src/store-enhancer';
+import routerMiddleware from '../src/middleware';
 
 import defaultRoutes from './fixtures/routes';
 
@@ -63,7 +64,10 @@ const fakeStore = ({
       routes,
       location,
       history: historyStub
-    })
+    }),
+    applyMiddleware(
+      routerMiddleware({ history: historyStub })
+    )
   ];
 
   if (isLoop) {
@@ -195,44 +199,6 @@ describe('Router store enhancer', () => {
     });
 
     expect(historyStub.push).to.be.calledOnce;
-    expect(store.dispatchSpy).to.be.calledOnce;
-  });
-
-  const actionMethodMap = {
-    [PUSH]: 'push',
-    [REPLACE]: 'replace',
-    [GO]: 'go',
-    [GO_BACK]: 'goBack',
-    [GO_FORWARD]: 'goForward'
-  };
-
-  Object.keys(actionMethodMap).forEach(actionType => {
-    const method = actionMethodMap[actionType];
-
-    it(`calls history.${method} when intercepting ${actionType}`, () => {
-      const { store, historyStub } = fakeStore();
-      store.dispatch({
-        type: actionType,
-        payload: {
-          pathname: '/nonsense'
-        }
-      });
-
-      expect(historyStub[method]).to.have.been.calledOnce;
-    });
-  });
-
-  it('passes normal actions through the dispatch chain', () => {
-    const { store, historyStub } = fakeStore();
-    store.dispatch({
-      type: 'NOT_MY_ACTION_NOT_MY_PROBLEM',
-      payload: {}
-    });
-
-    Object.keys(actionMethodMap).forEach(actionType => {
-      const method = actionMethodMap[actionType];
-      expect(historyStub[method]).to.not.have.been.called;
-    });
     expect(store.dispatchSpy).to.be.calledOnce;
   });
 

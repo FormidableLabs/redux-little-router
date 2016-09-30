@@ -11,16 +11,17 @@ chai.use(sinonChai);
 
 describe('Express router', () => {
   it('creates a browser store enhancer using window.location', () => {
+    const { routerEnhancer } = routerForExpress({
+      routes,
+      request: {
+        path: '/home',
+        query: { get: 'schwifty' }
+      }
+    });
     const store = createStore(
       state => state,
       {},
-      routerForExpress({
-        routes,
-        request: {
-          path: '/home',
-          query: { get: 'schwifty' }
-        }
-      })
+      routerEnhancer
     );
     const state = store.getState();
     expect(state).to.have.deep.property('router.pathname', '/home');
@@ -30,17 +31,18 @@ describe('Express router', () => {
   });
 
   it('supports basenames', () => {
+    const { routerEnhancer } = routerForExpress({
+      routes,
+      request: {
+        baseUrl: '/cob-planet',
+        path: '/home',
+        query: { get: 'schwifty' }
+      }
+    });
     const store = createStore(
       state => state,
       {},
-      routerForExpress({
-        routes,
-        request: {
-          baseUrl: '/cob-planet',
-          path: '/home',
-          query: { get: 'schwifty' }
-        }
-      })
+      routerEnhancer
     );
     const state = store.getState();
     expect(state).to.have.deep.property('router.basename', '/cob-planet');

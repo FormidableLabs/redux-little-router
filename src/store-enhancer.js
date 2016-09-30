@@ -11,7 +11,6 @@ import type { History } from 'history';
 import { default as matcherFactory } from './create-matcher';
 import attachRouterToReducer from './reducer-enhancer';
 import { locationDidChange } from './action-creators';
-import wrapDispatch from './wrap-dispatch';
 
 import validateRoutes from './util/validate-routes';
 import flattenRoutes from './util/flatten-routes';
@@ -65,11 +64,8 @@ export default ({
       }
     });
 
-    const dispatch = wrapDispatch(store, history);
-
     return {
       ...store,
-      dispatch,
 
       // We attach routes here to allow <RouterProvider>
       // to access unserializable properties of route results.
