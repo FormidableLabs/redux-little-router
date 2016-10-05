@@ -1,5 +1,6 @@
 import sinon from 'sinon';
 import createMemoryHistory from 'history/lib/createMemoryHistory';
+import useQueries from 'history/lib/useQueries';
 
 import createMatcher from '../../src/create-matcher';
 
@@ -22,7 +23,7 @@ export const fakeStore = ({
   routes = defaultRoutes,
   fakeNewLocation
 } = {}) => {
-  const history = createMemoryHistory();
+  const history = useQueries(createMemoryHistory)();
   if (fakeNewLocation) {
     sinon.stub(history, 'createLocation')
       .returns(fakeNewLocation);
