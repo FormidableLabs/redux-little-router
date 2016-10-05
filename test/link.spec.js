@@ -202,6 +202,39 @@ describe('Router link component', () => {
           });
       });
     });
+    describe('Rendering', () => {
+      it('renders an <a/> with the correct href attribute', () => {
+        const hrefs = [
+          '/path',
+          '/path?key=value',
+          'path/with/nested/routes'
+        ];
+        hrefs.forEach(href => {
+          const wrapper = shallow(<Link href={href} />, fakeContext());
+          expect(wrapper.find('a').prop('href')).to.equal(href);
+        });
+      });
+
+      it('parses and renders location objects as hrefs', () => {
+        const expected = [
+          '/path',
+          '/path?key=value',
+          'path/with/nested/routes'
+        ];
+        const locations = [
+          { pathname: '/path' },
+          { pathname: '/path', query: { key: 'value' } },
+          { pathname: 'path/with/nested/routes' }
+        ];
+        locations.forEach((location, index) => {
+          const wrapper = shallow(
+            <Link href={location} />,
+            fakeContext()
+          );
+          expect(wrapper.find('a').prop('href')).to.equal(expected[index]);
+        });
+      });
+    });
   });
 
   // We have to use mount instead of shallow here since
