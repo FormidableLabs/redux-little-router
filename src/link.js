@@ -18,8 +18,8 @@ type Props = {
 
 const LEFT_MOUSE_BUTTON = 0;
 
-const normalizeHref = location =>
-  `${location.basename || ''}${location.pathname}`;
+const normalizeHref = ({ basename, pathname, search }) =>
+  `${basename || ''}${pathname}${search || ''}`;
 
 const normalizeLocation = href => {
   if (typeof href === 'string') {
@@ -114,6 +114,7 @@ const Link = (
 
   const location = router.store.history
     .createLocation(locationDescriptor);
+
 
   return (
     <a
