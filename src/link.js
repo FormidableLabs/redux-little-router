@@ -115,7 +115,6 @@ const Link = (
   const location = router.store.history
     .createLocation(locationDescriptor);
 
-
   return (
     <a
       href={normalizeHref(location)}
