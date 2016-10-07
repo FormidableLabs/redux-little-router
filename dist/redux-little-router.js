@@ -59,7 +59,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.createMatcher = exports.locationDidChange = exports.createStoreWithRouter = exports.routerReducer = exports.GO_BACK = exports.GO_FORWARD = exports.GO = exports.REPLACE = exports.PUSH = exports.LOCATION_CHANGED = exports.RelativeFragment = exports.AbsoluteFragment = exports.Fragment = exports.PersistentQueryLink = exports.Link = exports.RouterProvider = exports.provideRouter = exports.initializeCurrentLocation = exports.routerForExpress = exports.routerForBrowser = undefined;
+	exports.createMatcher = exports.locationDidChange = exports.createStoreWithRouter = exports.routerReducer = exports.GO_BACK = exports.GO_FORWARD = exports.GO = exports.REPLACE = exports.PUSH = exports.LOCATION_CHANGED = exports.RelativeFragment = exports.AbsoluteFragment = exports.Fragment = exports.PersistentQueryLink = exports.Link = exports.RouterProvider = exports.provideRouter = exports.initializeCurrentLocation = exports.routerMiddleware = exports.routerForExpress = exports.routerForBrowser = undefined;
 	
 	var _browserRouter = __webpack_require__(1);
 	
@@ -72,6 +72,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _storeEnhancer = __webpack_require__(22);
 	
 	var _storeEnhancer2 = _interopRequireDefault(_storeEnhancer);
+	
+	var _middleware = __webpack_require__(33);
+	
+	var _middleware2 = _interopRequireDefault(_middleware);
 	
 	var _actionCreators = __webpack_require__(29);
 	
@@ -96,9 +100,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var Fragment = _fragment.AbsoluteFragment;
-	
 	exports.routerForBrowser = _browserRouter2.default;
 	exports.routerForExpress = _expressRouter2.default;
+	exports.routerMiddleware = _middleware2.default;
 	exports.initializeCurrentLocation = _actionCreators.initializeCurrentLocation;
 	exports.provideRouter = _provider2.default;
 	exports.RouterProvider = _provider.RouterProvider;
@@ -144,6 +148,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _storeEnhancer2 = _interopRequireDefault(_storeEnhancer);
 	
+	var _middleware = __webpack_require__(33);
+	
+	var _middleware2 = _interopRequireDefault(_middleware);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	/* istanbul ignore next: unstubbable! */
@@ -168,7 +176,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  var location = history.createLocation({ pathname: pathname, search: search });
 	
-	  return (0, _storeEnhancer2.default)({ routes: routes, history: history, location: location });
+	  return {
+	    routerEnhancer: (0, _storeEnhancer2.default)({ routes: routes, history: history, location: location }),
+	    routerMiddleware: (0, _middleware2.default)({ history: history })
+	  };
 	};
 
 /***/ },
@@ -1840,15 +1851,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _actionCreators = __webpack_require__(29);
 	
-	var _wrapDispatch = __webpack_require__(30);
-	
-	var _wrapDispatch2 = _interopRequireDefault(_wrapDispatch);
-	
-	var _validateRoutes = __webpack_require__(31);
+	var _validateRoutes = __webpack_require__(30);
 	
 	var _validateRoutes2 = _interopRequireDefault(_validateRoutes);
 	
-	var _flattenRoutes = __webpack_require__(32);
+	var _flattenRoutes = __webpack_require__(31);
 	
 	var _flattenRoutes2 = _interopRequireDefault(_flattenRoutes);
 	
@@ -1886,10 +1893,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      });
 	
-	      var dispatch = (0, _wrapDispatch2.default)(store, history);
-	
 	      return _extends({}, store, {
-	        dispatch: dispatch,
 	
 	        // We attach routes here to allow <RouterProvider>
 	        // to access unserializable properties of route results.
@@ -2587,45 +2591,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _actionTypes = __webpack_require__(28);
-	
-	exports.default = function (store, history) {
-	  return function (action) {
-	    switch (action.type) {
-	      case _actionTypes.PUSH:
-	        history.push(action.payload);
-	        return null;
-	      case _actionTypes.REPLACE:
-	        history.replace(action.payload);
-	        return null;
-	      case _actionTypes.GO:
-	        history.go(action.payload);
-	        return null;
-	      case _actionTypes.GO_BACK:
-	        history.goBack();
-	        return null;
-	      case _actionTypes.GO_FORWARD:
-	        history.goForward();
-	        return null;
-	      default:
-	        // We return the result of dispatch here
-	        // to retain compatibility with enhancers
-	        // that return a promise from dispatch.
-	        return store.dispatch(action);
-	    }
-	  };
-	};
-
-/***/ },
-/* 31 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2649,7 +2614,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 32 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2660,7 +2625,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
-	var _lodash = __webpack_require__(33);
+	var _lodash = __webpack_require__(32);
 	
 	var _lodash2 = _interopRequireDefault(_lodash);
 	
@@ -2718,7 +2683,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = flattenRoutes;
 
 /***/ },
-/* 33 */
+/* 32 */
 /***/ function(module, exports) {
 
 	/**
@@ -3361,6 +3326,47 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _actionTypes = __webpack_require__(28);
+	
+	exports.default = function (_ref) {
+	  var history = _ref.history;
+	  return function () {
+	    return function (next) {
+	      return function (action) {
+	        switch (action.type) {
+	          case _actionTypes.PUSH:
+	            history.push(action.payload);
+	            break;
+	          case _actionTypes.REPLACE:
+	            history.replace(action.payload);
+	            break;
+	          case _actionTypes.GO:
+	            history.go(action.payload);
+	            break;
+	          case _actionTypes.GO_BACK:
+	            history.goBack();
+	            break;
+	          case _actionTypes.GO_FORWARD:
+	            history.goForward();
+	            break;
+	          default:
+	            next(action);
+	        }
+	      };
+	    };
+	  };
+	};
+
+/***/ },
 /* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -3386,6 +3392,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _storeEnhancer2 = _interopRequireDefault(_storeEnhancer);
 	
+	var _middleware = __webpack_require__(33);
+	
+	var _middleware2 = _interopRequireDefault(_middleware);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	exports.default = function (_ref) {
@@ -3401,7 +3411,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    query: request.query
 	  });
 	
-	  return (0, _storeEnhancer2.default)({ routes: routes, history: history, location: location });
+	  return {
+	    routerEnhancer: (0, _storeEnhancer2.default)({ routes: routes, history: history, location: location }),
+	    routerMiddleware: (0, _middleware2.default)({ history: history })
+	  };
 	};
 
 /***/ },
@@ -5230,8 +5243,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var LEFT_MOUSE_BUTTON = 0;
 	
-	var normalizeHref = function normalizeHref(location) {
-	  return '' + (location.basename || '') + location.pathname;
+	var normalizeHref = function normalizeHref(_ref) {
+	  var basename = _ref.basename;
+	  var pathname = _ref.pathname;
+	  var search = _ref.search;
+	  return '' + (basename || '') + pathname + (search || '');
 	};
 	
 	var normalizeLocation = function normalizeLocation(href) {
@@ -5244,10 +5260,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return href;
 	};
 	
-	var resolveQueryForLocation = function resolveQueryForLocation(_ref) {
-	  var linkLocation = _ref.linkLocation;
-	  var persistQuery = _ref.persistQuery;
-	  var currentLocation = _ref.currentLocation;
+	var resolveQueryForLocation = function resolveQueryForLocation(_ref2) {
+	  var linkLocation = _ref2.linkLocation;
+	  var persistQuery = _ref2.persistQuery;
+	  var currentLocation = _ref2.currentLocation;
 	
 	  var currentQuery = currentLocation && currentLocation.query;
 	
@@ -5270,13 +5286,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return Boolean(e.shiftKey || e.altKey || e.metaKey || e.ctrlKey);
 	};
 	
-	var handleClick = function handleClick(_ref2) {
-	  var e = _ref2.e;
-	  var target = _ref2.target;
-	  var location = _ref2.location;
-	  var replaceState = _ref2.replaceState;
-	  var router = _ref2.router;
-	  var onClick = _ref2.onClick;
+	var handleClick = function handleClick(_ref3) {
+	  var e = _ref3.e;
+	  var target = _ref3.target;
+	  var location = _ref3.location;
+	  var replaceState = _ref3.replaceState;
+	  var router = _ref3.router;
+	  var onClick = _ref3.onClick;
 	
 	  if (onClick) {
 	    onClick(e);
