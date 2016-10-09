@@ -246,7 +246,7 @@ import { AbsoluteFragment as Fragment } from 'redux-little-router';
   <Fragment forRoute='/about'><About /></Fragment>
   <Fragment forRoute='/messages'><Messages /></Fragment>
   <Fragment forRoute='/feed'><Feed /></Fragment>
-</Route>
+</Fragment>
 ```
 
 `<AbsoluteFragment>`s do not communicate with their parent or child routes like `<RelativeFragment>`s do. The route you pass to `forRoute` must match an exact route in your routes configuration, and are analgous to absolute URLs (they are not "relative" to the `forRoute`s of any other fragment in the hierarchy).
