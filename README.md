@@ -104,7 +104,7 @@ if (initialLocation) {
 
 ### Provided actions and state
 
-On location changes, the store enhancer dispatches a LOCATION_CHANGED action that contains at least the following properties:
+On location changes, the store enhancer dispatches a `LOCATION_CHANGED` action that contains at least the following properties:
 
 ```js
 // For a URL matching /messages/:user
@@ -249,7 +249,7 @@ import { AbsoluteFragment as Fragment } from 'redux-little-router';
 </Fragment>
 ```
 
-`<AbsoluteFragment>`s do not communicate with their parent or child routes like `<RelativeFragment>`s do. The route you pass to `forRoute` must match an exact route in your routes configuration, and are analgous to absolute URLs (they are not "relative" to the `forRoute`s of any other fragment in the hierarchy).
+`<AbsoluteFragment>`s do not communicate with their parent or child routes like `<RelativeFragment>`s do. The route you pass to `forRoute` must match an exact route in your routes configuration, and are analogous to absolute URLs (they are not "relative" to the `forRoute`s of any other fragment in the hierarchy).
 
 `<AbsoluteFragment>` accepts an additional `forRoutes` prop that allows the fragment to display on multiple routes:
 
@@ -319,10 +319,10 @@ import createYourStore from './state';
 
 ReactDOM.render(
   <RouterProvider store={createYourStore()}>
-    <YourComponent />
-  </RouterProvider>
-  document.getElementById('root');
-)
+    <YourAppComponent />
+  </RouterProvider>,
+  document.getElementById('root')
+);
 ```
 
 ## Environment
