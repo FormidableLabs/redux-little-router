@@ -184,7 +184,7 @@ Think of `<Fragment>` as the midpoint of a "flexibility continuum" that starts w
 
 The simplest fragment is one that displays when a route is active:
 
-```js
+```jsx
 <Fragment forRoute='/home/messages/:team'>
   <p>This is the team messages page!</p>
 </Fragment>
@@ -192,7 +192,7 @@ The simplest fragment is one that displays when a route is active:
 
 You can also match a fragment against anything in the current `location` object:
 
-```js
+```jsx
 <Fragment withConditions={location => location.query.superuser}>
   <p>Superusers see this on all routes!</p>
 </Fragment>
@@ -210,7 +210,7 @@ import { AbsoluteFragment as Fragment } from 'redux-little-router';
 
 `<RelativeFragment>` lets you nest fragments to match your UI hierarchy to your route hierarchy, much like the `<Route>` component does in `react-router`. Given a URL of `/home/bio/dat-boi`, and the following elements:
 
-```js
+```jsx
 <RelativeFragment forRoute='/home'>
   <h1>Home</h1>
   <RelativeFragment forRoute='/bio'>
@@ -225,7 +225,7 @@ import { AbsoluteFragment as Fragment } from 'redux-little-router';
 
 ...React will render:
 
-```js
+```html
 <div>
   <h1>Home</h1>
     <div>
@@ -240,7 +240,7 @@ import { AbsoluteFragment as Fragment } from 'redux-little-router';
 
 `<RelativeFragment>` makes basic component-per-page navigation easy:
 
-```js
+```jsx
 <Fragment forRoute='/'>
   <Fragment forRoute='/home'><Home /></Fragment>
   <Fragment forRoute='/about'><About /></Fragment>
@@ -253,7 +253,7 @@ import { AbsoluteFragment as Fragment } from 'redux-little-router';
 
 `<AbsoluteFragment>` accepts an additional `forRoutes` prop that allows the fragment to display on multiple routes:
 
-```js
+```jsx
 <Fragment forRoutes={['/home/messages', '/home']}>
   <p>This displays in a couple of places!</p>
 </Fragment>
@@ -265,7 +265,7 @@ When in doubt, use `<RelativeFragment>`. `<AbsoluteFragment>` may be deprecated 
 
 Using the `<Link>` component is simple:
 
-```js
+```jsx
 <Link className='anything' href='/yo'>
   Share Order
 </Link>
@@ -273,7 +273,7 @@ Using the `<Link>` component is simple:
 
 Alternatively, you can pass in a [location descriptor](https://github.com/mjackson/history/blob/9a5102c38a161f00c6ea027a88b87b0328b5dc93/docs/Location.md#location-descriptors) to `href`. This is useful for passing query objects:
 
-```js
+```jsx
 <Link className='anything' href={{
   pathname: '/home/messages/a-team?test=ing',
   query: {
@@ -290,7 +290,7 @@ Alternatively, you can pass in a [location descriptor](https://github.com/mjacks
 
 Like React Router's `<Router>` component, you'll want to wrap `provideRouter` around your app's top-level component like so:
 
-```js
+```jsx
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { provideRouter } from 'redux-little-router';
@@ -309,7 +309,7 @@ This allows `<Fragment>` and `<Link>` to obtain their `history` and `dispatch` i
 
 If you'd rather use a plain component instead of a higher-ordered component, use `<RouterProvider>` like so:
 
-```js
+```jsx
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { RouterProvider } from 'redux-little-router';
