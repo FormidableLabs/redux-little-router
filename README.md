@@ -34,7 +34,7 @@ To hook into Redux applications, `redux-little-router` uses a store enhancer tha
 The following is an example of a `redux-little-router` setup that works for browser-rendered applications. For a server rendering example, check out our [advanced docs](ADVANCED.md).
 
 ```js
-import { compose, createStore } from 'redux';
+import { compose, createStore, applyMiddleware } from 'redux';
 import { routerForBrowser } from 'redux-little-router';
 
 import yourReducer from './your-app';
