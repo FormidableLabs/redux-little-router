@@ -102,9 +102,7 @@ describe('Router provider', () => {
       };
 
       const wrapper = mount(
-        <RouterProvider store={fakeStore({
-          routes: routesWithComponent
-        })}>
+        <RouterProvider store={fakeStore({ routes: routesWithComponent })}>
           <MagicalMysteryComponent />
         </RouterProvider>
       );
