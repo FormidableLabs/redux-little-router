@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+
 import {
   PUSH, REPLACE, GO,
   GO_BACK, GO_FORWARD
@@ -7,6 +9,8 @@ export default ({ history }) => () => next => action => {
   switch (action.type) {
   case PUSH:
     history.push(action.payload);
+    // No return, no next() here
+    // We stop all history events from progressing further through the dispatch chain...
     break;
   case REPLACE:
     history.replace(action.payload);
@@ -21,6 +25,7 @@ export default ({ history }) => () => next => action => {
     history.goForward();
     break;
   default:
-    next(action);
+    // ...but we want to leave all events we don't care about undisturbed
+    return next(action);
   }
 };

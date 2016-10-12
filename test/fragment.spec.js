@@ -89,9 +89,7 @@ describe('AbsoluteFragment', () => {
 
   it('renders if the current location matches a predicate function', () => {
     const wrapper = mount(
-      <AbsoluteFragment withConditions={
-        location => location.query.ayy === 'lmao'
-      }>
+      <AbsoluteFragment withConditions={location => location.query.ayy === 'lmao'}>
         <p>In the game of chess, you can never let your adversary see your pieces.</p>
       </AbsoluteFragment>,
       fakeContext({
@@ -107,9 +105,7 @@ describe('AbsoluteFragment', () => {
 
   it('does not render if the current location does not match a predicate function', () => {
     const wrapper = mount(
-      <AbsoluteFragment withConditions={
-        location => location.query.ayy === 'jk'
-      }>
+      <AbsoluteFragment withConditions={location => location.query.ayy === 'jk'}>
         <p>In the game of chess, you can never let your adversary see your pieces.</p>
       </AbsoluteFragment>,
       fakeContext({
