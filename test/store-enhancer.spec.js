@@ -169,6 +169,15 @@ describe('Router store enhancer', () => {
       });
   });
 
+  it('passes router state to the enhanced/vanilla reducer', () => {
+    const reducerSpy = sandbox.spy(state => {
+      expect(state).to.have.property('router');
+      return state;
+    });
+    fakeStore({ reducer: reducerSpy });
+    expect(reducerSpy).to.be.calledOnce;
+  });
+
   it('supports Redux Loop', done => {
     const { store } = fakeStore({ isLoop: true });
 
@@ -202,11 +211,14 @@ describe('Router store enhancer', () => {
   });
 
   it('calls the reducer once for each action', () => {
-    const reducerSpy = sandbox.spy();
+    const reducerSpy = sandbox.spy(state => {
+      expect(state).to.have.property('router');
+      return state;
+    });
     const { store } = fakeStore({ reducer: reducerSpy });
     store.dispatch({ type: 'CUSTOM_ACTION' });
     expect(reducerSpy).to.be.calledTwice;
-    expect(reducerSpy.firstCall).to.have.been.calledWith({}, { type: '@@redux/INIT' });
-    expect(reducerSpy.secondCall).to.have.been.calledWith({}, { type: 'CUSTOM_ACTION' });
+    expect(reducerSpy.firstCall.args[1]).to.deep.equal({ type: '@@redux/INIT' });
+    expect(reducerSpy.secondCall.args[1]).to.deep.equal({ type: 'CUSTOM_ACTION' });
   });
 });
