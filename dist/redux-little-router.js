@@ -2474,23 +2474,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	exports.default = function (vanillaReducer) {
 	  return function (state, action) {
-	    var vanillaState = _extends({}, state);
-	    delete vanillaState.router;
-	
-	    var newState = vanillaReducer(vanillaState, action);
-	
-	    // Support redux-loop
-	    if (Array.isArray(newState)) {
-	      var nextState = newState[0]; // eslint-disable-line no-magic-numbers
-	      var nextEffects = newState[1]; // eslint-disable-line no-magic-numbers
-	      return [_extends({}, nextState, {
-	        router: (0, _reducer2.default)(state && state.router, action)
-	      }), nextEffects];
-	    }
-	
-	    return _extends({}, newState, {
+	    var stateWithRouter = _extends({}, state, {
 	      router: (0, _reducer2.default)(state && state.router, action)
 	    });
+	    return vanillaReducer(stateWithRouter, action);
 	  };
 	};
 
