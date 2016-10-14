@@ -6,10 +6,13 @@ export default
   (passRouterStateToReducer: bool) =>
   (vanillaReducer: Reducer) =>
   (state: State, action: Action) => {
-    // We have to do this destructuring dance to remove the
-    // previous router state from the state we pass to the
-    // vanilla reducer. Otherwise, `combineReducers` complains
-    // about extraneous keys and ditches the router state.
+    // Here, we use destructuring in place of `_.omit`
+    // to remove the `router` key from the vanilla state.
+    // We remove this key because passing state to
+    // `combineReducers` with keys it doesn't recognize
+    // triggers a warning. Worse, `combineReducers` ignores
+    // the extraneous key, and therefore stops router state
+    // from propagating to the final reduced state.
     //
     // eslint-disable-next-line no-unused-vars
     const { router, ...vanillaState } = state;
