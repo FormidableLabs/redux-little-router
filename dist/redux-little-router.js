@@ -164,6 +164,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var basename = _ref.basename;
 	  var _ref$getLocation = _ref.getLocation;
 	  var getLocation = _ref$getLocation === undefined ? realLocation : _ref$getLocation;
+	  var _ref$passRouterStateT = _ref.passRouterStateToReducer;
+	  var passRouterStateToReducer = _ref$passRouterStateT === undefined ? false : _ref$passRouterStateT;
 	
 	  var history = (0, _useBasename2.default)((0, _useQueries2.default)(_createBrowserHistory2.default))({
 	    basename: basename
@@ -177,7 +179,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var location = history.createLocation({ pathname: pathname, search: search });
 	
 	  return {
-	    routerEnhancer: (0, _storeEnhancer2.default)({ routes: routes, history: history, location: location }),
+	    routerEnhancer: (0, _storeEnhancer2.default)({
+	      routes: routes,
+	      history: history,
+	      location: location,
+	      passRouterStateToReducer: passRouterStateToReducer
+	    }),
 	    routerMiddleware: (0, _middleware2.default)({ history: history })
 	  };
 	};
@@ -1868,13 +1875,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var location = _ref.location;
 	  var _ref$createMatcher = _ref.createMatcher;
 	  var createMatcher = _ref$createMatcher === undefined ? _createMatcher2.default : _ref$createMatcher;
+	  var _ref$passRouterStateT = _ref.passRouterStateToReducer;
+	  var passRouterStateToReducer = _ref$passRouterStateT === undefined ? false : _ref$passRouterStateT;
 	
 	  (0, _validateRoutes2.default)(nestedRoutes);
 	  var routes = (0, _flattenRoutes2.default)(nestedRoutes);
 	
 	  return function (createStore) {
 	    return function (reducer, initialState, enhancer) {
-	      var enhancedReducer = (0, _reducerEnhancer2.default)(reducer);
+	      var enhancedReducer = (0, _reducerEnhancer2.default)(passRouterStateToReducer)(reducer);
 	
 	      var matchRoute = createMatcher(routes);
 	      var matchWildcardRoute = createMatcher(routes, true);
@@ -2472,12 +2481,50 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	exports.default = function (vanillaReducer) {
-	  return function (state, action) {
-	    var stateWithRouter = _extends({}, state, {
-	      router: (0, _reducer2.default)(state && state.router, action)
-	    });
-	    return vanillaReducer(stateWithRouter, action);
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+	
+	exports.default = function (passRouterStateToReducer) {
+	  return function (vanillaReducer) {
+	    return function (state, action) {
+	      // Here, we use destructuring in place of `_.omit`
+	      // to remove the `router` key from the vanilla state.
+	      // We remove this key because passing state to
+	      // `combineReducers` with keys it doesn't recognize
+	      // triggers a warning. Worse, `combineReducers` ignores
+	      // the extraneous key, and therefore stops router state
+	      // from propagating to the final reduced state.
+	      //
+	      // eslint-disable-next-line no-unused-vars
+	      var router = state.router;
+	
+	      var vanillaState = _objectWithoutProperties(state, ['router']);
+	
+	      var routerState = (0, _reducer2.default)(state && state.router, action);
+	
+	      // If we're passing the router state to the vanilla reducer,
+	      // we don't need any special support for redux-loop
+	      if (passRouterStateToReducer) {
+	        var stateWithRouter = _extends({}, vanillaState, {
+	          router: routerState
+	        });
+	        return vanillaReducer(stateWithRouter, action);
+	      }
+	
+	      var newState = vanillaReducer(vanillaState, action);
+	
+	      // Support redux-loop
+	      if (Array.isArray(newState)) {
+	        var nextState = newState[0];
+	        var nextEffects = newState[1];
+	        return [_extends({}, nextState, {
+	          router: routerState
+	        }), nextEffects];
+	      }
+	
+	      return _extends({}, newState, {
+	        router: routerState
+	      });
+	    };
 	  };
 	};
 
@@ -3392,6 +3439,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = function (_ref) {
 	  var routes = _ref.routes;
 	  var request = _ref.request;
+	  var _ref$passRouterStateT = _ref.passRouterStateToReducer;
+	  var passRouterStateToReducer = _ref$passRouterStateT === undefined ? false : _ref$passRouterStateT;
 	
 	  var history = (0, _useBasename2.default)((0, _useQueries2.default)(_createMemoryHistory2.default))({
 	    basename: request.baseUrl
@@ -3403,7 +3452,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 	
 	  return {
-	    routerEnhancer: (0, _storeEnhancer2.default)({ routes: routes, history: history, location: location }),
+	    routerEnhancer: (0, _storeEnhancer2.default)({
+	      routes: routes,
+	      history: history,
+	      location: location,
+	      passRouterStateToReducer: passRouterStateToReducer
+	    }),
 	    routerMiddleware: (0, _middleware2.default)({ history: history })
 	  };
 	};
