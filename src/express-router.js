@@ -13,10 +13,15 @@ type ServerRouterArgs = {
     baseUrl: string,
     url: string,
     query: {[key: string]: string}
-  }
+  },
+  passRouterStateToReducer?: bool
 };
 
-export default ({ routes, request }: ServerRouterArgs) => {
+export default ({
+  routes,
+  request,
+  passRouterStateToReducer = false
+}: ServerRouterArgs) => {
   const history = useBasename(useQueries(createMemoryHistory))({
     basename: request.baseUrl
   });
@@ -27,7 +32,12 @@ export default ({ routes, request }: ServerRouterArgs) => {
   });
 
   return {
-    routerEnhancer: installRouter({ routes, history, location }),
+    routerEnhancer: installRouter({
+      routes,
+      history,
+      location,
+      passRouterStateToReducer
+    }),
     routerMiddleware: routerMiddleware({ history })
   };
 };
