@@ -9,7 +9,8 @@ import routerMiddleware from './middleware';
 type BrowserRouterArgs = {
   routes: Object,
   basename: string,
-  getLocation: () => Location
+  getLocation: () => Location,
+  passRouterStateToReducer?: bool
 };
 
 /* istanbul ignore next: unstubbable! */
@@ -18,7 +19,8 @@ const realLocation = () => window.location;
 export default ({
   routes,
   basename,
-  getLocation = realLocation
+  getLocation = realLocation,
+  passRouterStateToReducer = false
 }: BrowserRouterArgs) => {
   const history = useBasename(useQueries(createBrowserHistory))({
     basename
@@ -29,7 +31,12 @@ export default ({
     .createLocation({ pathname, search });
 
   return {
-    routerEnhancer: installRouter({ routes, history, location }),
+    routerEnhancer: installRouter({
+      routes,
+      history,
+      location,
+      passRouterStateToReducer
+    }),
     routerMiddleware: routerMiddleware({ history })
   };
 };

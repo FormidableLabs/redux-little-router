@@ -40,7 +40,8 @@ const fakeStore = ({
       yo: 'yo'
     }
   },
-  isLoop = false
+  isLoop = false,
+  passRouterStateToReducer = false
 } = {}) => {
   const historyStub = {
     push: sandbox.stub(),
@@ -62,7 +63,8 @@ const fakeStore = ({
     createStoreWithRouter({
       routes,
       location,
-      history: historyStub
+      history: historyStub,
+      passRouterStateToReducer
     }),
     applyMiddleware(
       routerMiddleware({ history: historyStub })
@@ -169,12 +171,24 @@ describe('Router store enhancer', () => {
       });
   });
 
-  it('passes router state to the enhanced/vanilla reducer', () => {
+  it('does not pass router state to the enhanced/vanilla reducer by default', () => {
+    const reducerSpy = sandbox.spy(state => {
+      expect(state).to.not.have.property('router');
+      return state;
+    });
+    fakeStore({ reducer: reducerSpy });
+    expect(reducerSpy).to.be.calledOnce;
+  });
+
+  it('passes router state to the enhanced/vanilla reducer when requested', () => {
     const reducerSpy = sandbox.spy(state => {
       expect(state).to.have.property('router');
       return state;
     });
-    fakeStore({ reducer: reducerSpy });
+    fakeStore({
+      reducer: reducerSpy,
+      passRouterStateToReducer: true
+    });
     expect(reducerSpy).to.be.calledOnce;
   });
 
@@ -211,10 +225,7 @@ describe('Router store enhancer', () => {
   });
 
   it('calls the reducer once for each action', () => {
-    const reducerSpy = sandbox.spy(state => {
-      expect(state).to.have.property('router');
-      return state;
-    });
+    const reducerSpy = sandbox.spy(state => state);
     const { store } = fakeStore({ reducer: reducerSpy });
     store.dispatch({ type: 'CUSTOM_ACTION' });
     expect(reducerSpy).to.be.calledTwice;

@@ -19,14 +19,16 @@ type StoreEnhancerArgs = {
   routes: Object,
   history: History,
   location: Location,
-  createMatcher?: Function
+  createMatcher?: Function,
+  passRouterStateToReducer?: bool
 };
 
 export default ({
   routes: nestedRoutes,
   history,
   location,
-  createMatcher = matcherFactory
+  createMatcher = matcherFactory,
+  passRouterStateToReducer = false
 }: StoreEnhancerArgs) => {
   validateRoutes(nestedRoutes);
   const routes = flattenRoutes(nestedRoutes);
@@ -36,7 +38,8 @@ export default ({
     initialState: State,
     enhancer: StoreEnhancer
   ) => {
-    const enhancedReducer = attachRouterToReducer(reducer);
+    const enhancedReducer =
+      attachRouterToReducer(passRouterStateToReducer)(reducer);
 
     const matchRoute = createMatcher(routes);
     const matchWildcardRoute = createMatcher(routes, true);
