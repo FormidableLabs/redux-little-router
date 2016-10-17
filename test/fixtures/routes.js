@@ -17,6 +17,17 @@ export default flattenRoutes({
     name: '3spooky5me'
   },
   '/': {
+    '/play': {
+      name: 'play',
+      '/c': {
+        name: 'c',
+        '/:code': {
+          '/code': {
+            name: 'code'
+          }
+        }
+      }
+    },
     '/this': {
       name: 'this',
       '/is': {
