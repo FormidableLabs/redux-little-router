@@ -196,6 +196,40 @@ describe('RelativeFragment', () => {
     });
   });
 
+  it('does greedy matching', () => {
+    const wrapper = mount(
+      <RelativeFragment forRoute='/play'>
+      <RelativeFragment forRoute='/c/:code'>
+        <p>fist</p>
+      </RelativeFragment>
+      <RelativeFragment forRoute='/c'>
+        <p>second</p>
+      </RelativeFragment>
+      <div>
+        <ul>
+          <li>
+          <RelativeFragment forRoute='/c/:code'>
+            <p>third</p>
+          </RelativeFragment>
+          </li>
+        </ul>
+      </div>
+      <RelativeFragment forRoute='/c/code'>
+        <p>fourth</p>
+      </RelativeFragment>
+      </RelativeFragment>,
+      fakeContext({
+        pathname: '/play/c/code',
+        route: '/play/c/:code'
+      })
+    );
+
+    expect(wrapper.containsMatchingElement(<p>fist</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>second</p>)).to.be.false;
+    expect(wrapper.containsMatchingElement(<p>third</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>fourth</p>)).to.be.false;
+  });
+
   describe('basic page-by-page routing', () => {
     // eslint-disable-next-line no-extra-parens
     const element = (
@@ -203,38 +237,38 @@ describe('RelativeFragment', () => {
         <h1>App Title</h1>
         <RelativeFragment forRoute='/cheese'>
           <p>Cheese</p>
-          <RelativeFragment forRoute='/:type'>
-            <p>Cheese Type</p>
-          </RelativeFragment>
           <RelativeFragment forRoute='/gifs'>
             <p>Cheese Gifs</p>
+          </RelativeFragment>
+          <RelativeFragment forRoute='/:type'>
+            <p>Cheese Type</p>
           </RelativeFragment>
         </RelativeFragment>
         <RelativeFragment forRoute='/dog'>
           <p>Dog</p>
-          <RelativeFragment forRoute='/:type'>
-            <p>Dog Type</p>
-          </RelativeFragment>
           <RelativeFragment forRoute='/gifs'>
             <p>Dog Gifs</p>
+          </RelativeFragment>
+          <RelativeFragment forRoute='/:type'>
+            <p>Dog Type</p>
           </RelativeFragment>
         </RelativeFragment>
         <RelativeFragment forRoute='/cat'>
           <p>Cat</p>
-          <RelativeFragment forRoute='/:type'>
-            <p>Cat Type</p>
-          </RelativeFragment>
           <RelativeFragment forRoute='/gifs'>
             <p>Cat Gifs</p>
+          </RelativeFragment>
+          <RelativeFragment forRoute='/:type'>
+            <p>Cat Type</p>
           </RelativeFragment>
         </RelativeFragment>
         <RelativeFragment forRoute='/hipster'>
           <p>Hipster</p>
-          <RelativeFragment forRoute='/:type'>
-            <p>Hipster Type</p>
-          </RelativeFragment>
           <RelativeFragment forRoute='/gifs'>
             <p>Hipster Gifs</p>
+          </RelativeFragment>
+          <RelativeFragment forRoute='/:type'>
+            <p>Hipster Type</p>
           </RelativeFragment>
         </RelativeFragment>
       </RelativeFragment>
