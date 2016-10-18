@@ -1,11 +1,13 @@
 # Advanced Docs
 
 ## Server Rendering
-`redux-little-router` supports React server rendering with an Express adapter, with plans to support Hapi in the future.
+`redux-little-router` supports React server rendering with an Express or Hapi adapter.
 
 Make sure to read http://redux.js.org/docs/recipes/ServerRendering.html to understand how the server/client Redux boilerplate works.
 
 Here's what the setup looks like on the server (assuming Node 4 LTS):
+
+### Express
 
 ```js
 const express = require('express');
@@ -56,6 +58,60 @@ app.use('/*', (req, res) => {
   // Don't forget to attach your ESCAPED initialState to
   // a script tag in your template that attaches to
   // something like window.__INITIAL_STATE.
+});
+```
+
+### Hapi
+
+```js
+const hapi = require('hapi');
+const server = new Hapi.Server();
+const routerForHapi = require('redux-little-router')
+  .routerForHapi;
+
+const redux = require('redux');
+const createStore = redux.createStore;
+const compose = redux.compose;
+const applyMiddleware = redux.applyMiddleware;
+
+const routes = {
+  '/': {
+    '/whatever': {
+      title: 'Whatever'
+    }
+  }
+};
+
+server.route({
+	method: 'GET',
+	path: '/{wild*}',
+	handler: (request, reply) => {
+		// Create the Redux store, passing in the Hapi
+		// request to the routerForHapi factory.
+
+		const router = routerForHapi({
+			routes,
+			request
+		})
+
+		const store = createStore(
+			state => state,
+			{ what: 'ever' },
+			compose(
+				router.routerEnhancer,
+				applyMiddleware(
+					router.routerMiddleware
+				)
+			)
+		);
+
+		// ...then renderToString() your components as usual,
+		// passing your new store to your <Provider> component.
+		// 
+		// Don't forget to attach your ESCAPED initialState to
+		// a script tag in your template that attaches to
+		// something like window.__INITIAL_STATE.
+	}
 });
 ```
 
