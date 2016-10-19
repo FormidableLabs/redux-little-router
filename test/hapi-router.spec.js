@@ -9,7 +9,7 @@ import routes from './fixtures/routes';
 
 chai.use(sinonChai);
 
-describe('Express router', () => {
+describe('Hapi router', () => {
   it('creates a server store enhancer using Hapi request object', () => {
     const { routerEnhancer } = routerForHapi({
       routes,
