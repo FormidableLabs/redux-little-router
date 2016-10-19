@@ -1,6 +1,7 @@
 // @flow
 import routerForBrowser from './browser-router';
 import routerForExpress from './express-router';
+import routerForHapi from './hapi-router';
 import createStoreWithRouter from './store-enhancer';
 import routerMiddleware from './middleware';
 import { locationDidChange, initializeCurrentLocation } from './action-creators';
@@ -27,6 +28,7 @@ export {
   // High-level Redux API
   routerForBrowser,
   routerForExpress,
+  routerForHapi,
   routerMiddleware,
   initializeCurrentLocation,
 

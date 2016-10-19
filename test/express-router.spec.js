@@ -10,7 +10,7 @@ import routes from './fixtures/routes';
 chai.use(sinonChai);
 
 describe('Express router', () => {
-  it('creates a browser store enhancer using window.location', () => {
+  it('creates a server store enhancer using Express request object', () => {
     const { routerEnhancer } = routerForExpress({
       routes,
       request: {
