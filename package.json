@@ -1,6 +1,6 @@
 {
   "name": "redux-little-router",
-  "version": "11.2.0",
+  "version": "11.3.0",
   "description": "A barebones routing solution for Redux applications.",
   "main": "lib/index.js",
   "scripts": {
@@ -115,8 +115,8 @@
   "peerDependencies": {
     "react": "^0.14.0 || ^15.0.0-0",
     "react-dom": "^0.14.0 || ^15.0.0-0",
-    "redux": "^3.0.0",
-    "react-redux": "^4.0.0"
+    "react-redux": "^4.0.0",
+    "redux": "^3.0.0"
   },
   "nyc": {
     "sourceMap": false,
