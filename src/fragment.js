@@ -128,7 +128,9 @@ const Fragment = (props: Props) => {
     return null;
   }
 
-  return <div>{children}</div>;
+  return React.Children.count(children) === 1
+    ? React.Children.only(children)
+    : <div>{children}</div>;
 };
 
 export const AbsoluteFragment = absolute(Fragment);

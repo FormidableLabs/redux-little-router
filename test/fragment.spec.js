@@ -8,6 +8,42 @@ import { AbsoluteFragment, RelativeFragment } from '../src/fragment';
 
 import { fakeContext } from './util';
 
+const elementNames = ['AbsoluteFragment', 'RelativeFragment'];
+
+[AbsoluteFragment, RelativeFragment].forEach((Element, i) => {
+  const elementName = elementNames[i];
+
+  it(`${elementName} renders single children without a wrapper element`, () => {
+    const text = 'only child';
+    const wrapper = mount(
+      <Element forRoute='/home/messages/:team'>
+        <p>{text}</p>
+      </Element>,
+      fakeContext({
+        pathname: '/home/messages/a-team'
+      })
+    );
+
+    expect(wrapper.first().html()).to.equal(`<p>${text}</p>`);
+  });
+
+  it(`${elementName} renders multiple children with a wrapper element`, () => {
+    const childOneText = 'child one';
+    const childTwoText = 'child two';
+    const wrapper = mount(
+      <Element forRoute='/home/messages/:team'>
+        <p>{childOneText}</p>
+        <p>{childTwoText}</p>
+      </Element>,
+      fakeContext({
+        pathname: '/home/messages/a-team'
+      })
+    );
+
+    expect(wrapper.first().html()).to.equal(`<div><p>${childOneText}</p><p>${childTwoText}</p></div>`);
+  });
+});
+
 describe('AbsoluteFragment', () => {
   it('renders if the current URL matches the given route', () => {
     const wrapper = mount(
