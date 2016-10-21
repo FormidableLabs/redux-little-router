@@ -18,6 +18,7 @@ import {
 } from './actions';
 
 import routerForBrowser from './environment/browser-router';
+import routerForHash from './environment/hash-router';
 import routerForExpress from './environment/express-router';
 import routerForHapi from './environment/hapi-router';
 
@@ -29,6 +30,7 @@ export {
   routerForBrowser,
   routerForExpress,
   routerForHapi,
+  routerForHash,
   initializeCurrentLocation,
 
   // React API
