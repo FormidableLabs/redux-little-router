@@ -2,6 +2,7 @@
 import routerForBrowser from './browser-router';
 import routerForExpress from './express-router';
 import routerForHapi from './hapi-router';
+import routerForHashHistory from './hash-history-router';
 import createStoreWithRouter from './store-enhancer';
 import routerMiddleware from './middleware';
 import { locationDidChange, initializeCurrentLocation } from './action-creators';
@@ -29,6 +30,7 @@ export {
   routerForBrowser,
   routerForExpress,
   routerForHapi,
+  routerForHashHistory,
   routerMiddleware,
   initializeCurrentLocation,
 
