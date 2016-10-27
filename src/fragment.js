@@ -2,6 +2,8 @@
 import type { Location } from 'history';
 
 import React, { Component, PropTypes } from 'react';
+import matchCache from './match-cache';
+import generateId from './util/generate-id';
 
 type RelativeProps = {
   location: Location,
@@ -42,6 +44,11 @@ const absolute = (ComposedComponent: ReactClass<*>) => {
 
 const relative = (ComposedComponent: ReactClass<*>) => {
   class RelativeFragment extends Component {
+    constructor() {
+      super();
+      this.id = generateId();
+    }
+
     getChildContext() {
       return {
         // Append the parent route if this isn't the first
@@ -50,15 +57,17 @@ const relative = (ComposedComponent: ReactClass<*>) => {
           this.context.parentRoute !== '/' &&
           this.context.parentRoute !== this.props.forRoute
             ? `${this.context.parentRoute}${this.props.forRoute}`
-            : this.props.forRoute
+            : this.props.forRoute,
+        parentId: this.id
       };
     }
 
     props: RelativeProps;
+    id: string;
 
     render() {
       const { children, forRoute, ...rest } = this.props;
-      const { router, parentRoute } = this.context;
+      const { router, parentRoute, parentId } = this.context;
       const { store } = router;
 
       const location = store.getState().router;
@@ -68,6 +77,7 @@ const relative = (ComposedComponent: ReactClass<*>) => {
 
       return (
         <ComposedComponent
+          parentId={parentId}
           location={location}
           matchRoute={store.matchWildcardRoute}
           forRoute={forRoute && `${routePrefix}${forRoute}`}
@@ -81,18 +91,22 @@ const relative = (ComposedComponent: ReactClass<*>) => {
   // Consumes this context...
   RelativeFragment.contextTypes = {
     router: PropTypes.object,
-    parentRoute: PropTypes.string
+    parentRoute: PropTypes.string,
+    parentId: PropTypes.string
   };
 
   // ...and provides this context.
   RelativeFragment.childContextTypes = {
-    parentRoute: PropTypes.string
+    parentRoute: PropTypes.string,
+    parentId: PropTypes.string
   };
 
   return RelativeFragment;
 };
 
-type Props = AbsoluteProps | RelativeProps;
+type Props = AbsoluteProps & {
+  parentId?: string
+};
 
 const Fragment = (props: Props) => {
   const {
@@ -100,16 +114,16 @@ const Fragment = (props: Props) => {
     matchRoute,
     forRoute,
     withConditions,
-    children
+    children,
+    parentId
   } = props;
 
   const matchResult = matchRoute(location.pathname, forRoute);
 
-  if (!matchResult) { return null; }
-
   if (
-    forRoute &&
-    matchResult.route !== forRoute
+    !matchResult ||
+    withConditions && !withConditions(location) ||
+    forRoute && matchResult.route !== forRoute
   ) {
     return null;
   }
@@ -124,8 +138,13 @@ const Fragment = (props: Props) => {
     }
   }
 
-  if (withConditions && !withConditions(location)) {
-    return null;
+  if (parentId) {
+    const previousMatch = matchCache.get(parentId);
+    if (previousMatch && previousMatch !== forRoute) {
+      return null;
+    } else {
+      matchCache.add(parentId, forRoute);
+    }
   }
 
   return React.Children.count(children) === 1

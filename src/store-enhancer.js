@@ -12,6 +12,8 @@ import { default as matcherFactory } from './create-matcher';
 import attachRouterToReducer from './reducer-enhancer';
 import { locationDidChange } from './action-creators';
 
+import matchCache from './match-cache';
+
 import validateRoutes from './util/validate-routes';
 import flattenRoutes from './util/flatten-routes';
 
@@ -61,6 +63,7 @@ export default ({
     history.listen(newLocation => {
       /* istanbul ignore else */
       if (newLocation) {
+        matchCache.clear();
         store.dispatch(locationDidChange({
           location: newLocation, matchRoute
         }));
