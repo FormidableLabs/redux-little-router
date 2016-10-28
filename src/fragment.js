@@ -108,7 +108,7 @@ type Props = AbsoluteProps & {
   parentId?: string
 };
 
-const Fragment = (props: Props) => {
+const Fragment = (props: Props): ?React$Element<any> => {
   const {
     location,
     matchRoute,
@@ -150,5 +150,25 @@ const Fragment = (props: Props) => {
   return <div>{children}</div>;
 };
 
-export const AbsoluteFragment = absolute(Fragment);
-export const RelativeFragment = relative(Fragment);
+type WrappedProps = Props & {
+  wrapper?: ReactClass<any>  // e.g. ReactCSSTransitionGroup
+};
+
+const WrappedFragment = (props: WrappedProps) => {
+  if (props.wrapper) {
+    const Wrapper: ReactClass<any> = props.wrapper;
+    const fragmentOutput: ?React$Element<any> = Fragment(props);  // eslint-disable-line new-cap
+    return (
+      <Wrapper>
+        {fragmentOutput}
+      </Wrapper>
+    );
+  } else {
+    return (
+      <Fragment {...props} />
+    );
+  }
+};
+
+export const AbsoluteFragment = absolute(WrappedFragment);
+export const RelativeFragment = relative(WrappedFragment);
