@@ -87,9 +87,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _provider2 = _interopRequireDefault(_provider);
 	
-	var _link = __webpack_require__(63);
+	var _link = __webpack_require__(69);
 	
-	var _fragment = __webpack_require__(64);
+	var _fragment = __webpack_require__(70);
 	
 	var _reducer = __webpack_require__(27);
 	
@@ -166,21 +166,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	exports.default = function (_ref) {
-	  var routes = _ref.routes;
-	  var basename = _ref.basename;
-	  var _ref$getLocation = _ref.getLocation;
-	  var getLocation = _ref$getLocation === undefined ? realLocation : _ref$getLocation;
-	  var _ref$passRouterStateT = _ref.passRouterStateToReducer;
-	  var passRouterStateToReducer = _ref$passRouterStateT === undefined ? false : _ref$passRouterStateT;
+	  var routes = _ref.routes,
+	      basename = _ref.basename,
+	      _ref$getLocation = _ref.getLocation,
+	      getLocation = _ref$getLocation === undefined ? realLocation : _ref$getLocation,
+	      _ref$passRouterStateT = _ref.passRouterStateToReducer,
+	      passRouterStateToReducer = _ref$passRouterStateT === undefined ? false : _ref$passRouterStateT;
 	
 	  var history = (0, _useBasename2.default)((0, _useQueries2.default)(_createBrowserHistory2.default))({
 	    basename: basename
 	  });
 	
-	  var _getLocation = getLocation();
-	
-	  var pathname = _getLocation.pathname;
-	  var search = _getLocation.search;
+	  var _getLocation = getLocation(),
+	      pathname = _getLocation.pathname,
+	      search = _getLocation.search;
 	
 	  var location = history.createLocation({ pathname: pathname, search: search });
 	
@@ -1880,13 +1879,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	exports.default = function (_ref) {
-	  var nestedRoutes = _ref.routes;
-	  var history = _ref.history;
-	  var location = _ref.location;
-	  var _ref$createMatcher = _ref.createMatcher;
-	  var createMatcher = _ref$createMatcher === undefined ? _createMatcher2.default : _ref$createMatcher;
-	  var _ref$passRouterStateT = _ref.passRouterStateToReducer;
-	  var passRouterStateToReducer = _ref$passRouterStateT === undefined ? false : _ref$passRouterStateT;
+	  var nestedRoutes = _ref.routes,
+	      history = _ref.history,
+	      location = _ref.location,
+	      _ref$createMatcher = _ref.createMatcher,
+	      createMatcher = _ref$createMatcher === undefined ? _createMatcher2.default : _ref$createMatcher,
+	      _ref$passRouterStateT = _ref.passRouterStateToReducer,
+	      passRouterStateToReducer = _ref$passRouterStateT === undefined ? false : _ref$passRouterStateT;
 	
 	  (0, _validateRoutes2.default)(nestedRoutes);
 	  var routes = (0, _flattenRoutes2.default)(nestedRoutes);
@@ -2506,9 +2505,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // from propagating to the final reduced state.
 	      //
 	      // eslint-disable-next-line no-unused-vars
-	      var router = state.router;
-	
-	      var vanillaState = _objectWithoutProperties(state, ['router']);
+	      var router = state.router,
+	          vanillaState = _objectWithoutProperties(state, ['router']);
 	
 	      var routerState = (0, _reducer2.default)(state && state.router, action);
 	
@@ -2570,9 +2568,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // state tree doesn't keep growing indefinitely
 	    if (state) {
 	      // eslint-disable-next-line no-unused-vars
-	      var previous = state.previous;
-	
-	      var oldState = _objectWithoutProperties(state, ['previous']);
+	      var previous = state.previous,
+	          oldState = _objectWithoutProperties(state, ['previous']);
 	
 	      return _extends({}, action.payload, {
 	        previous: oldState
@@ -2614,8 +2611,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _actionTypes = __webpack_require__(28);
 	
 	var locationDidChange = exports.locationDidChange = function locationDidChange(_ref) {
-	  var location = _ref.location;
-	  var matchRoute = _ref.matchRoute;
+	  var location = _ref.location,
+	      matchRoute = _ref.matchRoute;
 	
 	  // Extract the pathname so that we don't match against the basename.
 	  // This avoids requiring basename-hardcoded routes.
@@ -3493,10 +3490,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	exports.default = function (_ref) {
-	  var routes = _ref.routes;
-	  var request = _ref.request;
-	  var _ref$passRouterStateT = _ref.passRouterStateToReducer;
-	  var passRouterStateToReducer = _ref$passRouterStateT === undefined ? false : _ref$passRouterStateT;
+	  var routes = _ref.routes,
+	      request = _ref.request,
+	      _ref$passRouterStateT = _ref.passRouterStateToReducer,
+	      passRouterStateToReducer = _ref$passRouterStateT === undefined ? false : _ref$passRouterStateT;
 	
 	  var history = (0, _useBasename2.default)((0, _useQueries2.default)(_createMemoryHistory2.default))({
 	    basename: request.baseUrl
@@ -3693,10 +3690,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	exports.default = function (_ref) {
-	  var routes = _ref.routes;
-	  var request = _ref.request;
-	  var _ref$passRouterStateT = _ref.passRouterStateToReducer;
-	  var passRouterStateToReducer = _ref$passRouterStateT === undefined ? false : _ref$passRouterStateT;
+	  var routes = _ref.routes,
+	      request = _ref.request,
+	      _ref$passRouterStateT = _ref.passRouterStateToReducer,
+	      passRouterStateToReducer = _ref$passRouterStateT === undefined ? false : _ref$passRouterStateT;
 	
 	  var history = (0, _useQueries2.default)(_createMemoryHistory2.default)();
 	
@@ -4002,7 +3999,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 	
-	var _hoistNonReactStatics = __webpack_require__(62);
+	var _hoistNonReactStatics = __webpack_require__(68);
 	
 	var _hoistNonReactStatics2 = _interopRequireDefault(_hoistNonReactStatics);
 	
@@ -4429,23 +4426,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createStore2 = _interopRequireDefault(_createStore);
 	
-	var _combineReducers = __webpack_require__(57);
+	var _combineReducers = __webpack_require__(63);
 	
 	var _combineReducers2 = _interopRequireDefault(_combineReducers);
 	
-	var _bindActionCreators = __webpack_require__(59);
+	var _bindActionCreators = __webpack_require__(65);
 	
 	var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
 	
-	var _applyMiddleware = __webpack_require__(60);
+	var _applyMiddleware = __webpack_require__(66);
 	
 	var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
 	
-	var _compose = __webpack_require__(61);
+	var _compose = __webpack_require__(67);
 	
 	var _compose2 = _interopRequireDefault(_compose);
 	
-	var _warning = __webpack_require__(58);
+	var _warning = __webpack_require__(64);
 	
 	var _warning2 = _interopRequireDefault(_warning);
 	
@@ -4482,7 +4479,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 	
-	var _symbolObservable = __webpack_require__(53);
+	var _symbolObservable = __webpack_require__(59);
 	
 	var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
 	
@@ -4738,8 +4735,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getPrototype = __webpack_require__(50),
-	    isObjectLike = __webpack_require__(52);
+	var baseGetTag = __webpack_require__(50),
+	    getPrototype = __webpack_require__(56),
+	    isObjectLike = __webpack_require__(58);
 	
 	/** `Object#toString` result references. */
 	var objectTag = '[object Object]';
@@ -4756,13 +4754,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	/** Used to infer the `Object` constructor. */
 	var objectCtorString = funcToString.call(Object);
-	
-	/**
-	 * Used to resolve the
-	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var objectToString = objectProto.toString;
 	
 	/**
 	 * Checks if `value` is a plain object, that is, an object created by the
@@ -4793,7 +4784,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * // => true
 	 */
 	function isPlainObject(value) {
-	  if (!isObjectLike(value) || objectToString.call(value) != objectTag) {
+	  if (!isObjectLike(value) || baseGetTag(value) != objectTag) {
 	    return false;
 	  }
 	  var proto = getPrototype(value);
@@ -4801,8 +4792,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return true;
 	  }
 	  var Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
-	  return (typeof Ctor == 'function' &&
-	    Ctor instanceof Ctor && funcToString.call(Ctor) == objectCtorString);
+	  return typeof Ctor == 'function' && Ctor instanceof Ctor &&
+	    funcToString.call(Ctor) == objectCtorString;
 	}
 	
 	module.exports = isPlainObject;
@@ -4812,7 +4803,160 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var overArg = __webpack_require__(51);
+	var Symbol = __webpack_require__(51),
+	    getRawTag = __webpack_require__(54),
+	    objectToString = __webpack_require__(55);
+	
+	/** `Object#toString` result references. */
+	var nullTag = '[object Null]',
+	    undefinedTag = '[object Undefined]';
+	
+	/** Built-in value references. */
+	var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+	
+	/**
+	 * The base implementation of `getTag` without fallbacks for buggy environments.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the `toStringTag`.
+	 */
+	function baseGetTag(value) {
+	  if (value == null) {
+	    return value === undefined ? undefinedTag : nullTag;
+	  }
+	  value = Object(value);
+	  return (symToStringTag && symToStringTag in value)
+	    ? getRawTag(value)
+	    : objectToString(value);
+	}
+	
+	module.exports = baseGetTag;
+
+
+/***/ },
+/* 51 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var root = __webpack_require__(52);
+	
+	/** Built-in value references. */
+	var Symbol = root.Symbol;
+	
+	module.exports = Symbol;
+
+
+/***/ },
+/* 52 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var freeGlobal = __webpack_require__(53);
+	
+	/** Detect free variable `self`. */
+	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+	
+	/** Used as a reference to the global object. */
+	var root = freeGlobal || freeSelf || Function('return this')();
+	
+	module.exports = root;
+
+
+/***/ },
+/* 53 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
+	var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+	
+	module.exports = freeGlobal;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 54 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Symbol = __webpack_require__(51);
+	
+	/** Used for built-in method references. */
+	var objectProto = Object.prototype;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/**
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var nativeObjectToString = objectProto.toString;
+	
+	/** Built-in value references. */
+	var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+	
+	/**
+	 * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the raw `toStringTag`.
+	 */
+	function getRawTag(value) {
+	  var isOwn = hasOwnProperty.call(value, symToStringTag),
+	      tag = value[symToStringTag];
+	
+	  try {
+	    value[symToStringTag] = undefined;
+	    var unmasked = true;
+	  } catch (e) {}
+	
+	  var result = nativeObjectToString.call(value);
+	  if (unmasked) {
+	    if (isOwn) {
+	      value[symToStringTag] = tag;
+	    } else {
+	      delete value[symToStringTag];
+	    }
+	  }
+	  return result;
+	}
+	
+	module.exports = getRawTag;
+
+
+/***/ },
+/* 55 */
+/***/ function(module, exports) {
+
+	/** Used for built-in method references. */
+	var objectProto = Object.prototype;
+	
+	/**
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var nativeObjectToString = objectProto.toString;
+	
+	/**
+	 * Converts `value` to a string using `Object.prototype.toString`.
+	 *
+	 * @private
+	 * @param {*} value The value to convert.
+	 * @returns {string} Returns the converted string.
+	 */
+	function objectToString(value) {
+	  return nativeObjectToString.call(value);
+	}
+	
+	module.exports = objectToString;
+
+
+/***/ },
+/* 56 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var overArg = __webpack_require__(57);
 	
 	/** Built-in value references. */
 	var getPrototype = overArg(Object.getPrototypeOf, Object);
@@ -4821,7 +4965,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 51 */
+/* 57 */
 /***/ function(module, exports) {
 
 	/**
@@ -4842,7 +4986,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 52 */
+/* 58 */
 /***/ function(module, exports) {
 
 	/**
@@ -4877,29 +5021,29 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 53 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(54);
+	module.exports = __webpack_require__(60);
 
 
 /***/ },
-/* 54 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(module, global) {'use strict';
+	/* WEBPACK VAR INJECTION */(function(global, module) {'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	
-	var _ponyfill = __webpack_require__(56);
+	var _ponyfill = __webpack_require__(62);
 	
 	var _ponyfill2 = _interopRequireDefault(_ponyfill);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var root = module; /* global window */
+	var root; /* global window */
 	
 	
 	if (typeof self !== 'undefined') {
@@ -4908,16 +5052,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  root = window;
 	} else if (typeof global !== 'undefined') {
 	  root = global;
+	} else if (true) {
+	  root = module;
 	} else {
 	  root = Function('return this')();
 	}
 	
 	var result = (0, _ponyfill2['default'])(root);
 	exports['default'] = result;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(55)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(61)(module)))
 
 /***/ },
-/* 55 */
+/* 61 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -4933,7 +5079,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 56 */
+/* 62 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4961,7 +5107,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 57 */
+/* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -4975,7 +5121,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 	
-	var _warning = __webpack_require__(58);
+	var _warning = __webpack_require__(64);
 	
 	var _warning2 = _interopRequireDefault(_warning);
 	
@@ -5109,7 +5255,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 58 */
+/* 64 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -5139,7 +5285,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 59 */
+/* 65 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -5195,7 +5341,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 60 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5206,7 +5352,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	exports['default'] = applyMiddleware;
 	
-	var _compose = __webpack_require__(61);
+	var _compose = __webpack_require__(67);
 	
 	var _compose2 = _interopRequireDefault(_compose);
 	
@@ -5258,7 +5404,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 61 */
+/* 67 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5301,7 +5447,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 62 */
+/* 68 */
 /***/ function(module, exports) {
 
 	/**
@@ -5357,7 +5503,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 63 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5390,9 +5536,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var LEFT_MOUSE_BUTTON = 0;
 	
 	var normalizeHref = function normalizeHref(_ref) {
-	  var basename = _ref.basename;
-	  var pathname = _ref.pathname;
-	  var search = _ref.search;
+	  var basename = _ref.basename,
+	      pathname = _ref.pathname,
+	      search = _ref.search;
 	  return '' + (basename || '') + pathname + (search || '');
 	};
 	
@@ -5407,9 +5553,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	var resolveQueryForLocation = function resolveQueryForLocation(_ref2) {
-	  var linkLocation = _ref2.linkLocation;
-	  var persistQuery = _ref2.persistQuery;
-	  var currentLocation = _ref2.currentLocation;
+	  var linkLocation = _ref2.linkLocation,
+	      persistQuery = _ref2.persistQuery,
+	      currentLocation = _ref2.currentLocation;
 	
 	  var currentQuery = currentLocation && currentLocation.query;
 	
@@ -5433,12 +5579,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	var handleClick = function handleClick(_ref3) {
-	  var e = _ref3.e;
-	  var target = _ref3.target;
-	  var location = _ref3.location;
-	  var replaceState = _ref3.replaceState;
-	  var router = _ref3.router;
-	  var onClick = _ref3.onClick;
+	  var e = _ref3.e,
+	      target = _ref3.target,
+	      location = _ref3.location,
+	      replaceState = _ref3.replaceState,
+	      router = _ref3.router,
+	      onClick = _ref3.onClick;
 	
 	  if (onClick) {
 	    onClick(e);
@@ -5468,14 +5614,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	var Link = function Link(props, context) {
-	  var children = props.children;
-	  var href = props.href;
-	  var onClick = props.onClick;
-	  var persistQuery = props.persistQuery;
-	  var replaceState = props.replaceState;
-	  var target = props.target;
-	
-	  var rest = _objectWithoutProperties(props, ['children', 'href', 'onClick', 'persistQuery', 'replaceState', 'target']);
+	  var children = props.children,
+	      href = props.href,
+	      onClick = props.onClick,
+	      persistQuery = props.persistQuery,
+	      replaceState = props.replaceState,
+	      target = props.target,
+	      rest = _objectWithoutProperties(props, ['children', 'href', 'onClick', 'persistQuery', 'replaceState', 'target']);
 	
 	  var router = context.router;
 	
@@ -5533,10 +5678,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(PersistentQueryLink, [{
 	    key: 'render',
 	    value: function render() {
-	      var _props = this.props;
-	      var children = _props.children;
-	
-	      var rest = _objectWithoutProperties(_props, ['children']);
+	      var _props = this.props,
+	          children = _props.children,
+	          rest = _objectWithoutProperties(_props, ['children']);
 	
 	      return _react2.default.createElement(
 	        Link,
@@ -5561,7 +5705,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.PersistentQueryLink = PersistentQueryLink;
 
 /***/ },
-/* 64 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5583,7 +5727,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _matchCache2 = _interopRequireDefault(_matchCache);
 	
-	var _generateId = __webpack_require__(65);
+	var _generateId = __webpack_require__(71);
 	
 	var _generateId2 = _interopRequireDefault(_generateId);
 	
@@ -5657,16 +5801,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	      key: 'render',
 	      value: function render() {
-	        var _props = this.props;
-	        var children = _props.children;
-	        var forRoute = _props.forRoute;
+	        var _props = this.props,
+	            children = _props.children,
+	            forRoute = _props.forRoute,
+	            rest = _objectWithoutProperties(_props, ['children', 'forRoute']);
 	
-	        var rest = _objectWithoutProperties(_props, ['children', 'forRoute']);
-	
-	        var _context = this.context;
-	        var router = _context.router;
-	        var parentRoute = _context.parentRoute;
-	        var parentId = _context.parentId;
+	        var _context = this.context,
+	            router = _context.router,
+	            parentRoute = _context.parentRoute,
+	            parentId = _context.parentId;
 	        var store = router.store;
 	
 	
@@ -5706,12 +5849,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	var Fragment = function Fragment(props) {
-	  var location = props.location;
-	  var matchRoute = props.matchRoute;
-	  var forRoute = props.forRoute;
-	  var withConditions = props.withConditions;
-	  var children = props.children;
-	  var parentId = props.parentId;
+	  var location = props.location,
+	      matchRoute = props.matchRoute,
+	      forRoute = props.forRoute,
+	      withConditions = props.withConditions,
+	      children = props.children,
+	      parentId = props.parentId;
 	
 	
 	  var matchResult = matchRoute(location.pathname, forRoute);
@@ -5739,7 +5882,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }
 	
-	  return _react2.default.createElement(
+	  return _react2.default.Children.count(children) === 1 ? _react2.default.Children.only(children) : _react2.default.createElement(
 	    'div',
 	    null,
 	    children
@@ -5750,7 +5893,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var RelativeFragment = exports.RelativeFragment = relative(Fragment);
 
 /***/ },
-/* 65 */
+/* 71 */
 /***/ function(module, exports) {
 
 	"use strict";
