@@ -14,13 +14,15 @@ type ServerRouterArgs = {
     url: string,
     query: {[key: string]: string}
   },
-  passRouterStateToReducer?: bool
+  passRouterStateToReducer?: bool,
+  immutable?: false
 };
 
 export default ({
   routes,
   request,
-  passRouterStateToReducer = false
+  passRouterStateToReducer = false,
+  immutable = false
 }: ServerRouterArgs) => {
   const history = useBasename(useQueries(createMemoryHistory))({
     basename: request.baseUrl
@@ -36,7 +38,8 @@ export default ({
       routes,
       history,
       location,
-      passRouterStateToReducer
+      passRouterStateToReducer,
+      immutable
     }),
     routerMiddleware: routerMiddleware({ history })
   };

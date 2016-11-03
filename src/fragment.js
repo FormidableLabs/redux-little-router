@@ -23,7 +23,8 @@ const absolute = (ComposedComponent: ReactClass<*>) => {
 
     render() {
       const { store } = this.context.router;
-      const location = store.getState().router;
+      const state = store.getState();
+      const location = state.get ? state.get('router') : state.router;
 
       return (
         <ComposedComponent
@@ -70,7 +71,8 @@ const relative = (ComposedComponent: ReactClass<*>) => {
       const { router, parentRoute, parentId } = this.context;
       const { store } = router;
 
-      const location = store.getState().router;
+      const state = store.getState();
+      const location = state.get ? state.get('router') : state.router;
 
       const routePrefix = parentRoute &&
         parentRoute !== '/' ? parentRoute : '';
