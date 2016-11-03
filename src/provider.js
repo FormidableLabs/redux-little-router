@@ -34,7 +34,8 @@ class RouterProviderImpl extends Component {
 
   render() {
     const { store } = this.router;
-    const routerState = store.getState().router;
+    const state = store.getState();
+    const routerState = state.get ? state.get('router') : state.router;
 
     // Ensure that the router props from connect()
     // actually get to the child component(s)
@@ -59,7 +60,7 @@ type ProvideRouterArgs = {
 };
 
 export const RouterProvider = connect(state => ({
-  router: state.router
+  router: typeof state.get === 'function' ? state.get('router') : state.router
 }))(RouterProviderImpl);
 
 export default ({ store }: ProvideRouterArgs) =>

@@ -1,9 +1,9 @@
 // @flow
 import type { Reducer, State, Action } from 'redux';
 import routerReducer from './reducer';
-
 export default
-  (passRouterStateToReducer: bool) =>
+  // eslint-disable-next-line max-params
+  (passRouterStateToReducer: bool, assign: Function, omit: Function, get: Function) =>
   (vanillaReducer: Reducer) =>
   (state: State, action: Action) => {
     // Here, we use destructuring in place of `_.omit`
@@ -15,16 +15,18 @@ export default
     // from propagating to the final reduced state.
     //
     // eslint-disable-next-line no-unused-vars
-    const { router, ...vanillaState } = state;
-    const routerState = routerReducer(state && state.router, action);
+    const vanillaState = omit(state, ['router']);
+    const routerState = routerReducer(state && get(state, 'router'), action);
 
     // If we're passing the router state to the vanilla reducer,
     // we don't need any special support for redux-loop
     if (passRouterStateToReducer) {
-      const stateWithRouter = {
-        ...vanillaState,
-        router: routerState
-      };
+      const stateWithRouter = assign(
+        vanillaState,
+        {
+          router: routerState
+        }
+      );
       return vanillaReducer(stateWithRouter, action);
     }
 
@@ -43,8 +45,10 @@ export default
       ];
     }
 
-    return {
-      ...newState,
-      router: routerState
-    };
+    return assign(
+      newState,
+      {
+        router: routerState
+      }
+    );
   };

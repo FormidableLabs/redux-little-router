@@ -10,7 +10,8 @@ type BrowserRouterArgs = {
   routes: Object,
   basename: string,
   getLocation: () => Location,
-  passRouterStateToReducer?: bool
+  passRouterStateToReducer?: bool,
+  immutable?: bool
 };
 
 /* istanbul ignore next: unstubbable! */
@@ -20,7 +21,8 @@ export default ({
   routes,
   basename,
   getLocation = realLocation,
-  passRouterStateToReducer = false
+  passRouterStateToReducer = false,
+  immutable = false
 }: BrowserRouterArgs) => {
   const history = useBasename(useQueries(createBrowserHistory))({
     basename
@@ -35,7 +37,8 @@ export default ({
       routes,
       history,
       location,
-      passRouterStateToReducer
+      passRouterStateToReducer,
+      immutable
     }),
     routerMiddleware: routerMiddleware({ history })
   };
