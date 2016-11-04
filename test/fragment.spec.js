@@ -391,4 +391,32 @@ describe('RelativeFragment', () => {
       it(`${pathname} ${route}`, () => assertion(wrapper));
     });
   });
+
+  it('does not wrap single children with div', () => {
+    const wrapper = mount(
+      <RelativeFragment forRoute='/'>
+        <p>Test</p>
+      </RelativeFragment>,
+      fakeContext({
+        pathname: '/'
+      })
+    );
+
+    expect(wrapper.containsMatchingElement(<div><p>Test</p></div>)).to.be.false;
+    expect(wrapper.containsMatchingElement(<p>Test</p>)).to.be.true;
+  });
+
+  it('does wrap multiple children with div', () => {
+    const wrapper = mount(
+      <RelativeFragment forRoute='/'>
+        <p>Test</p>
+        <p>Test</p>
+      </RelativeFragment>,
+      fakeContext({
+        pathname: '/'
+      })
+    );
+
+    expect(wrapper.containsMatchingElement(<div><p>Test</p><p>Test</p></div>)).to.be.true;
+  });
 });
