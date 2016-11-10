@@ -14,12 +14,12 @@ import routes from '../test-util/fixtures/routes';
 
 chai.use(sinonChai);
 
-describe('Hash router', () => {
+describe.only('Hash router', () => {
   it('creates a browser store enhancer using window.location', () => {
     const { enhancer, middleware, reducer } = routerForHash({
       routes,
       getLocation: () => ({
-        pathname: '/home',
+        hash: '#/home',
         search: '?get=schwifty'
       })
     });
@@ -43,7 +43,7 @@ describe('Hash router', () => {
       routes,
       basename: '/cob-planet',
       getLocation: () => ({
-        pathname: '/cob-planet/home',
+        hash: '#/cob-planet/home',
         search: '?get=schwifty'
       })
     });
