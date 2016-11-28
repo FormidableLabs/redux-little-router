@@ -1,6 +1,4 @@
-import sinon from 'sinon';
-import createMemoryHistory from 'history/lib/createMemoryHistory';
-import useQueries from 'history/lib/useQueries';
+import createMemoryHistory from 'history/createMemoryHistory';
 
 import createMatcher from '../../src/create-matcher';
 
@@ -20,14 +18,9 @@ export const fakeStore = ({
   pathname = '/home/messages/b-team',
   query = { test: 'ing' },
   route = '/home/messages/:team',
-  routes = defaultRoutes,
-  fakeNewLocation
+  routes = defaultRoutes
 } = {}) => {
-  const history = useQueries(createMemoryHistory)();
-  if (fakeNewLocation) {
-    sinon.stub(history, 'createLocation')
-      .returns(fakeNewLocation);
-  }
+  const history = createMemoryHistory();
 
   return {
     subscribe() {},
@@ -56,7 +49,6 @@ export const fakeStore = ({
 };
 
 export const fakeContext = ({
-  fakeNewLocation,
   assertion,
   pathname = '/home/messages/b-team',
   route = '/home/messages/:team',
@@ -68,8 +60,7 @@ export const fakeContext = ({
         assertion,
         pathname,
         query,
-        route,
-        fakeNewLocation
+        route
       })
     }
   }
