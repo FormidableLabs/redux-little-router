@@ -1,8 +1,7 @@
 // @flow
-import createMemoryHistory from 'history/lib/createMemoryHistory';
-import useBasename from 'history/lib/useBasename';
-import useQueries from 'history/lib/useQueries';
+import createMemoryHistory from 'history/createMemoryHistory';
 
+import createLocation from './util/create-location';
 import installRouter from './store-enhancer';
 import routerMiddleware from './middleware';
 
@@ -17,19 +16,22 @@ type ServerRouterArgs = {
   passRouterStateToReducer?: bool
 };
 
+const locationForRequest = request => {
+  const { path: pathname, baseUrl: basename, query } = request;
+  const descriptor = basename
+    ? { pathname, basename, query }
+    : { pathname, query };
+  return createLocation(descriptor);
+};
+
 export default ({
   routes,
   request,
   passRouterStateToReducer = false
 }: ServerRouterArgs) => {
-  const history = useBasename(useQueries(createMemoryHistory))({
-    basename: request.baseUrl
-  });
+  const history = createMemoryHistory();
 
-  const location = history.createLocation({
-    pathname: request.path,
-    query: request.query
-  });
+  const location = locationForRequest(request);
 
   return {
     routerEnhancer: installRouter({

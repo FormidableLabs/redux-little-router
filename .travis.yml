@@ -17,15 +17,8 @@ before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
 
-  - 'npm install -g npm@3'
-
 script:
-  - npm --version
-
-  # Peer dependencies
-  - npm install redux@^3.0.0 react@^15.0.0-0 react-dom@^15.0.0-0 react-redux@^4.0.0
-
-  - npm run check-cov
+  - yarn run check-cov
   - node_modules/.bin/nyc report --reporter=text-lcov > coverage.lcov && node_modules/.bin/codecov || echo "Codecov upload failed"
 
-  - npm run build
+  - yarn run build

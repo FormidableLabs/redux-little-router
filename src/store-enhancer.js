@@ -65,7 +65,8 @@ export default ({
       if (newLocation) {
         matchCache.clear();
         store.dispatch(locationDidChange({
-          location: newLocation, matchRoute
+          location: newLocation,
+          matchRoute
         }));
       }
     });

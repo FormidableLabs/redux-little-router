@@ -1,5 +1,8 @@
 /* eslint-disable max-nested-callbacks */
-import { expect } from 'chai';
+import chai, { expect } from 'chai';
+import sinonChai from 'sinon-chai';
+
+import qs from 'query-string';
 
 import React from 'react';
 import { shallow, mount } from 'enzyme';
@@ -13,7 +16,19 @@ import {
   standardClickEvent
 } from './util';
 
+chai.use(sinonChai);
+
 describe('Router link component', () => {
+  let createLocation;
+  beforeEach(() => {
+    createLocation = sandbox.stub().returns({
+      pathname: '/home/messages/a-team',
+      search: '?test=ing',
+      action: 'PUSH',
+      query: { test: 'ing' }
+    });
+  });
+
   describe('Vanilla link', () => {
     describe('PUSH', () => {
       const hrefs = [
@@ -26,20 +41,13 @@ describe('Router link component', () => {
         }
       ];
 
-      const fakeNewLocation = {
-        pathname: '/home/messages/a-team',
-        search: '?test=ing',
-        action: 'PUSH',
-        query: { test: 'ing' }
-      };
-
       hrefs.forEach(href =>
         it('dispatches a PUSH action with the correct href when clicked', done => {
           const assertion = action => {
             if (action.type === PUSH) {
               const { payload } = action;
               captureErrors(done, () => {
-                expect(payload).to.have.property('action', 'PUSH');
+                expect(createLocation).to.have.been.calledOnce;
                 expect(payload).to.have.property('pathname')
                   .that.contains('/home/messages/a-team');
                 expect(payload).to.have.property('query')
@@ -49,8 +57,8 @@ describe('Router link component', () => {
           };
 
           const wrapper = shallow(
-            <Link href={href} />,
-            fakeContext({ fakeNewLocation, assertion })
+            <Link href={href} createLocation={createLocation} />,
+            fakeContext({ assertion })
           );
 
           wrapper.find('a').simulate('click', standardClickEvent);
@@ -69,20 +77,13 @@ describe('Router link component', () => {
         }
       ];
 
-      const fakeNewLocation = {
-        pathname: '/home/messages/a-team',
-        search: '?test=ing',
-        action: 'REPLACE',
-        query: { test: 'ing' }
-      };
-
       hrefs.forEach(href => {
         it('dispatches a REPLACE action with the correct href when clicked', done => {
           const assertion = action => {
             if (action.type === REPLACE) {
               const { payload } = action;
               captureErrors(done, () => {
-                expect(payload).to.have.property('action', 'REPLACE');
+                expect(createLocation).to.have.been.calledOnce;
                 expect(payload).to.have.property('pathname')
                   .that.contains('/home/messages/a-team');
                 expect(payload).to.have.property('query')
@@ -92,8 +93,8 @@ describe('Router link component', () => {
           };
 
           const wrapper = shallow(
-            <Link replaceState href={href} />,
-            fakeContext({ fakeNewLocation, assertion })
+            <Link replaceState href={href} createLocation={createLocation} />,
+            fakeContext({ assertion })
           );
 
           wrapper.find('a').simulate('click', standardClickEvent);
@@ -104,16 +105,9 @@ describe('Router link component', () => {
     describe('Accessibility', () => {
       ['shiftKey', 'altKey', 'metaKey', 'ctrlKey'].forEach(modifierKey =>
         it(`uses default browser behavior when the user holds the ${modifierKey}`, () => {
-          const fakeNewLocation = {
-            pathname: '/home/things',
-            search: '',
-            action: 'PUSH',
-            query: {}
-          };
-
           const wrapper = shallow(
-            <Link href='/home/things' />,
-            fakeContext({ fakeNewLocation })
+            <Link href='/home/things' createLocation={createLocation} />,
+            fakeContext()
           );
 
           const spy = sandbox.spy();
@@ -123,21 +117,15 @@ describe('Router link component', () => {
             preventDefault: spy
           });
 
+          expect(createLocation).to.have.been.calledOnce;
           expect(spy).to.not.have.been.called;
         })
       );
 
       it('uses default browser behavior when the user clicks a non-left mouse button', () => {
-        const fakeNewLocation = {
-          pathname: '/home/things',
-          search: '',
-          action: 'PUSH',
-          query: {}
-        };
-
         const wrapper = shallow(
-          <Link href='/home/things' />,
-          fakeContext({ fakeNewLocation })
+          <Link href='/home/things' createLocation={createLocation} />,
+          fakeContext()
         );
 
         const spy = sandbox.spy();
@@ -147,20 +135,14 @@ describe('Router link component', () => {
           preventDefault: spy
         });
 
+        expect(createLocation).to.have.been.calledOnce;
         expect(spy).to.not.have.been.called;
       });
 
       it('prevents default when the user left-clicks', () => {
-        const fakeNewLocation = {
-          pathname: '/home/things',
-          search: '',
-          action: 'PUSH',
-          query: {}
-        };
-
         const wrapper = shallow(
-          <Link href='/home/things' />,
-          fakeContext({ fakeNewLocation })
+          <Link href='/home/things' createLocation={createLocation} />,
+          fakeContext()
         );
 
         const spy = sandbox.spy();
@@ -170,17 +152,11 @@ describe('Router link component', () => {
           preventDefault: spy
         });
 
+        expect(createLocation).to.have.been.calledOnce;
         expect(spy).to.have.been.calledOnce;
       });
 
       it('passes through DOM props, including aria attributes', () => {
-        const fakeNewLocation = {
-          pathname: '/home/things',
-          search: '',
-          action: 'PUSH',
-          query: {}
-        };
-
         const wrapper = shallow(
           <Link
             href='/home/things'
@@ -189,9 +165,12 @@ describe('Router link component', () => {
             style={{
               fontFamily: 'Comic Sans'
             }}
+            createLocation={createLocation}
           />,
-          fakeContext({ fakeNewLocation })
+          fakeContext()
         );
+
+        expect(createLocation).to.have.been.calledOnce;
 
         const props = wrapper.props();
         expect(props).to.have.property('aria-label', 'a11y');
@@ -203,14 +182,22 @@ describe('Router link component', () => {
       });
     });
     describe('Rendering', () => {
-      it('renders an <a/> with the correct href attribute', () => {
+      it('renders an <a /> with the correct href attribute', () => {
         const hrefs = [
           '/path',
           '/path?key=value',
           'path/with/nested/routes'
         ];
         hrefs.forEach(href => {
-          const wrapper = shallow(<Link href={href} />, fakeContext());
+          const createLocationStub = sandbox.stub().returns({
+            pathname: href,
+            search: ''
+          });
+          const wrapper = shallow(
+            <Link href={href} createLocation={createLocationStub} />,
+            fakeContext()
+          );
+          expect(createLocationStub).to.have.been.calledOnce;
           expect(wrapper.find('a').prop('href')).to.equal(href);
         });
       });
@@ -227,10 +214,15 @@ describe('Router link component', () => {
           { pathname: 'path/with/nested/routes' }
         ];
         locations.forEach((location, index) => {
+          const createLocationStub = sandbox.stub().returns({
+            pathname: location.pathname,
+            search: `${location.query ? '?' : ''}${qs.stringify(location.query)}`
+          });
           const wrapper = shallow(
-            <Link href={location} />,
+            <Link href={location} createLocation={createLocationStub} />,
             fakeContext()
           );
+          expect(createLocationStub).to.have.been.calledOnce;
           expect(wrapper.find('a').prop('href')).to.equal(expected[index]);
         });
       });
@@ -246,13 +238,6 @@ describe('Router link component', () => {
         { pathname: '/home/messages/a-team' }
       ];
 
-      const fakeNewLocation = {
-        pathname: '/home/messages/a-team',
-        search: '?test=ing',
-        action: 'PUSH',
-        query: { test: 'ing' }
-      };
-
       hrefs.forEach(href => {
         it('persists previous query string if the href does not provide one', done => {
           const assertion = action => {
@@ -266,10 +251,11 @@ describe('Router link component', () => {
           };
 
           const wrapper = mount(
-            <PersistentQueryLink href={href} />,
-            fakeContext({ fakeNewLocation, assertion })
+            <PersistentQueryLink href={href} createLocation={createLocation} />,
+            fakeContext({ assertion })
           );
 
+          expect(createLocation).to.have.been.calledOnce;
           wrapper.find('a').simulate('click', standardClickEvent);
         });
       });
@@ -286,15 +272,15 @@ describe('Router link component', () => {
         }
       ];
 
-      const fakeNewLocation = {
-        pathname: '/home/messages/a-team',
-        search: '?jawn=jawn',
-        action: 'PUSH',
-        query: { jawn: 'jawn' }
-      };
-
       hrefs.forEach(href => {
         it('replaces the previous query string if the href provides one', done => {
+          const createLocationStub = sandbox.stub().returns({
+            pathname: '/home/messages/a-team',
+            search: '?jawn=jawn',
+            action: 'PUSH',
+            query: { jawn: 'jawn' }
+          });
+
           const assertion = action => {
             if (action.type === PUSH) {
               const { payload } = action;
@@ -306,10 +292,11 @@ describe('Router link component', () => {
           };
 
           const wrapper = mount(
-            <PersistentQueryLink href={href} />,
-            fakeContext({ fakeNewLocation, assertion })
+            <PersistentQueryLink href={href} createLocation={createLocationStub} />,
+            fakeContext({ assertion })
           );
 
+          expect(createLocationStub).to.have.been.calledOnce;
           wrapper.find('a').simulate('click', standardClickEvent);
         });
       });

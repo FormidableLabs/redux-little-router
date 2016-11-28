@@ -1,9 +1,11 @@
 // @flow
 import type { LocationDescriptor } from 'history';
 import type { RouterContext } from './provider';
+
 import React, { Component, PropTypes } from 'react';
 
 import { PUSH, REPLACE } from './action-types';
+import defaultCreateLocation from './util/create-location';
 
 type Props = {
   children: React.Element<*>,
@@ -13,7 +15,8 @@ type Props = {
   persistQuery: bool,
   replaceState: bool,
   style: Object,
-  target: string
+  target: string,
+  createLocation: Function
 };
 
 const LEFT_MOUSE_BUTTON = 0;
@@ -100,6 +103,7 @@ const Link = (
     persistQuery,
     replaceState,
     target,
+    createLocation = defaultCreateLocation,
     ...rest
   } = props;
 
@@ -112,8 +116,7 @@ const Link = (
       persistQuery
     });
 
-  const location = router.store.history
-    .createLocation(locationDescriptor);
+  const location = createLocation(locationDescriptor);
 
   return (
     <a

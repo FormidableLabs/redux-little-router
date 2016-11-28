@@ -1,7 +1,7 @@
 // @flow
-import createMemoryHistory from 'history/lib/createMemoryHistory';
-import useQueries from 'history/lib/useQueries';
+import createMemoryHistory from 'history/createMemoryHistory';
 
+import createLocation from './util/create-location';
 import installRouter from './store-enhancer';
 import routerMiddleware from './middleware';
 
@@ -20,9 +20,9 @@ export default ({
   request,
   passRouterStateToReducer = false
 }: ServerRouterArgs) => {
-  const history = useQueries(createMemoryHistory)();
+  const history = createMemoryHistory();
 
-  const location = history.createLocation({
+  const location = createLocation({
     pathname: request.path,
     query: request.query
   });
