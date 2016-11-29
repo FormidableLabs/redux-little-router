@@ -108,11 +108,13 @@ const Link = (
   } = props;
 
   const { router } = context;
+  const { router: currentLocation } = router.store.getState();
+  const { basename } = currentLocation;
 
   const locationDescriptor =
     resolveQueryForLocation({
       linkLocation: normalizeLocation(href),
-      currentLocation: router.store.getState().router,
+      currentLocation,
       persistQuery
     });
 
@@ -120,7 +122,7 @@ const Link = (
 
   return (
     <a
-      href={normalizeHref(location)}
+      href={normalizeHref({ ...location, basename })}
       onClick={e => handleClick({
         e,
         location,

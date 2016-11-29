@@ -20,10 +20,17 @@ export default (state: ?Location | Object = {}, action: Action) => {
     if (state) {
       // eslint-disable-next-line no-unused-vars
       const { previous, ...oldState } = state;
-      return {
+
+      const nextState = {
         ...action.payload,
         previous: oldState
       };
+
+      // reuse the initial basename if not provided
+      return oldState.basename ? {
+        basename: oldState.basename,
+        ...nextState
+      } : nextState;
     }
   }
   return state;

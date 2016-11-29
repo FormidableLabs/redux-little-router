@@ -27,6 +27,7 @@ export default ({
   const descriptor = basename
     ? { pathname, basename, search }
     : { pathname, search };
+
   const location = createLocation(descriptor);
 
   return {

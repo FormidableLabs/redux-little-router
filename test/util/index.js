@@ -15,6 +15,7 @@ export const captureErrors = (done, assertions) => {
 
 export const fakeStore = ({
   assertion,
+  basename,
   pathname = '/home/messages/b-team',
   query = { test: 'ing' },
   route = '/home/messages/:team',
@@ -28,6 +29,7 @@ export const fakeStore = ({
     getState() {
       return {
         router: {
+          basename,
           pathname,
           query,
           search: '?test=ing',
@@ -50,6 +52,7 @@ export const fakeStore = ({
 
 export const fakeContext = ({
   assertion,
+  basename,
   pathname = '/home/messages/b-team',
   route = '/home/messages/:team',
   query = { test: 'ing' }
@@ -58,6 +61,7 @@ export const fakeContext = ({
     router: {
       store: fakeStore({
         assertion,
+        basename,
         pathname,
         query,
         route
