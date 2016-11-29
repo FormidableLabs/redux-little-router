@@ -32,6 +32,41 @@ describe('Router reducer', () => {
     });
   });
 
+  it('persists the initial basename after subsequent navigations', () => {
+    const action = {
+      type: LOCATION_CHANGED,
+      payload: {
+        params: {},
+        result: 'rofl',
+        url: '/rofl',
+        pathname: '/rofl',
+        action: 'PUSH',
+        state: {
+          bork: 'bork'
+        }
+      }
+    };
+
+    const result = routerReducer({
+      basename: '/base'
+    }, action);
+
+    expect(result).to.deep.equal({
+      basename: '/base',
+      params: {},
+      result: 'rofl',
+      url: '/rofl',
+      pathname: '/rofl',
+      action: 'PUSH',
+      state: {
+        bork: 'bork'
+      },
+      previous: {
+        basename: '/base'
+      }
+    });
+  });
+
   it('does nothing if the action pathname is the same as the existing', () => {
     const action = {
       type: LOCATION_CHANGED,

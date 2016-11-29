@@ -181,6 +181,7 @@ describe('Router link component', () => {
           });
       });
     });
+
     describe('Rendering', () => {
       it('renders an <a /> with the correct href attribute', () => {
         const hrefs = [
@@ -199,6 +200,27 @@ describe('Router link component', () => {
           );
           expect(createLocationStub).to.have.been.calledOnce;
           expect(wrapper.find('a').prop('href')).to.equal(href);
+        });
+      });
+
+      it('renders an <a /> with the correct href attribute using a basename', () => {
+        const hrefs = [
+          '/path',
+          '/path?key=value',
+          'path/with/nested/routes'
+        ];
+        hrefs.forEach(href => {
+          const createLocationStub = sandbox.stub().returns({
+            basename: '/base',
+            pathname: href,
+            search: ''
+          });
+          const wrapper = shallow(
+            <Link href={href} createLocation={createLocationStub} />,
+            fakeContext({ basename: '/base' })
+          );
+          expect(createLocationStub).to.have.been.calledOnce;
+          expect(wrapper.find('a').prop('href')).to.equal(`/base${href}`);
         });
       });
 
@@ -224,6 +246,32 @@ describe('Router link component', () => {
           );
           expect(createLocationStub).to.have.been.calledOnce;
           expect(wrapper.find('a').prop('href')).to.equal(expected[index]);
+        });
+      });
+
+      it('parses and renders location objects as hrefs using a basename', () => {
+        const expected = [
+          '/path',
+          '/path?key=value',
+          'path/with/nested/routes'
+        ];
+        const locations = [
+          { pathname: '/path' },
+          { pathname: '/path', query: { key: 'value' } },
+          { pathname: 'path/with/nested/routes' }
+        ];
+        locations.forEach((location, index) => {
+          const createLocationStub = sandbox.stub().returns({
+            basename: '/base',
+            pathname: location.pathname,
+            search: `${location.query ? '?' : ''}${qs.stringify(location.query)}`
+          });
+          const wrapper = shallow(
+            <Link href={location} createLocation={createLocationStub} />,
+            fakeContext({ basename: '/base' })
+          );
+          expect(createLocationStub).to.have.been.calledOnce;
+          expect(wrapper.find('a').prop('href')).to.equal(`/base${expected[index]}`);
         });
       });
     });

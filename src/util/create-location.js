@@ -8,7 +8,8 @@ export default (path, state, key, currentLocation) => {
   const { query, basename } = path;
   const { search } = vanillaLocation;
 
-  const resolvedSearch = search || (query && `?${qs.stringify(query)}`) || '';
+  const resolvedSearch = search ||
+    (query && Object.keys(query).length && `?${qs.stringify(query)}`) || '';
   const resolvedQuery = query || qs.parse(search);
 
   const location = {
