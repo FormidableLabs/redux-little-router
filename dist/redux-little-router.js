@@ -177,6 +177,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var search = _getLocation.search;
 	
 	  var descriptor = basename ? { pathname: pathname, basename: basename, search: search } : { pathname: pathname, search: search };
+	
 	  var location = (0, _createLocation2.default)(descriptor);
 	
 	  return {
@@ -1245,7 +1246,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var search = vanillaLocation.search;
 	
 	
-	  var resolvedSearch = search || query && '?' + _queryString2.default.stringify(query) || '';
+	  var resolvedSearch = search || query && Object.keys(query).length && '?' + _queryString2.default.stringify(query) || '';
 	  var resolvedQuery = query || _queryString2.default.parse(search);
 	
 	  var location = _extends({}, vanillaLocation, {
@@ -2193,9 +2194,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      var oldState = _objectWithoutProperties(state, ['previous']);
 	
-	      return _extends({}, action.payload, {
+	      var nextState = _extends({}, action.payload, {
 	        previous: oldState
 	      });
+	
+	      // reuse the initial basename if not provided
+	      return oldState.basename ? _extends({
+	        basename: oldState.basename
+	      }, nextState) : nextState;
 	    }
 	  }
 	  return state;
@@ -5129,10 +5135,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  var router = context.router;
 	
+	  var _router$store$getStat = router.store.getState();
+	
+	  var currentLocation = _router$store$getStat.router;
+	  var basename = currentLocation.basename;
+	
 	
 	  var locationDescriptor = resolveQueryForLocation({
 	    linkLocation: normalizeLocation(href),
-	    currentLocation: router.store.getState().router,
+	    currentLocation: currentLocation,
 	    persistQuery: persistQuery
 	  });
 	
@@ -5141,7 +5152,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return _react2.default.createElement(
 	    'a',
 	    _extends({
-	      href: normalizeHref(location),
+	      href: normalizeHref(_extends({}, location, { basename: basename })),
 	      onClick: function (_onClick) {
 	        function onClick(_x) {
 	          return _onClick.apply(this, arguments);
