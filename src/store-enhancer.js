@@ -7,6 +7,7 @@ import type {
 } from 'redux';
 
 import type { History } from 'history';
+import qs from 'query-string';
 
 import { default as matcherFactory } from './create-matcher';
 import attachRouterToReducer from './reducer-enhancer';
@@ -64,6 +65,7 @@ export default ({
       /* istanbul ignore else */
       if (newLocation) {
         matchCache.clear();
+        newLocation.query = qs.parse(newLocation.search);
         store.dispatch(locationDidChange({
           location: newLocation,
           matchRoute
