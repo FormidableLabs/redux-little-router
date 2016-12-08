@@ -158,8 +158,12 @@ const WrappedFragment = (props: WrappedProps) => {
   if (props.wrapper) {
     const Wrapper: ReactClass<any> = props.wrapper;
     const fragmentOutput: ?React$Element<any> = Fragment(props);  // eslint-disable-line new-cap
+    const {
+      location, matchRoute, forRoute, withConditions,  // eslint-disable-line no-unused-vars
+      children, parentId, wrapper, ...rest             // eslint-disable-line no-unused-vars
+    } = props;
     return (
-      <Wrapper>
+      <Wrapper {...rest}>
         {fragmentOutput}
       </Wrapper>
     );
