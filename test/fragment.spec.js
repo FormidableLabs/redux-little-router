@@ -230,6 +230,30 @@ describe('RelativeFragment', () => {
     expect(wrapper.containsMatchingElement(<p>fourth</p>)).to.be.false;
   });
 
+  it('renders default route if no others match', () => {
+    const wrapper = mount(
+      <RelativeFragment forRoute='/play'>
+        <RelativeFragment forRoute='/c/:code'>
+          <p>fist</p>
+        </RelativeFragment>
+        <RelativeFragment forRoute='/c'>
+          <p>second</p>
+        </RelativeFragment>
+        <RelativeFragment forRoute=''>
+          <p>default</p>
+        </RelativeFragment>
+      </RelativeFragment>,
+      fakeContext({
+        pathname: '/play',
+        route: '/play'
+      })
+    );
+
+    expect(wrapper.containsMatchingElement(<p>fist</p>)).to.be.false;
+    expect(wrapper.containsMatchingElement(<p>second</p>)).to.be.false;
+    expect(wrapper.containsMatchingElement(<p>default</p>)).to.be.true;
+  });
+
   describe('basic page-by-page routing', () => {
     // eslint-disable-next-line no-extra-parens
     const element = (
