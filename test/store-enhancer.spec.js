@@ -125,6 +125,22 @@ describe('Router store enhancer', () => {
     });
   });
 
+  it('updates pathname and query in the state tree on browser location change', () => {
+    const { store, historyStub } = fakeStore();
+    historyStub.listen.yield({
+      pathname: '/home/messages',
+      search: 'yo=yo',
+      hash: ''
+    });
+
+    // this would be simpilar with Chai 4 and expect(...).to.deep.include({...})
+    // https://github.com/chaijs/chai/issues/781
+    const state = store.getState();
+    expect(state).to.have.deep.property('router.pathname', '/home/messages');
+    expect(state).to.have.deep.property('router.query.yo', 'yo');
+    expect(state).to.have.deep.property('router.result.name', 'messages');
+  });
+
   it('merges user-provided initial state with initial routing state', () => {
     const { store } = fakeStore({
       initialState: {
