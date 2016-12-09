@@ -3,20 +3,21 @@ import sinonChai from 'sinon-chai';
 
 import { createStore } from 'redux';
 
+import jsdom from 'jsdom';
+
 import routerForBrowser from '../src/browser-router';
 
 import routes from './fixtures/routes';
 
 chai.use(sinonChai);
 
+/*global window*/
+
 describe('Browser router', () => {
   it('creates a browser store enhancer using window.location', () => {
+    jsdom.changeURL(window, 'https://example.com/home?get=schwifty');
     const { routerEnhancer } = routerForBrowser({
-      routes,
-      getLocation: () => ({
-        pathname: '/home',
-        search: '?get=schwifty'
-      })
+      routes
     });
     const store = createStore(
       state => state,
@@ -31,13 +32,11 @@ describe('Browser router', () => {
   });
 
   it('supports basenames', () => {
+    jsdom.changeURL(window, 'https://example.com/cob-planet/home?get=schwifty');
+
     const { routerEnhancer } = routerForBrowser({
       routes,
-      basename: '/cob-planet',
-      getLocation: () => ({
-        pathname: '/home',
-        search: '?get=schwifty'
-      })
+      basename: '/cob-planet'
     });
     const store = createStore(
       state => state,
