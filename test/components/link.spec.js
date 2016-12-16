@@ -7,14 +7,14 @@ import qs from 'query-string';
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 
-import { PUSH, REPLACE } from '../src/action-types';
-import { Link, PersistentQueryLink } from '../src/link';
+import { PUSH, REPLACE } from '../../src/actions';
+import { Link, PersistentQueryLink } from '../../src/components/link';
 
 import {
   captureErrors,
   fakeContext,
   standardClickEvent
-} from './util';
+} from '../test-util';
 
 chai.use(sinonChai);
 

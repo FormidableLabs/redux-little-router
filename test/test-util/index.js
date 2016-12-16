@@ -1,8 +1,8 @@
 import createMemoryHistory from 'history/createMemoryHistory';
 
-import createMatcher from '../../src/create-matcher';
+import createMatcher from '../../src/util/create-matcher';
 
-import defaultRoutes from '../fixtures/routes';
+import defaultRoutes from '../test-util/fixtures/routes';
 
 export const captureErrors = (done, assertions) => {
   try {

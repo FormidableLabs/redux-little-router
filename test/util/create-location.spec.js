@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import createLocation from '../src/util/create-location';
+import createLocation from '../../src/util/create-location';
 
 describe('createLocation', () => {
   it('ignores empty query objects', () => {

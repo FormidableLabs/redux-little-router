@@ -2,8 +2,8 @@
 import type { Location } from 'history';
 
 import React, { Component, PropTypes } from 'react';
-import matchCache from './match-cache';
-import generateId from './util/generate-id';
+import matchCache from '../util/match-cache';
+import generateId from '../util/generate-id';
 
 type RelativeProps = {
   location: Location,
@@ -56,7 +56,7 @@ const relative = (ComposedComponent: ReactClass<*>) => {
         parentRoute: this.context.parentRoute &&
           this.context.parentRoute !== '/' &&
           this.context.parentRoute !== this.props.forRoute
-            ? `${this.context.parentRoute}${this.props.forRoute}`
+            ? `${this.context.parentRoute}${this.props.forRoute || ''}`
             : this.props.forRoute,
         parentId: this.id
       };

@@ -1,9 +1,9 @@
 import { expect } from 'chai';
-import { MatchCache } from '../src/match-cache';
+import { MatchCache } from '../../src/util/match-cache';
+
 let cache;
 
 describe('MatchCache', () => {
-
   beforeEach(() => {
     cache = new MatchCache();
   });
