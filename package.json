@@ -19,7 +19,7 @@
     "clean": "npm run clean-lib && npm run clean-dist",
     "build": "npm run build-lib && npm run build-dist",
     "lint": "concurrently 'eslint --color --ext .js,.jsx src test' 'flow check'",
-    "test": "mocha test/.setup.js test/**/*.spec.js",
+    "test": "mocha test/.setup.js 'test/**/*.spec.js'",
     "test-cov": "BABEL_ENV=coverage nyc mocha test/.setup.js 'test/**/*.spec.js'",
     "check": "npm run lint && npm run test",
     "check-cov": "npm run lint && npm run test-cov",
