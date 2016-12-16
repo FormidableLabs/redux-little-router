@@ -6,6 +6,8 @@ import React, { Component, PropTypes } from 'react';
 
 import { PUSH, REPLACE } from '../actions';
 import defaultCreateLocation from '../util/create-location';
+import normalizeDescriptor from '../util/normalize-descriptor';
+import stringifyLocation from '../util/stringify-location';
 
 type Props = {
   children: React.Element<*>,
@@ -20,19 +22,6 @@ type Props = {
 };
 
 const LEFT_MOUSE_BUTTON = 0;
-
-const normalizeHref = ({ basename, pathname, search }) =>
-  `${basename || ''}${pathname}${search || ''}`;
-
-const normalizeLocation = href => {
-  if (typeof href === 'string') {
-    const pathnameAndQuery = href.split('?');
-    const pathname = pathnameAndQuery[0]; // eslint-disable-line no-magic-numbers
-    const query = pathnameAndQuery[1]; // eslint-disable-line no-magic-numbers
-    return query ? { pathname, search: `?${query}` } : { pathname };
-  }
-  return href;
-};
 
 const resolveQueryForLocation = ({
   linkLocation,
@@ -113,7 +102,7 @@ const Link = (
 
   const locationDescriptor =
     resolveQueryForLocation({
-      linkLocation: normalizeLocation(href),
+      linkLocation: normalizeDescriptor(href),
       currentLocation,
       persistQuery
     });
@@ -122,7 +111,7 @@ const Link = (
 
   return (
     <a
-      href={normalizeHref({ ...location, basename })}
+      href={stringifyLocation({ ...location, basename })}
       onClick={e => handleClick({
         e,
         location,
