@@ -2,7 +2,17 @@ import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
 import {
+  PUSH,
+  REPLACE,
+  GO,
+  GO_BACK,
+  GO_FORWARD,
   LOCATION_CHANGED,
+  push,
+  replace,
+  go,
+  goBack,
+  goForward,
   locationDidChange,
   initializeCurrentLocation
 } from '../src/actions';
@@ -10,6 +20,46 @@ import {
 chai.use(sinonChai);
 
 describe('Action creators', () => {
+  it('creates a PUSH action', () => {
+    const descriptor = push({
+      pathname: '/boop',
+      query: {
+        the: 'snoot'
+      }
+    });
+
+    expect(push(descriptor)).to.deep.equal({
+      type: PUSH,
+      payload: descriptor
+    });
+  });
+
+  it('creates a REPLACE action', () => {
+    const descriptor = push({
+      pathname: '/boop',
+      query: {
+        the: 'snoot'
+      }
+    });
+
+    expect(replace(descriptor)).to.deep.equal({
+      type: REPLACE,
+      payload: descriptor
+    });
+  });
+
+  it('creates a GO action', () => {
+    expect(go(1)).to.deep.equal({ type: GO, payload: 1 });
+  });
+
+  it('creates a GO_BACK action', () => {
+    expect(goBack()).to.deep.equal({ type: GO_BACK });
+  });
+
+  it('creates a GO_FORWARD action', () => {
+    expect(goForward()).to.deep.equal({ type: GO_FORWARD });
+  });
+
   it('combines the location descriptor and the route match into a LOCATION_CHANGED action', () => {
     const locationChangedAction = locationDidChange({
       location: {
