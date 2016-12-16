@@ -12,7 +12,6 @@ src/
 
 [libs]
 interfaces/
-node_modules/flow-typed/definitions
 
 [options]
 module.name_mapper='history\(.*\)' -> 'history'
