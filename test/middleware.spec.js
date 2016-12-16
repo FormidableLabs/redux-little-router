@@ -1,12 +1,13 @@
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
-import { applyMiddleware, createStore } from 'redux';
-import { routerMiddleware } from '../src';
+import { createStore, applyMiddleware } from 'redux';
+
+import middleware from '../src/middleware';
 
 import {
   PUSH, REPLACE, GO, GO_BACK, GO_FORWARD
-} from '../src/action-types';
+} from '../src/actions';
 
 chai.use(sinonChai);
 
@@ -28,29 +29,6 @@ const consumerMiddleware = ({ dispatch }) => next => action => {
   next(action);
 };
 
-const init = () => {
-  const historyStub = {
-    push: sandbox.stub(),
-    replace: sandbox.stub(),
-    go: sandbox.stub(),
-    goBack: sandbox.stub(),
-    goForward: sandbox.stub()
-  };
-
-  const store = createStore(
-    state => state,
-    {},
-    applyMiddleware(
-      routerMiddleware({
-        history: historyStub
-      }),
-      consumerMiddleware
-    )
-  );
-
-  return { historyStub, store };
-};
-
 const actionMethodMap = {
   [PUSH]: 'push',
   [REPLACE]: 'replace',
@@ -60,11 +38,34 @@ const actionMethodMap = {
 };
 
 describe('Router middleware', () => {
+  let store;
+  let historyStub;
+
+  beforeEach(() => {
+    historyStub = {
+      push: sandbox.stub(),
+      replace: sandbox.stub(),
+      go: sandbox.stub(),
+      goBack: sandbox.stub(),
+      goForward: sandbox.stub(),
+      listen: sandbox.stub()
+    };
+
+    store = createStore(
+      state => state,
+      {},
+      applyMiddleware(
+        middleware({ history: historyStub }),
+        consumerMiddleware
+      )
+    );
+    sandbox.spy(store, 'dispatch');
+  });
+
   Object.keys(actionMethodMap).forEach(actionType => {
     const method = actionMethodMap[actionType];
 
     it(`calls history.${method} when intercepting ${actionType}`, () => {
-      const { historyStub, store } = init();
       store.dispatch({
         type: actionType,
         payload: {}
@@ -75,7 +76,6 @@ describe('Router middleware', () => {
   });
 
   it('passes normal actions through the dispatch chain', () => {
-    const { store, historyStub } = init();
     store.dispatch({
       type: 'NOT_MY_ACTION_NOT_MY_PROBLEM',
       payload: {}
@@ -87,8 +87,7 @@ describe('Router middleware', () => {
     });
   });
 
-  it('passes normal actions through the dispatch chain', () => {
-    const { store, historyStub } = init();
+  it('allows for dispatching router actions in consumer middleware', () => {
     store.dispatch({
       type: REFRAGULATE,
       payload: {}
