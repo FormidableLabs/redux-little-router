@@ -1,17 +1,22 @@
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
-import { createStore } from 'redux';
+import {
+  applyMiddleware,
+  combineReducers,
+  createStore,
+  compose
+} from 'redux';
 
-import routerForHapi from '../src/hapi-router';
+import routerForHapi from '../../src/environment/hapi-router';
 
-import routes from './fixtures/routes';
+import routes from '../test-util/fixtures/routes';
 
 chai.use(sinonChai);
 
 describe('Hapi router', () => {
   it('creates a server store enhancer using Hapi request object', () => {
-    const { routerEnhancer } = routerForHapi({
+    const { enhancer, middleware, reducer } = routerForHapi({
       routes,
       request: {
         path: '/home',
@@ -19,9 +24,12 @@ describe('Hapi router', () => {
       }
     });
     const store = createStore(
-      state => state,
+      combineReducers({ router: reducer }),
       {},
-      routerEnhancer
+      compose(
+        enhancer,
+        applyMiddleware(middleware)
+      )
     );
     const state = store.getState();
     expect(state).to.have.deep.property('router.pathname', '/home');

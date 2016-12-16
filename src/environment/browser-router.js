@@ -1,9 +1,8 @@
 // @flow
 import createBrowserHistory from 'history/createBrowserHistory';
 
-import createLocation from './util/create-location';
-import installRouter from './store-enhancer';
-import routerMiddleware from './middleware';
+import createLocation from '../util/create-location';
+import install from '../install';
 
 type BrowserRouterArgs = {
   routes: Object,
@@ -18,8 +17,7 @@ const realLocation = () => window.location;
 export default ({
   routes,
   basename,
-  getLocation = realLocation,
-  passRouterStateToReducer = false
+  getLocation = realLocation
 }: BrowserRouterArgs) => {
   const history = createBrowserHistory({ basename });
 
@@ -30,13 +28,5 @@ export default ({
 
   const location = createLocation(descriptor);
 
-  return {
-    routerEnhancer: installRouter({
-      routes,
-      history,
-      location,
-      passRouterStateToReducer
-    }),
-    routerMiddleware: routerMiddleware({ history })
-  };
+  return install({ routes, history, location });
 };

@@ -1,9 +1,8 @@
 // @flow
 import createMemoryHistory from 'history/createMemoryHistory';
 
-import createLocation from './util/create-location';
-import installRouter from './store-enhancer';
-import routerMiddleware from './middleware';
+import createLocation from '../util/create-location';
+import install from '../install';
 
 type ServerRouterArgs = {
   routes: Object,
@@ -24,22 +23,9 @@ const locationForRequest = request => {
   return createLocation(descriptor);
 };
 
-export default ({
-  routes,
-  request,
-  passRouterStateToReducer = false
-}: ServerRouterArgs) => {
+export default ({ routes, request }: ServerRouterArgs) => {
   const history = createMemoryHistory();
-
   const location = locationForRequest(request);
 
-  return {
-    routerEnhancer: installRouter({
-      routes,
-      history,
-      location,
-      passRouterStateToReducer
-    }),
-    routerMiddleware: routerMiddleware({ history })
-  };
+  return install({ routes, history, location });
 };
