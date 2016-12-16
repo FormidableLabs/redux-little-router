@@ -1,27 +1,35 @@
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
-import { createStore } from 'redux';
+import {
+  applyMiddleware,
+  combineReducers,
+  createStore,
+  compose
+} from 'redux';
 
-import routerForExpress from '../src/express-router';
+import routerForBrowser from '../../src/environment/browser-router';
 
-import routes from './fixtures/routes';
+import routes from '../test-util/fixtures/routes';
 
 chai.use(sinonChai);
 
-describe('Express router', () => {
-  it('creates a server store enhancer using Express request object', () => {
-    const { routerEnhancer } = routerForExpress({
+describe('Browser router', () => {
+  it('creates a browser store enhancer using window.location', () => {
+    const { enhancer, middleware, reducer } = routerForBrowser({
       routes,
-      request: {
-        path: '/home',
-        query: { get: 'schwifty' }
-      }
+      getLocation: () => ({
+        pathname: '/home',
+        search: '?get=schwifty'
+      })
     });
     const store = createStore(
-      state => state,
+      combineReducers({ router: reducer }),
       {},
-      routerEnhancer
+      compose(
+        enhancer,
+        applyMiddleware(middleware)
+      )
     );
     const state = store.getState();
     expect(state).to.have.deep.property('router.pathname', '/home');
@@ -31,18 +39,21 @@ describe('Express router', () => {
   });
 
   it('supports basenames', () => {
-    const { routerEnhancer } = routerForExpress({
+    const { enhancer, middleware, reducer } = routerForBrowser({
       routes,
-      request: {
-        baseUrl: '/cob-planet',
-        path: '/home',
-        query: { get: 'schwifty' }
-      }
+      basename: '/cob-planet',
+      getLocation: () => ({
+        pathname: '/home',
+        search: '?get=schwifty'
+      })
     });
     const store = createStore(
-      state => state,
+      combineReducers({ router: reducer }),
       {},
-      routerEnhancer
+      compose(
+        enhancer,
+        applyMiddleware(middleware)
+      )
     );
     const state = store.getState();
     expect(state).to.have.deep.property('router.basename', '/cob-planet');

@@ -1,26 +1,26 @@
 // @flow
-import routerForBrowser from './browser-router';
-import routerForExpress from './express-router';
-import routerForHapi from './hapi-router';
-import createStoreWithRouter from './store-enhancer';
-import routerMiddleware from './middleware';
-import { locationDidChange, initializeCurrentLocation } from './action-creators';
-
-import provideRouter, { RouterProvider } from './provider';
-import { Link, PersistentQueryLink } from './link';
-import { AbsoluteFragment, RelativeFragment } from './fragment';
-
-import routerReducer from './reducer';
-import createMatcher from './create-matcher';
+import routerForBrowser from './environment/browser-router';
+import routerForExpress from './environment/express-router';
+import routerForHapi from './environment/hapi-router';
 
 import {
   LOCATION_CHANGED,
   PUSH,
   REPLACE,
   GO,
+  GO_BACK,
   GO_FORWARD,
-  GO_BACK
-} from './action-types';
+  push,
+  replace,
+  go,
+  goBack,
+  goForward,
+  initializeCurrentLocation
+} from './actions';
+
+import provideRouter, { RouterProvider } from './components/provider';
+import { Link, PersistentQueryLink } from './components/link';
+import { AbsoluteFragment, RelativeFragment } from './components/fragment';
 
 const Fragment = AbsoluteFragment;
 
@@ -29,7 +29,6 @@ export {
   routerForBrowser,
   routerForExpress,
   routerForHapi,
-  routerMiddleware,
   initializeCurrentLocation,
 
   // React API
@@ -41,17 +40,18 @@ export {
   AbsoluteFragment,
   RelativeFragment,
 
+  // Public action creators
+  push,
+  replace,
+  go,
+  goBack,
+  goForward,
+
   // Public action types
   LOCATION_CHANGED,
   PUSH,
   REPLACE,
   GO,
   GO_FORWARD,
-  GO_BACK,
-
-  // Low-level Redux utilities
-  routerReducer,
-  createStoreWithRouter,
-  locationDidChange,
-  createMatcher
+  GO_BACK
 };

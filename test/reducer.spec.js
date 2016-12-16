@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { routerReducer } from '../src';
-import { LOCATION_CHANGED } from '../src/action-types';
+import reducer from '../src/reducer';
+import { LOCATION_CHANGED } from '../src/actions';
 
 describe('Router reducer', () => {
   it('adds the pathname to the store', () => {
@@ -17,7 +17,7 @@ describe('Router reducer', () => {
         }
       }
     };
-    const result = routerReducer({}, action);
+    const result = reducer()({}, action);
 
     expect(result).to.deep.equal({
       params: {},
@@ -47,7 +47,7 @@ describe('Router reducer', () => {
       }
     };
 
-    const result = routerReducer({
+    const result = reducer()({
       basename: '/base'
     }, action);
 
@@ -75,7 +75,7 @@ describe('Router reducer', () => {
         other: 'stuff'
       }
     };
-    const result = routerReducer({
+    const result = reducer()({
       pathname: '/rofl',
       other: 'things'
     }, action);
@@ -93,7 +93,7 @@ describe('Router reducer', () => {
         crazy: 'nonsense'
       }
     };
-    const result = routerReducer({}, action);
+    const result = reducer()({}, action);
     expect(result).to.deep.equal({});
   });
 
@@ -104,7 +104,32 @@ describe('Router reducer', () => {
         crazy: 'nonsense'
       }
     };
-    const result = routerReducer(undefined, action);
-    expect(result).to.deep.equal({});
+    const result = reducer()(undefined, action);
+    expect(result).to.be.undefined;
+  });
+
+  it('uses given location as initial state when no initial router state provided', () => {
+    const action = {
+      type: 'NOT_MY_ACTION_NOT_MY_PROBLEM',
+      payload: {
+        crazy: 'nonsense'
+      }
+    };
+
+    const result = reducer({
+      pathname: '/lol',
+      search: '?as=af',
+      query: {
+        as: 'af'
+      }
+    })(undefined, action);
+
+    expect(result).to.deep.equal({
+      pathname: '/lol',
+      search: '?as=af',
+      query: {
+        as: 'af'
+      }
+    });
   });
 });
