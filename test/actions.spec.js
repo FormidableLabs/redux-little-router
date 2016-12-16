@@ -1,12 +1,11 @@
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
-import { LOCATION_CHANGED } from '../src/action-types';
-
 import {
+  LOCATION_CHANGED,
   locationDidChange,
   initializeCurrentLocation
-} from '../src/action-creators';
+} from '../src/actions';
 
 chai.use(sinonChai);
 
