@@ -1,4 +1,4 @@
-import flattenRoutes from '../../src/util/flatten-routes';
+import flattenRoutes from '../../../src/util/flatten-routes';
 
 export default flattenRoutes({
   '/home': {

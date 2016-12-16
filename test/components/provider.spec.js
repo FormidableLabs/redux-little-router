@@ -3,10 +3,10 @@ import { mount } from 'enzyme';
 
 import React, { Component, PropTypes } from 'react';
 
-import provideRouter, { RouterProvider } from '../src/provider';
+import provideRouter, { RouterProvider } from '../../src/components/provider';
 
-import { fakeStore } from './util';
-import routesFixture from './fixtures/routes';
+import { fakeStore } from '../test-util';
+import routesFixture from '../test-util/fixtures/routes';
 
 describe('Router provider', () => {
   describe('provideRouter HoC', () => {

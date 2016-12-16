@@ -4,9 +4,9 @@ import { mount } from 'enzyme';
 
 import React from 'react';
 
-import { AbsoluteFragment, RelativeFragment } from '../src/fragment';
+import { AbsoluteFragment, RelativeFragment } from '../../src/components/fragment';
 
-import { fakeContext } from './util';
+import { fakeContext } from '../test-util';
 
 describe('AbsoluteFragment', () => {
   it('renders if the current URL matches the given route', () => {

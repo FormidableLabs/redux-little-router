@@ -9,10 +9,14 @@ import React, {
 
 import { connect } from 'react-redux';
 
-export type RouterContext = { store: Store };
+export type StoreWithRouter<S, A> = Store<S, A> & {
+  routes: Object
+};
+
+export type RouterContext = { store: Store<*, *> };
 
 type Props = {
-  store: Object,
+  store: StoreWithRouter<*, *>,
   children: React.Element<*>
 };
 
@@ -30,7 +34,7 @@ class RouterProviderImpl extends Component {
     };
   }
 
-  router: { store: Store };
+  router: { store: StoreWithRouter<*, *> };
 
   render() {
     const { store } = this.router;
@@ -55,7 +59,7 @@ RouterProviderImpl.childContextTypes = {
 };
 
 type ProvideRouterArgs = {
-  store: Object
+  store: StoreWithRouter<*, *>
 };
 
 export const RouterProvider = connect(state => ({

@@ -1,7 +1,7 @@
 /* eslint-disable max-nested-callbacks */
 import { expect } from 'chai';
 
-import flattenRoutes from '../src/util/flatten-routes';
+import flattenRoutes from '../../src/util/flatten-routes';
 
 describe('Route flattening', () => {
   it('does not affect flat routes', () => {

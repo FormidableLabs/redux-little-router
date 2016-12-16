@@ -4,8 +4,8 @@ import type { RouterContext } from './provider';
 
 import React, { Component, PropTypes } from 'react';
 
-import { PUSH, REPLACE } from './action-types';
-import defaultCreateLocation from './util/create-location';
+import { PUSH, REPLACE } from '../actions';
+import defaultCreateLocation from '../util/create-location';
 
 type Props = {
   children: React.Element<*>,
