@@ -1,23 +1,81 @@
 // @flow
-import type { Location, LocationDescriptorObject } from 'history';
-import { LOCATION_CHANGED } from './actions';
+import type { Location, LocationOptions, LocationAction } from './types';
 
-export type LocationChangedAction = {
-  type: 'ROUTER_LOCATION_CHANGED',
-  payload: Location
+import { LOCATION_CHANGED } from './types';
+
+const flow = (...funcs: Array<Function>) =>
+  funcs.reduce((prev, curr) => (...args) => curr(prev(...args)));
+
+type ResolverArgs = {
+  oldLocation: Location,
+  newLocation: Location,
+  options: LocationOptions
 };
 
-export type State = LocationDescriptorObject & {
-  previous?: LocationDescriptorObject
+const resolveQuery = ({
+  oldLocation,
+  newLocation,
+  options
+}: ResolverArgs): ResolverArgs => {
+  const { query: oldQuery, search: oldSearch } = oldLocation;
+
+  // Only use the query from state if it exists
+  // and the href doesn't provide its own query
+  if (
+    options.persistQuery &&
+    oldQuery &&
+    !newLocation.search &&
+    !newLocation.query
+  ) {
+    return {
+      oldLocation,
+      newLocation: {
+        ...newLocation,
+        query: oldQuery,
+        search: oldSearch
+      },
+      options
+    };
+  }
+
+  return { oldLocation, newLocation, options };
 };
+
+const resolveBasename = ({
+  oldLocation,
+  newLocation,
+  options
+}: ResolverArgs): ResolverArgs => {
+  const { basename } = oldLocation;
+  if (basename) {
+    return {
+      oldLocation,
+      newLocation: { basename, ...newLocation },
+      options
+    };
+  }
+  return { oldLocation, newLocation, options };
+};
+
+const resolvePrevious = ({
+  oldLocation,
+  newLocation,
+  options
+}: ResolverArgs): ResolverArgs => ({
+  oldLocation,
+  newLocation: {
+    ...newLocation,
+    previous: oldLocation
+  },
+  options
+});
 
 export default
-  (initialLocation: State) =>
-  (state: ?State = initialLocation, action: LocationChangedAction) => {
+  (initialLocation: Location) =>
+  (state: Location = initialLocation, action: LocationAction) => {
     if (action.type === LOCATION_CHANGED) {
       // No-op the initial route action
       if (
-        state &&
         state.pathname === action.payload.pathname &&
         state.search === action.payload.search
       ) {
@@ -27,21 +85,21 @@ export default
       // Extract the previous state, but dump the
       // previous state's previous state so that the
       // state tree doesn't keep growing indefinitely
-      if (state) {
-        // eslint-disable-next-line no-unused-vars
-        const { previous, ...oldState } = state;
+      // eslint-disable-next-line no-unused-vars
+      const { previous, ...oldLocation } = state;
+      const { options } = action.payload;
 
-        const nextState = {
-          ...action.payload,
-          previous: oldState
-        };
+      const resolveLocation = flow(
+        resolveQuery,
+        resolveBasename,
+        resolvePrevious
+      );
 
-        // reuse the initial basename if not provided
-        return oldState.basename ? {
-          basename: oldState.basename,
-          ...nextState
-        } : nextState;
-      }
+      return resolveLocation({
+        oldLocation,
+        newLocation: action.payload,
+        options: options || {}
+      }).newLocation;
     }
     return state;
   };

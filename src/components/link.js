@@ -1,82 +1,58 @@
 // @flow
-import type { LocationDescriptor } from 'history';
+import type { Href } from '../types';
 import type { RouterContext } from './provider';
 
 import React, { Component, PropTypes } from 'react';
 
-import { PUSH, REPLACE } from '../actions';
-import defaultCreateLocation from '../util/create-location';
-import normalizeDescriptor from '../util/normalize-descriptor';
-import stringifyLocation from '../util/stringify-location';
+import { push, replace } from '../actions';
+import stringifyHref from '../util/stringify-href';
 
 type Props = {
   children: React.Element<*>,
   className: string,
-  href: string | LocationDescriptor,
-  onClick: EventHandler,
+  href: Href,
   persistQuery: bool,
   replaceState: bool,
-  style: Object,
   target: string,
-  createLocation: Function
+  onClick: EventHandler,
+  style: Object
 };
 
 const LEFT_MOUSE_BUTTON = 0;
 
-const resolveQueryForLocation = ({
-  linkLocation,
-  persistQuery,
-  currentLocation
-}) => {
-  const currentQuery = currentLocation &&
-    currentLocation.query;
+const isNotLeftClick = e =>
+  e.button && e.button !== LEFT_MOUSE_BUTTON;
 
-  // Only use the query from state if it exists
-  // and the href doesn't provide its own query
-  if (
-    persistQuery &&
-    currentQuery &&
-    !linkLocation.search &&
-    !linkLocation.query
-  ) {
-    return {
-      pathname: linkLocation.pathname,
-      query: currentQuery
-    };
-  }
-
-  return linkLocation;
-};
-
-const isNotLeftClick = e => e.button && e.button !== LEFT_MOUSE_BUTTON;
 const hasModifier = e =>
   Boolean(e.shiftKey || e.altKey || e.metaKey || e.ctrlKey);
+
+const shouldIgnoreClick = ({ e, target }) =>
+  hasModifier(e) ||
+  isNotLeftClick(e) ||
+  e.defaultPrevented ||
+  target; // let browser handle target="_blank"
 
 const handleClick = ({
   e,
   target,
-  location,
+  href,
+  onClick,
   replaceState,
-  router,
-  onClick
+  persistQuery,
+  store
 }) => {
-  if (onClick) { onClick(e); }
+  if (onClick) {
+    onClick(e);
+  }
 
-  if (hasModifier(e) || isNotLeftClick(e)) { return; }
-
-  if (e.defaultPrevented) { return; }
-
-  // If target prop is set (e.g. to "_blank"), let browser handle link.
-  if (target) { return; }
+  if (shouldIgnoreClick({ e, target })) {
+    return;
+  }
 
   e.preventDefault();
 
-  if (router) {
-    router.store.dispatch({
-      type: replaceState ? REPLACE : PUSH,
-      payload: location
-    });
-  }
+  const navigate = replaceState ? replace : push;
+  store.dispatch(navigate(href, { persistQuery }));
 };
 
 const Link = (
@@ -89,37 +65,29 @@ const Link = (
     children,
     href,
     onClick,
-    persistQuery,
-    replaceState,
     target,
-    createLocation = defaultCreateLocation,
+    replaceState,
+    persistQuery,
     ...rest
   } = props;
 
-  const { router } = context;
-  const { router: currentLocation } = router.store.getState();
-  const { basename } = currentLocation;
+  const { store } = context.router;
+  const { router: { basename } } = store.getState();
 
-  const locationDescriptor =
-    resolveQueryForLocation({
-      linkLocation: normalizeDescriptor(href),
-      currentLocation,
-      persistQuery
-    });
-
-  const location = createLocation(locationDescriptor);
+  const clickHandler = e => handleClick({
+    e,
+    target,
+    href,
+    onClick,
+    replaceState,
+    persistQuery,
+    store
+  });
 
   return (
     <a
-      href={stringifyLocation({ ...location, basename })}
-      onClick={e => handleClick({
-        e,
-        location,
-        onClick,
-        replaceState,
-        router,
-        target
-      })}
+      href={stringifyHref(href, basename)}
+      onClick={clickHandler}
       {...rest}
     >
       {children}
