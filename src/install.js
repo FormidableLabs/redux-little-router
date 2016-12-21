@@ -1,32 +1,45 @@
 // @flow
 import type { History } from 'history';
-import type { State } from './reducer';
+import type { Location } from './types';
 
 import reducer from './reducer';
 import middleware from './middleware';
 import enhancer from './enhancer';
 
+import { default as matcherFactory } from './util/create-matcher';
 import validateRoutes from './util/validate-routes';
 import flattenRoutes from './util/flatten-routes';
 
-type StoreEnhancerArgs = {
+type InstallArgs = {
   routes: Object,
   history: History,
-  location: State,
+  location: Location,
   createMatcher?: Function
 };
 
 export default ({
   routes: nestedRoutes,
   history,
-  location
-}: StoreEnhancerArgs) => {
+  location,
+  createMatcher = matcherFactory
+}: InstallArgs) => {
   validateRoutes(nestedRoutes);
   const routes = flattenRoutes(nestedRoutes);
 
+  const matchRoute = createMatcher(routes);
+  const matchWildcardRoute = createMatcher(routes, true);
+
   return {
-    reducer: reducer(location),
+    reducer: reducer({
+      ...location,
+      ...matchRoute(location.pathname)
+    }),
     middleware: middleware({ history }),
-    enhancer: enhancer({ routes, history })
+    enhancer: enhancer({
+      routes,
+      history,
+      matchRoute,
+      matchWildcardRoute
+    })
   };
 };
