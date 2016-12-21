@@ -110,7 +110,7 @@
     "webpack-combine-loaders": "^2.0.3",
     "webpack-dev-middleware": "^1.7.0",
     "webpack-dev-server": "^1.15.2",
-    "webpack-partial": "^2.0.2",
+    "webpack-partial": "^1.5.0",
     "webpack-stats-plugin": "^0.1.4"
   },
   "peerDependencies": {
