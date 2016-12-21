@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import reducer from '../src/reducer';
-import { LOCATION_CHANGED } from '../src/actions';
+import { LOCATION_CHANGED } from '../src/types';
 
 describe('Router reducer', () => {
   it('adds the pathname to the store', () => {
