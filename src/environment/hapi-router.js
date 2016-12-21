@@ -1,7 +1,7 @@
 // @flow
 import createMemoryHistory from 'history/createMemoryHistory';
 
-import createLocation from '../util/create-location';
+import enhanceLocation from '../util/enhance-location';
 import install from '../install';
 
 type ServerRouterArgs = {
@@ -20,7 +20,7 @@ export default ({
 }: ServerRouterArgs) => {
   const history = createMemoryHistory();
 
-  const location = createLocation({
+  const location = enhanceLocation({
     pathname: request.path,
     query: request.query
   });

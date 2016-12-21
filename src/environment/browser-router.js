@@ -1,7 +1,7 @@
 // @flow
 import createBrowserHistory from 'history/createBrowserHistory';
 
-import createLocation from '../util/create-location';
+import enhanceLocation from '../util/enhance-location';
 import install from '../install';
 
 type BrowserRouterArgs = {
@@ -26,7 +26,7 @@ export default ({
     ? { pathname, basename, search }
     : { pathname, search };
 
-  const location = createLocation(descriptor);
+  const location = enhanceLocation(descriptor);
 
   return install({ routes, history, location });
 };

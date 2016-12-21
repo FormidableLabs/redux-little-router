@@ -1,7 +1,7 @@
 // @flow
 import createMemoryHistory from 'history/createMemoryHistory';
 
-import createLocation from '../util/create-location';
+import enhanceLocation from '../util/enhance-location';
 import install from '../install';
 
 type ServerRouterArgs = {
@@ -20,7 +20,7 @@ const locationForRequest = request => {
   const descriptor = basename
     ? { pathname, basename, query }
     : { pathname, query };
-  return createLocation(descriptor);
+  return enhanceLocation(descriptor);
 };
 
 export default ({ routes, request }: ServerRouterArgs) => {
