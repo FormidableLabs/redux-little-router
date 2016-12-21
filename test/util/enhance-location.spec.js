@@ -1,9 +1,9 @@
 import { expect } from 'chai';
-import createLocation from '../../src/util/create-location';
+import enhanceLocation from '../../src/util/enhance-location';
 
-describe('createLocation', () => {
+describe('enhanceLocation', () => {
   it('ignores empty query objects', () => {
-    const result = createLocation({
+    const result = enhanceLocation({
       pathname: '/',
       query: {}
     });
