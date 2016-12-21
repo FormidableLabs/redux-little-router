@@ -34,7 +34,7 @@ describe('Action creators', () => {
     expect(push(descriptor)).to.deep.equal({
       type: PUSH,
       payload: {
-        ...descriptor,
+        pathname: '/boop',
         state: {
           reduxLittleRouter: {
             options: {},
@@ -58,7 +58,7 @@ describe('Action creators', () => {
     expect(replace(descriptor)).to.deep.equal({
       type: REPLACE,
       payload: {
-        ...descriptor,
+        pathname: '/boop',
         state: {
           reduxLittleRouter: {
             options: {},

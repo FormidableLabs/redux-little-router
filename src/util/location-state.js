@@ -5,25 +5,33 @@ import type { Location, LocationOptions } from '../types';
 export const packState = (
   location: Location,
   options: LocationOptions = {}
-): Location => ({
-  ...location,
-  state: {
-    ...location.state || {},
+): Location => {
+  // eslint-disable-next-line no-unused-vars
+  const { query, ...rest } = location;
+  return {
+    ...rest,
+    state: {
+      ...rest.state || {},
 
-    // Namespace our state to prevent interference
-    // with user-provided state
-    reduxLittleRouter: {
-      query: location.query || {},
-      options
+      // Namespace our state to prevent interference
+      // with user-provided state
+      reduxLittleRouter: {
+        query: query || {},
+        options
+      }
     }
-  }
-});
+  };
+};
 
 export const unpackState = (location: HistoryLocation) => {
-  const { state } = location;
-  const libraryState = state && state.reduxLittleRouter;
-  const query = libraryState && libraryState.query || {};
-  const options = libraryState && libraryState.options || {};
+  const { state = {}, ...restLocation } = location;
+  const { reduxLittleRouter = {}, ...restState } = state;
+  const { query = {}, options = {} } = reduxLittleRouter;
 
-  return { ...location, query, options };
+  return {
+    ...restLocation,
+    state: restState,
+    query,
+    options
+  };
 };

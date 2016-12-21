@@ -41,7 +41,8 @@ describe('Router link component', () => {
                 expect(payload).to.have.property('search')
                   .that.equal('?test=ing');
               } else {
-                expect(payload).to.have.property('query')
+                expect(payload).to
+                  .have.deep.property('state.reduxLittleRouter.query')
                   .that.deep.equals({ test: 'ing' });
               }
             });
@@ -102,7 +103,8 @@ describe('Router link component', () => {
                 expect(payload).to.have.property('search')
                   .that.equal('?test=ing');
               } else {
-                expect(payload).to.have.property('query')
+                expect(payload).to
+                  .have.deep.property('state.reduxLittleRouter.query')
                   .that.deep.equals({ test: 'ing' });
               }
             });
