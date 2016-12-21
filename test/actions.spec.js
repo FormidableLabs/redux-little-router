@@ -7,7 +7,10 @@ import {
   GO,
   GO_BACK,
   GO_FORWARD,
-  LOCATION_CHANGED,
+  LOCATION_CHANGED
+} from '../src/types';
+
+import {
   push,
   replace,
   go,
@@ -21,30 +24,50 @@ chai.use(sinonChai);
 
 describe('Action creators', () => {
   it('creates a PUSH action', () => {
-    const descriptor = push({
+    const descriptor = {
       pathname: '/boop',
       query: {
         the: 'snoot'
       }
-    });
+    };
 
     expect(push(descriptor)).to.deep.equal({
       type: PUSH,
-      payload: descriptor
+      payload: {
+        ...descriptor,
+        state: {
+          reduxLittleRouter: {
+            options: {},
+            query: {
+              the: 'snoot'
+            }
+          }
+        }
+      }
     });
   });
 
   it('creates a REPLACE action', () => {
-    const descriptor = push({
+    const descriptor = {
       pathname: '/boop',
       query: {
         the: 'snoot'
       }
-    });
+    };
 
     expect(replace(descriptor)).to.deep.equal({
       type: REPLACE,
-      payload: descriptor
+      payload: {
+        ...descriptor,
+        state: {
+          reduxLittleRouter: {
+            options: {},
+            query: {
+              the: 'snoot'
+            }
+          }
+        }
+      }
     });
   });
 
@@ -62,22 +85,18 @@ describe('Action creators', () => {
 
   it('combines the location descriptor and the route match into a LOCATION_CHANGED action', () => {
     const locationChangedAction = locationDidChange({
-      location: {
-        action: 'PUSH',
-        basename: '/test',
-        pathname: '/things',
-        query: {
-          test: 'ing'
-        }
+      action: 'PUSH',
+      basename: '/test',
+      pathname: '/things',
+      query: {
+        test: 'ing'
       },
-      matchRoute: sandbox.stub().returns({
-        params: {
-          fakeParam: 'things'
-        },
-        result: {
-          title: 'things'
-        }
-      })
+      params: {
+        fakeParam: 'things'
+      },
+      result: {
+        title: 'things'
+      }
     });
 
     expect(locationChangedAction).to.deep.equal({
