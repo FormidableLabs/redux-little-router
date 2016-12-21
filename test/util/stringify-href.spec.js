@@ -1,23 +1,22 @@
 import { expect } from 'chai';
-import stringifyLocation from '../../src/util/stringify-location';
+import stringifyHref from '../../src/util/stringify-href';
 
-describe('stringifyLocation', () => {
+describe('stringifyHref', () => {
   it('creates a string representation of a location', () => {
-    expect(stringifyLocation({
+    expect(stringifyHref({
       pathname: '/wat'
     })).to.equal('/wat');
 
-    expect(stringifyLocation({
-      basename: '/say',
+    expect(stringifyHref({
       pathname: '/wat'
-    })).to.equal('/say/wat');
+    }, '/say')).to.equal('/say/wat');
 
-    expect(stringifyLocation({
+    expect(stringifyHref({
       pathname: '/wat',
       search: '?as=af'
     })).to.equal('/wat?as=af');
 
-    expect(stringifyLocation({
+    expect(stringifyHref({
       pathname: '/say/wat',
       search: '?as=af'
     })).to.equal('/say/wat?as=af');
