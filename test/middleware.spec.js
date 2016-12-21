@@ -6,8 +6,12 @@ import { createStore, applyMiddleware } from 'redux';
 import middleware from '../src/middleware';
 
 import {
-  PUSH, REPLACE, GO, GO_BACK, GO_FORWARD
-} from '../src/actions';
+  PUSH,
+  REPLACE,
+  GO,
+  GO_BACK,
+  GO_FORWARD
+} from '../src/types';
 
 chai.use(sinonChai);
 

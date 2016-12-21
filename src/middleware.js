@@ -3,12 +3,12 @@
 
 import type { History } from 'history';
 import type { Dispatch } from 'redux';
-import type { RouterAction } from './actions';
+import type { RouterAction } from './types';
 
 import {
   PUSH, REPLACE, GO,
   GO_BACK, GO_FORWARD
-} from './actions';
+} from './types';
 
 type MiddlewareArgs = { history: History };
 export default

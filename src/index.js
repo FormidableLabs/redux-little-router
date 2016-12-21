@@ -1,15 +1,14 @@
 // @flow
-import routerForBrowser from './environment/browser-router';
-import routerForExpress from './environment/express-router';
-import routerForHapi from './environment/hapi-router';
-
 import {
   LOCATION_CHANGED,
   PUSH,
   REPLACE,
   GO,
   GO_BACK,
-  GO_FORWARD,
+  GO_FORWARD
+} from './types';
+
+import {
   push,
   replace,
   go,
@@ -17,6 +16,10 @@ import {
   goForward,
   initializeCurrentLocation
 } from './actions';
+
+import routerForBrowser from './environment/browser-router';
+import routerForExpress from './environment/express-router';
+import routerForHapi from './environment/hapi-router';
 
 import provideRouter, { RouterProvider } from './components/provider';
 import { Link, PersistentQueryLink } from './components/link';

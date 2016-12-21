@@ -1,5 +1,5 @@
 // @flow
-import type { Location } from 'history';
+import type { Location } from '../types';
 
 import React, { Component, PropTypes } from 'react';
 import matchCache from '../util/match-cache';
