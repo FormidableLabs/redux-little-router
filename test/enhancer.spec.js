@@ -8,7 +8,7 @@ import {
   applyMiddleware
 } from 'redux';
 
-import { PUSH } from '../src/actions';
+import { PUSH } from '../src/types';
 import install from '../src/install';
 
 import defaultRoutes from './test-util/fixtures/routes';
@@ -18,17 +18,19 @@ chai.use(sinonChai);
 describe('Router store enhancer', () => {
   let store;
   let historyStub;
+  let listenStub;
 
   beforeEach(() => {
-    historyStub = {
-      push: sandbox.stub(),
-      listen: sandbox.stub()
-    };
+    listenStub = sandbox.stub();
+
+    const listen = sandbox.spy(cb => cb({ pathname: '/' }));
+    const push = sandbox.spy(() => listen(listenStub));
+    historyStub = { push, listen };
 
     const { reducer, middleware, enhancer } = install({
       routes: defaultRoutes,
       history: historyStub,
-      location: {}
+      location: { pathname: '/' }
     });
 
     store = createStore(
@@ -45,10 +47,11 @@ describe('Router store enhancer', () => {
   it('dispatches a LOCATION_CHANGED action on location change', () => {
     store.dispatch({
       type: PUSH,
-      payload: {}
+      payload: { pathname: '/' }
     });
 
     expect(historyStub.push).to.be.calledOnce;
+    expect(listenStub).to.be.calledOnce;
     expect(store.dispatch).to.be.calledOnce;
   });
 
