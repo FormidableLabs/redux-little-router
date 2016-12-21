@@ -9,9 +9,7 @@ describe('Router reducer', () => {
       payload: {
         params: {},
         result: 'rofl',
-        url: '/rofl',
         pathname: '/rofl',
-        action: 'PUSH',
         state: {
           bork: 'bork'
         }
@@ -22,13 +20,30 @@ describe('Router reducer', () => {
     expect(result).to.deep.equal({
       params: {},
       result: 'rofl',
-      url: '/rofl',
       pathname: '/rofl',
-      action: 'PUSH',
       state: {
         bork: 'bork'
       },
       previous: {}
+    });
+  });
+
+  it('includes the previous location', () => {
+    const action = {
+      type: LOCATION_CHANGED,
+      payload: {
+        pathname: '/rofl'
+      }
+    };
+    const result = reducer()({
+      pathname: '/waffle'
+    }, action);
+
+    expect(result).to.deep.equal({
+      pathname: '/rofl',
+      previous: {
+        pathname: '/waffle'
+      }
     });
   });
 
@@ -38,9 +53,7 @@ describe('Router reducer', () => {
       payload: {
         params: {},
         result: 'rofl',
-        url: '/rofl',
         pathname: '/rofl',
-        action: 'PUSH',
         state: {
           bork: 'bork'
         }
@@ -55,14 +68,92 @@ describe('Router reducer', () => {
       basename: '/base',
       params: {},
       result: 'rofl',
-      url: '/rofl',
       pathname: '/rofl',
-      action: 'PUSH',
       state: {
         bork: 'bork'
       },
       previous: {
         basename: '/base'
+      }
+    });
+  });
+
+  it('persists the previous query string if requested', () => {
+    const action = {
+      type: LOCATION_CHANGED,
+      payload: {
+        pathname: '/rofl',
+        options: {
+          persistQuery: true
+        }
+      }
+    };
+
+    const result = reducer()({
+      pathname: '/waffle',
+      query: {
+        please: 'clap'
+      },
+      search: '?please=clap'
+    }, action);
+
+    expect(result).to.deep.equal({
+      pathname: '/rofl',
+      query: {
+        please: 'clap'
+      },
+      search: '?please=clap',
+      options: {
+        persistQuery: true
+      },
+      previous: {
+        pathname: '/waffle',
+        query: {
+          please: 'clap'
+        },
+        search: '?please=clap'
+      }
+    });
+  });
+
+  it('allows new queries to override persistQuery', () => {
+    const action = {
+      type: LOCATION_CHANGED,
+      payload: {
+        pathname: '/rofl',
+        query: {
+          clap: 'please'
+        },
+        search: '?clap=please',
+        options: {
+          persistQuery: true
+        }
+      }
+    };
+
+    const result = reducer()({
+      pathname: '/waffle',
+      query: {
+        please: 'clap'
+      },
+      search: '?please=clap'
+    }, action);
+
+    expect(result).to.deep.equal({
+      pathname: '/rofl',
+      query: {
+        clap: 'please'
+      },
+      search: '?clap=please',
+      options: {
+        persistQuery: true
+      },
+      previous: {
+        pathname: '/waffle',
+        query: {
+          please: 'clap'
+        },
+        search: '?please=clap'
       }
     });
   });
