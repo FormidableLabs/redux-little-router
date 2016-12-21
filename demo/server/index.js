@@ -34,6 +34,7 @@ const wrap = require('../client/wrap').default;
 const Root = require('../client/demo').default;
 
 const createStore = redux.createStore;
+const combineReducers = redux.combineReducers;
 const compose = redux.compose;
 const applyMiddleware = redux.applyMiddleware;
 
@@ -69,11 +70,11 @@ app.get('/*', (req, res) => {
     request: req
   });
   const store = createStore(
-    state => state,
+    combineReducers({ router: router.reducer }),
     initialState,
     compose(
-      router.routerEnhancer,
-      applyMiddleware(router.routerMiddleware)
+      router.enhancer,
+      applyMiddleware(router.middleware)
     )
   );
 
