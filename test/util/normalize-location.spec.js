@@ -1,18 +1,18 @@
 import { expect } from 'chai';
-import normalizeDescriptor from '../../src/util/normalize-descriptor';
+import normalizeLocation from '../../src/util/normalize-location';
 
-describe('normalizeDescriptor', () => {
+describe('normalizeLocation', () => {
   it('passes the descriptor through if it is already an object', () => {
     const descriptor = { pathname: 'object' };
-    expect(normalizeDescriptor(descriptor)).to.deep.equal(descriptor);
+    expect(normalizeLocation(descriptor)).to.deep.equal(descriptor);
   });
 
   it('converts a string descriptor into an object descriptor', () => {
-    expect(normalizeDescriptor('/string')).to.deep.equal({
+    expect(normalizeLocation('/string')).to.deep.equal({
       pathname: '/string'
     });
 
-    expect(normalizeDescriptor('/string?things=stuff')).to.deep.equal({
+    expect(normalizeLocation('/string?things=stuff')).to.deep.equal({
       pathname: '/string',
       search: '?things=stuff'
     });

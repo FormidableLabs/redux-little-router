@@ -1,7 +1,7 @@
 // @flow
-import type { LocationDescriptor } from 'history';
+import type { Href } from '../types';
 
-export default (href: LocationDescriptor) => {
+export default (href: Href) => {
   if (typeof href === 'string') {
     const pathnameAndSearch = href.split('?');
     const pathname = pathnameAndSearch[0];
