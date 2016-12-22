@@ -50,9 +50,9 @@ const Demo = ({ router }) => {
         </h1>
 
         <div className={styles.nav}>
-          <Link href='/cheese'>Cheese</Link>
+          <Link href={{ pathname: '/cheese', query: { is: 'cheese' } }}>Cheese</Link>
           <Link href='/dog'>Dog</Link>
-          <Link href='/cat'>Cat</Link>
+          <Link href='/cat?is=cat'>Cat</Link>
           <Link href='/hipster'>Hipster</Link>
         </div>
 
