@@ -43,7 +43,7 @@ describe('Browser router', () => {
       routes,
       basename: '/cob-planet',
       getLocation: () => ({
-        pathname: '/home',
+        pathname: '/cob-planet/home',
         search: '?get=schwifty'
       })
     });
