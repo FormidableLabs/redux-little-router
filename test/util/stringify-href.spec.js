@@ -2,7 +2,15 @@ import { expect } from 'chai';
 import stringifyHref from '../../src/util/stringify-href';
 
 describe('stringifyHref', () => {
-  it('creates a string representation of a location', () => {
+  it('leaves string hrefs without a basename intact', () => {
+    expect(stringifyHref('/boop')).to.equal('/boop');
+  });
+
+  it('appends the basename to a string href', () => {
+    expect(stringifyHref('/boop', '/base')).to.equal('/base/boop');
+  });
+
+  it('creates a string representation of an object href', () => {
     expect(stringifyHref({
       pathname: '/wat'
     })).to.equal('/wat');
