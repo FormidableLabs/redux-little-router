@@ -5,7 +5,6 @@ import type { History } from 'history';
 
 import { locationDidChange } from './actions';
 
-import enhanceLocation from './util/enhance-location';
 import { unpackState } from './util/location-state';
 import matchCache from './util/match-cache';
 
@@ -35,7 +34,7 @@ export default ({
   history.listen(location => {
     matchCache.clear();
     store.dispatch(locationDidChange({
-      ...enhanceLocation(unpackState(location)),
+      ...unpackState(location),
       ...matchRoute(location.pathname)
     }));
   });

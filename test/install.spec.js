@@ -6,7 +6,9 @@ describe('Router installer', () => {
   it('appends the match result to the location passed to the reducer factory', () => {
     const { reducer } = install({
       routes: {
-        '/:thing': { congratulations: 'you played yourself' }
+        '/:thing': {
+          congratulations: 'you played yourself'
+        }
       },
       history: {},
       location: { pathname: '/stuff' }

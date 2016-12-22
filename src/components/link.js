@@ -5,6 +5,7 @@ import type { RouterContext } from './provider';
 import React, { Component, PropTypes } from 'react';
 
 import { push, replace } from '../actions';
+import normalizeHref from '../util/normalize-href';
 import stringifyHref from '../util/stringify-href';
 
 type Props = {
@@ -62,8 +63,8 @@ const Link = (
   }
 ) => {
   const {
+    href: rawHref,
     children,
-    href,
     onClick,
     target,
     replaceState,
@@ -73,6 +74,9 @@ const Link = (
 
   const { store } = context.router;
   const { router: { basename } } = store.getState();
+
+  // Ensure the href has both a search and a query when needed
+  const href = normalizeHref(rawHref);
 
   const clickHandler = e => handleClick({
     e,
