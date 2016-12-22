@@ -14,17 +14,17 @@ import {
   LOCATION_CHANGED
 } from './types';
 
-import normalizeLocation from './util/normalize-location';
+import normalizeHref from './util/normalize-href';
 import { packState } from './util/location-state';
 
 export const push = (href: Href, options: LocationOptions) => ({
   type: PUSH,
-  payload: packState(normalizeLocation(href), options)
+  payload: packState(normalizeHref(href), options)
 });
 
 export const replace = (href: Href, options: LocationOptions) => ({
   type: REPLACE,
-  payload: packState(normalizeLocation(href), options)
+  payload: packState(normalizeHref(href), options)
 });
 
 export const go = (index: number) => ({

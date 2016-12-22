@@ -242,11 +242,13 @@ describe('Router link component', () => {
       const expected = [
         '/path',
         '/path?key=value',
+        '/path?please=clap',
         'path/with/nested/routes'
       ];
       const locations = [
         { pathname: '/path' },
         { pathname: '/path', query: { key: 'value' } },
+        { pathname: '/path', search: '?please=clap' },
         { pathname: 'path/with/nested/routes' }
       ];
       locations.forEach((location, index) => {
@@ -262,11 +264,13 @@ describe('Router link component', () => {
       const expected = [
         '/path',
         '/path?key=value',
+        '/path?please=clap',
         'path/with/nested/routes'
       ];
       const locations = [
         { pathname: '/path' },
         { pathname: '/path', query: { key: 'value' } },
+        { pathname: '/path', search: '?please=clap' },
         { pathname: 'path/with/nested/routes' }
       ];
       locations.forEach((location, index) => {

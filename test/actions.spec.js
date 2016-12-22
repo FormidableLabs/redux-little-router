@@ -35,6 +35,7 @@ describe('Action creators', () => {
       type: PUSH,
       payload: {
         pathname: '/boop',
+        search: '?the=snoot',
         state: {
           reduxLittleRouter: {
             options: {},
@@ -59,6 +60,7 @@ describe('Action creators', () => {
       type: REPLACE,
       payload: {
         pathname: '/boop',
+        search: '?the=snoot',
         state: {
           reduxLittleRouter: {
             options: {},

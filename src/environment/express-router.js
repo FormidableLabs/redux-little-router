@@ -1,7 +1,7 @@
 // @flow
 import createMemoryHistory from 'history/createMemoryHistory';
 
-import enhanceLocation from '../util/enhance-location';
+import normalizeHref from '../util/normalize-href';
 import install from '../install';
 
 type ServerRouterArgs = {
@@ -20,7 +20,7 @@ const locationForRequest = request => {
   const descriptor = basename
     ? { pathname, basename, query }
     : { pathname, query };
-  return enhanceLocation(descriptor);
+  return normalizeHref(descriptor);
 };
 
 export default ({ routes, request }: ServerRouterArgs) => {
