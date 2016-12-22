@@ -21,7 +21,13 @@ export default ({
 }: BrowserRouterArgs) => {
   const history = createBrowserHistory({ basename });
 
-  const { pathname, search } = getLocation();
+  const { pathname: fullPathname, search } = getLocation();
+
+  // Strip the basename from the initial pathname
+  const pathname = basename
+    ? fullPathname.replace(basename, '')
+    : fullPathname;
+
   const descriptor = basename
     ? { pathname, basename, search }
     : { pathname, search };
