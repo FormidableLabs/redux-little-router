@@ -1,7 +1,7 @@
 /* eslint-disable no-magic-numbers */
 import React, { PropTypes } from 'react';
 import chunk from 'lodash.chunk';
-import { Link, RelativeFragment as Fragment } from '../../src';
+import { Link, Fragment } from '../../src';
 import styles from './demo.css';
 
 const COLUMN_COUNT = 2;
