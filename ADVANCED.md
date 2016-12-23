@@ -5,20 +5,21 @@
 
 Make sure to read http://redux.js.org/docs/recipes/ServerRendering.html to understand how the server/client Redux boilerplate works.
 
-Here's what the setup looks like on the server (assuming Node 4 LTS):
+Here's what the setup looks like on the server (assuming Node 6 LTS):
 
 ### Express
 
 ```js
 const express = require('express');
 const app = express();
-const routerForExpress = require('redux-little-router')
-  .routerForExpress;
+const { routerForExpress } = require('redux-little-router');
 
-const redux = require('redux');
-const createStore = redux.createStore;
-const compose = redux.compose;
-const applyMiddleware = redux.applyMiddleware;
+const {
+  combineReducers,
+  createStore,
+  compose,
+  applyMiddleware
+} = require('redux');
 
 const routes = {
   '/': {
@@ -36,20 +37,15 @@ app.use('/*', (req, res) => {
   // routerForExpress will infer the basename
   // from req.baseUrl!
   // 
-  const router = routerForExpress({
+  const { reducer, middleware, enhancer } = routerForExpress({
     routes,
     request: req
   })
 
   const store = createStore(
-    state => state,
+    combineReducers({ router: reducer }),
     { what: 'ever' },
-    compose(
-      router.routerEnhancer,
-      applyMiddleware(
-        router.routerMiddleware
-      )
-    )
+    compose(enhancer, applyMiddleware(middleware))
   );
 
   // ...then renderToString() your components as usual,
@@ -66,13 +62,14 @@ app.use('/*', (req, res) => {
 ```js
 const hapi = require('hapi');
 const server = new Hapi.Server();
-const routerForHapi = require('redux-little-router')
-  .routerForHapi;
+const { routerForHapi } = require('redux-little-router');
 
-const redux = require('redux');
-const createStore = redux.createStore;
-const compose = redux.compose;
-const applyMiddleware = redux.applyMiddleware;
+const {
+  combineReducers,
+  createStore,
+  compose,
+  applyMiddleware
+} = require('redux');
 
 const routes = {
   '/': {
@@ -89,20 +86,15 @@ server.route({
 		// Create the Redux store, passing in the Hapi
 		// request to the routerForHapi factory.
 
-		const router = routerForHapi({
+		const { reducer, middleware, enhancer } = routerForHapi({
 			routes,
 			request
 		})
 
 		const store = createStore(
-			state => state,
+			reducer,
 			{ what: 'ever' },
-			compose(
-				router.routerEnhancer,
-				applyMiddleware(
-					router.routerMiddleware
-				)
-			)
+			compose(enhancer, applyMiddleware(middleware))
 		);
 
 		// ...then renderToString() your components as usual,
@@ -132,17 +124,15 @@ const routes = {
 };
 
 const {
-  routerEnhancer,
-  routerMiddleware
+  reducer,
+  enhancer,
+  middleware
 } = routerForBrowser({ routes });
 
 const store = createStore(
-  yourReducer,
+  combineReducers({ router: reducer }),
   window.__INITIAL_STATE,
-  compose(
-    routerEnhancer,
-    applyMiddleware(routerMiddleware)
-  )
+  compose(enhancer, applyMiddleware(middleware))
 );
 
 // ...then render() your components as usual,

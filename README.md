@@ -1,4 +1,5 @@
 # redux-little-router
+
 [![Build Status](https://travis-ci.org/FormidableLabs/redux-little-router.svg?branch=master)](https://travis-ci.org/FormidableLabs/redux-little-router) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/7a6d3ed461d44fc0a83122dcda06728d)](https://www.codacy.com/app/tyler_9/redux-little-router?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=FormidableLabs/redux-little-router&amp;utm_campaign=Badge_Coverage) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7a6d3ed461d44fc0a83122dcda06728d)](https://www.codacy.com/app/tyler_9/redux-little-router?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=FormidableLabs/redux-little-router&amp;utm_campaign=Badge_Grade) <a href="https://overv.io/FormidableLabs/redux-little-router/board/"><img src="https://img.shields.io/badge/issues-board-green.svg" height="20" /></a>
 
 `redux-little-router` is a tiny router for Redux applications that lets the URL do the talking.
@@ -34,7 +35,7 @@ To hook into Redux applications, `redux-little-router` uses a store enhancer tha
 The following is an example of a `redux-little-router` setup that works for browser-rendered applications. For a server rendering example, check out our [advanced docs](ADVANCED.md).
 
 ```js
-import { compose, createStore, applyMiddleware } from 'redux';
+import { combineReducers, compose, createStore, applyMiddleware } from 'redux';
 import { routerForBrowser } from 'redux-little-router';
 
 import yourReducer from './your-app';
@@ -71,8 +72,9 @@ const routes = {
 // routerForBrowser is a factory method that returns a store
 // enhancer and a middleware.
 const {
-  routerEnhancer,
-  routerMiddleware  
+  reducer,
+  middleware,
+  enhancer
 } = routerForBrowser({
   // The configured routes. Required.
   routes,
@@ -81,12 +83,9 @@ const {
 })
 
 const clientOnlyStore = createStore(
-  yourReducer,
+  combineReducers({ router: reducer, yourReducer }),
   initialState,
-  compose(
-    routerEnhancer,
-    applyMiddleware(routerMiddleware)
-  )
+  compose(enhancer, applyMiddleware(middleware))
 );
 ```
 
@@ -104,6 +103,53 @@ if (initialLocation) {
 
 ### Provided actions and state
 
+`redux-little-router` provides the following action creators for navigation:
+
+```js
+import { push, replace, go, goBack, goForward } from 'redux-little-router';
+
+// `push` and `replace`
+// 
+// Equivalent to pushState and replaceState in the History API.
+// If you installed the router with a basename, `push` and `replace`
+// know to automatically prepend paths with it. Both action creators
+// accept string and object arguments.
+push('/messages');
+
+// Parsed query string stored in the `query` field of router state
+push('/messages?filter=business');
+
+// Provided query object stringified into the `search` field of router state
+replace({
+  pathname: '/messages',
+  query: {
+    filter: 'business'
+  }
+});
+
+// Optional second argument accepts a `persistQuery` field. When true,
+// reuse the query object from the previous location instead of replacing
+// or emptying it.
+push({
+  pathname: '/messages',
+  query: {
+    filter: 'business'
+  }
+}, {
+  persistQuery: true
+});
+
+// Navigates forward or backward a specified number of locations
+go(3);
+go(-6);
+
+// Equivalent to the browser back button
+goBack();
+
+// Equivalent to the browser forward button
+goForward();
+```
+
 On location changes, the store enhancer dispatches a `LOCATION_CHANGED` action that contains at least the following properties:
 
 ```js
@@ -117,6 +163,7 @@ On location changes, the store enhancer dispatches a `LOCATION_CHANGED` action t
   query: { // if your `history` instance uses `useQueries`
     some: 'thing'
   },
+  search: '?some=thing',
   result: {
     arbitrary: 'data that you defined in your routes object!'
     parent: { // for nested routes only
@@ -142,6 +189,7 @@ The reducer consumes this action and adds the following to the root of the state
   query: {
     some: 'thing'
   },
+  search: '?some=thing',
   result: {
     arbitrary: 'data that you defined in your routes object!',
     parent: { /* the parent route's result */ },
@@ -180,7 +228,8 @@ export default connect(state => ({
 ```
 
 ### `<Fragment>`
-Think of `<Fragment>` as the midpoint of a "flexibility continuum" that starts with raw switch statements and ends with React Router's `<Route>` component. Fragments can live anywhere within the React tree, making split-pane or nested UIs easy to work with.
+
+Think of `<Fragment>` as the midpoint of a "flexibility continuum" that starts with raw switch statements and ends with React Router v3's `<Route>` component. Fragments can live anywhere within the React tree, making split-pane or nested UIs easy to work with.
 
 The simplest fragment is one that displays when a route is active:
 
@@ -200,27 +249,19 @@ You can also match a fragment against anything in the current `location` object:
 
 You can use `withConditions` in conjunction with `forRoute` to set strict conditions for when a `<Fragment>` should display.
 
-Two types of fragments exist: `<RelativeFragment>` (new to 9.0.0) and `<AbsoluteFragment>`. You can use either by doing the following:
-
-```js
-import { RelativeFragment as Fragment } from 'redux-little-router';
-// or
-import { AbsoluteFragment as Fragment } from 'redux-little-router';
-```
-
-`<RelativeFragment>` lets you nest fragments to match your UI hierarchy to your route hierarchy, much like the `<Route>` component does in `react-router`. Given a URL of `/home/bio/dat-boi`, and the following elements:
+`<Fragment>` lets you nest fragments to match your UI hierarchy to your route hierarchy, much like the `<Route>` component does in `react-router@v3`. Given a URL of `/home/bio/dat-boi`, and the following elements:
 
 ```jsx
-<RelativeFragment forRoute='/home'>
+<Fragment forRoute='/home'>
   <h1>Home</h1>
-  <RelativeFragment forRoute='/bio'>
+  <Fragment forRoute='/bio'>
     <h2>Bios</h2>
-    <RelativeFragment forRoute='/dat-boi'>
+    <Fragment forRoute='/dat-boi'>
       <h3>Dat Boi</h3>
       <p>Something something whaddup</p>
-    </RelativeFragment>
-  </RelativeFragment>
-</RelativeFragment>
+    </Fragment>
+  </Fragment>
+</Fragment>
 ```
 
 ...React will render:
@@ -238,7 +279,7 @@ import { AbsoluteFragment as Fragment } from 'redux-little-router';
 </div>
 ```
 
-`<RelativeFragment>` makes basic component-per-page navigation easy:
+`<Fragment>` makes basic component-per-page navigation easy:
 
 ```jsx
 <Fragment forRoute='/'>
@@ -248,18 +289,6 @@ import { AbsoluteFragment as Fragment } from 'redux-little-router';
   <Fragment forRoute='/feed'><Feed /></Fragment>
 </Fragment>
 ```
-
-`<AbsoluteFragment>`s do not communicate with their parent or child routes like `<RelativeFragment>`s do. The route you pass to `forRoute` must match an exact route in your routes configuration, and are analogous to absolute URLs (they are not "relative" to the `forRoute`s of any other fragment in the hierarchy).
-
-`<AbsoluteFragment>` accepts an additional `forRoutes` prop that allows the fragment to display on multiple routes:
-
-```jsx
-<Fragment forRoutes={['/home/messages', '/home']}>
-  <p>This displays in a couple of places!</p>
-</Fragment>
-```
-
-When in doubt, use `<RelativeFragment>`. `<AbsoluteFragment>` may be deprecated in a future release.
 
 ### `<Link>`
 
@@ -271,7 +300,7 @@ Using the `<Link>` component is simple:
 </Link>
 ```
 
-Alternatively, you can pass in a [location descriptor](https://github.com/mjackson/history/blob/9a5102c38a161f00c6ea027a88b87b0328b5dc93/docs/Location.md#location-descriptors) to `href`. This is useful for passing query objects:
+Alternatively, you can pass in a location object to `href`. This is useful for passing query objects:
 
 ```jsx
 <Link className='anything' href={{
