@@ -5,44 +5,16 @@ import React, { Component, PropTypes } from 'react';
 import matchCache from '../util/match-cache';
 import generateId from '../util/generate-id';
 
-type RelativeProps = {
+type Props = {
   location: Location,
   matchRoute: Function,
   forRoute?: string,
   withConditions?: (location: Location) => bool,
+  parentId?: string,
   children: React.Element<*>
 };
 
-type AbsoluteProps = RelativeProps & {
-  forRoutes?: [string]
-};
-
-const absolute = (ComposedComponent: ReactClass<*>) => {
-  class AbsoluteFragment extends Component {
-    props: AbsoluteProps;
-
-    render() {
-      const { store } = this.context.router;
-      const location = store.getState().router;
-
-      return (
-        <ComposedComponent
-          location={location}
-          matchRoute={store.matchRoute}
-          {...this.props}
-        />
-      );
-    }
-  }
-
-  AbsoluteFragment.contextTypes = {
-    router: PropTypes.object
-  };
-
-  return AbsoluteFragment;
-};
-
-const relative = (ComposedComponent: ReactClass<*>) => {
+const relativePaths = (ComposedComponent: ReactClass<*>) => {
   class RelativeFragment extends Component {
     constructor() {
       super();
@@ -50,19 +22,23 @@ const relative = (ComposedComponent: ReactClass<*>) => {
     }
 
     getChildContext() {
+      const { parentRoute } = this.context;
+      const { forRoute } = this.props;
+
       return {
         // Append the parent route if this isn't the first
         // RelativeFragment in the hierarchy.
-        parentRoute: this.context.parentRoute &&
-          this.context.parentRoute !== '/' &&
-          this.context.parentRoute !== this.props.forRoute
-            ? `${this.context.parentRoute}${this.props.forRoute || ''}`
-            : this.props.forRoute,
+        parentRoute:
+          parentRoute &&
+          parentRoute !== '/' &&
+          parentRoute !== forRoute
+            ? `${parentRoute}${forRoute || ''}`
+            : forRoute,
         parentId: this.id
       };
     }
 
-    props: RelativeProps;
+    props: Props;
     id: string;
 
     render() {
@@ -104,10 +80,6 @@ const relative = (ComposedComponent: ReactClass<*>) => {
   return RelativeFragment;
 };
 
-type Props = AbsoluteProps & {
-  parentId?: string
-};
-
 const Fragment = (props: Props) => {
   const {
     location,
@@ -128,16 +100,6 @@ const Fragment = (props: Props) => {
     return null;
   }
 
-  if (Array.isArray(props.forRoutes)) {
-    const anyMatch = props.forRoutes.some(route =>
-      matchResult.route === route
-    );
-
-    if (!anyMatch) {
-      return null;
-    }
-  }
-
   if (parentId) {
     const previousMatch = matchCache.get(parentId);
     if (previousMatch && previousMatch !== forRoute) {
@@ -150,5 +112,4 @@ const Fragment = (props: Props) => {
   return <div>{children}</div>;
 };
 
-export const AbsoluteFragment = absolute(Fragment);
-export const RelativeFragment = relative(Fragment);
+export default relativePaths(Fragment);
