@@ -23,9 +23,7 @@ import routerForHapi from './environment/hapi-router';
 
 import provideRouter, { RouterProvider } from './components/provider';
 import { Link, PersistentQueryLink } from './components/link';
-import { AbsoluteFragment, RelativeFragment } from './components/fragment';
-
-const Fragment = AbsoluteFragment;
+import Fragment from './components/fragment';
 
 export {
   // High-level Redux API
@@ -40,8 +38,6 @@ export {
   Link,
   PersistentQueryLink,
   Fragment,
-  AbsoluteFragment,
-  RelativeFragment,
 
   // Public action creators
   push,
