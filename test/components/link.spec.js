@@ -3,10 +3,10 @@ import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 
 import { PUSH, REPLACE } from '../../src/types';
-import { Link } from '../../src/components/link';
+import { Link, PersistentQueryLink } from '../../src/components/link';
 
 import {
   captureErrors,
@@ -16,7 +16,7 @@ import {
 
 chai.use(sinonChai);
 
-describe('Router link component', () => {
+describe('Link', () => {
   describe('PUSH', () => {
     const hrefs = [
       '/home/messages/a-team?test=ing',
@@ -280,6 +280,18 @@ describe('Router link component', () => {
         );
         expect(wrapper.find('a').prop('href')).to.equal(`/base${expected[index]}`);
       });
+    });
+  });
+
+  describe('PersistentQueryLink', () => {
+    it('appends persistQuery to the props', () => {
+      // Need mount() here since PQL is an HOC
+      const wrapper = mount(
+        <PersistentQueryLink href='/' />,
+        fakeContext()
+      );
+      expect(wrapper.find(Link).props())
+        .to.have.property('persistQuery', true);
     });
   });
 });
