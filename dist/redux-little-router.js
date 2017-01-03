@@ -1474,6 +1474,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
+	var _queryString = __webpack_require__(14);
+	
+	var _queryString2 = _interopRequireDefault(_queryString);
+	
 	var _createMatcher = __webpack_require__(18);
 	
 	var _createMatcher2 = _interopRequireDefault(_createMatcher);
@@ -1527,6 +1531,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /* istanbul ignore else */
 	        if (newLocation) {
 	          _matchCache2.default.clear();
+	          newLocation.query = _queryString2.default.parse(newLocation.search);
 	          store.dispatch((0, _actionCreators.locationDidChange)({
 	            location: newLocation,
 	            matchRoute: matchRoute
