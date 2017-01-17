@@ -7,6 +7,7 @@ import type {
 } from 'redux';
 
 import type { History } from 'history';
+import qs from 'query-string';
 
 import qs from 'query-string';
 

@@ -80,7 +80,7 @@ const relative = (ComposedComponent: ReactClass<*>) => {
           parentId={parentId}
           location={location}
           matchRoute={store.matchWildcardRoute}
-          forRoute={forRoute && `${routePrefix}${forRoute}`}
+          forRoute={(forRoute || forRoute === '') && `${routePrefix}${forRoute}`}
           children={children}
           {...rest}
         />

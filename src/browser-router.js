@@ -8,22 +8,17 @@ import routerMiddleware from './middleware';
 type BrowserRouterArgs = {
   routes: Object,
   basename: string,
-  getLocation: () => Location,
   passRouterStateToReducer?: bool
 };
-
-/* istanbul ignore next: unstubbable! */
-const realLocation = () => window.location;
 
 export default ({
   routes,
   basename,
-  getLocation = realLocation,
   passRouterStateToReducer = false
 }: BrowserRouterArgs) => {
   const history = createBrowserHistory({ basename });
 
-  const { pathname, search } = getLocation();
+  const { pathname, search } = history.location;
   const descriptor = basename
     ? { pathname, basename, search }
     : { pathname, search };
