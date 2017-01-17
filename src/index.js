@@ -6,6 +6,8 @@ import createStoreWithRouter from './store-enhancer';
 import routerMiddleware from './middleware';
 import { locationDidChange, initializeCurrentLocation } from './action-creators';
 
+import immutableStoreEnhancer from './immutable-store-enhancer';
+
 import provideRouter, { RouterProvider } from './provider';
 import { Link, PersistentQueryLink } from './link';
 import { AbsoluteFragment, RelativeFragment } from './fragment';
@@ -31,6 +33,7 @@ export {
   routerForHapi,
   routerMiddleware,
   initializeCurrentLocation,
+  immutableStoreEnhancer,
 
   // React API
   provideRouter,
