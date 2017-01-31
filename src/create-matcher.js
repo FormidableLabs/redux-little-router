@@ -71,7 +71,7 @@ export default (routes: Object, wildcard: bool = false) => {
       pattern: new UrlPattern(
         // Prepend with wildcards if requested
         `${route}${wildcard && '*' || ''}`
-      ),
+      , routes[route].patternOptions || {}),
       result: routes[route]
     }));
 
