@@ -52,5 +52,15 @@ describe('createMatcher', () => {
         name: '3spooky5me'
       }
     });
+
+    expect(matchRoute('/home/email/doot@dootmail.com')).to.deep.equal({
+      route: '/home/email/:customparam',
+      params: {
+        customparam: 'doot@dootmail.com'
+      },
+      result: {
+        name: 'custom'
+      }
+    });
   });
 });

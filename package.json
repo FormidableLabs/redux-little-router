@@ -46,6 +46,7 @@
   "dependencies": {
     "history": "^4.4.1",
     "lodash.assign": "^4.2.0",
+    "lodash.omit": "^4.2.0",
     "query-string": "^4.2.3",
     "url-pattern": "^1.0.1"
   },

@@ -1,5 +1,6 @@
 // @flow
 import UrlPattern from 'url-pattern';
+import omit from 'lodash.omit';
 
 type RouteCache = {
   route: string,
@@ -71,8 +72,9 @@ export default (routes: Object, wildcard: bool = false) => {
       pattern: new UrlPattern(
         // Prepend with wildcards if requested
         `${route}${wildcard && '*' || ''}`
-      ),
-      result: routes[route]
+      , routes[route].patternOptions || {}),
+      result: 'patternOptions' in routes[route] ?
+              omit(routes[route], 'patternOptions') : routes[route]
     }));
 
   return wildcard
