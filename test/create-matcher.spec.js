@@ -60,7 +60,6 @@ describe('createMatcher', () => {
       },
       result: {
         name: 'custom',
-        patternOptions: {segmentValueCharset: 'a-zA-Z0-9-_~ %@.'}
       }
     });
   });
