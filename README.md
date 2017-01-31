@@ -46,7 +46,7 @@ import yourReducer from './your-app';
 // Useful for page titles and other route-specific data.
 
 // Uses https://github.com/snd/url-pattern for URL matching
-// and parameter extraction.
+// and parameter extraction. options can be set in patternOptions
 const routes = {
   '/messages': {
     title: 'Message'
@@ -62,6 +62,7 @@ const routes = {
       title: 'Biographies',
       '/:name': {
         title: 'Biography for:'
+        patternOptions: {segmentValueCharset: 'a-zA-Z_'},
       }
     }
   }
