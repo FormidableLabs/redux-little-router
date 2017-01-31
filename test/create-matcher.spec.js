@@ -59,7 +59,7 @@ describe('createMatcher', () => {
         customparam: 'doot@dootmail.com'
       },
       result: {
-        name: 'custom',
+        name: 'custom'
       }
     });
   });

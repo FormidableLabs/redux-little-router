@@ -18,7 +18,7 @@ export default flattenRoutes({
   },
   '/home/email/:customparam': {
     name: 'custom',
-    patternOptions: {segmentValueCharset: 'a-zA-Z0-9-_~ %@.'}
+    patternOptions: { segmentValueCharset: 'a-zA-Z0-9-_~ %@.' }
   },
   '/': {
     '/play': {
