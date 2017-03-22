@@ -1,7 +1,7 @@
 // @flow
 import type { Location } from '../types';
 
-import React, { Component, PropTypes } from 'react';
+import React, { Children, Component, PropTypes } from 'react';
 import matchCache from '../util/match-cache';
 import generateId from '../util/generate-id';
 
@@ -9,7 +9,7 @@ type Props = {
   location: Location,
   matchRoute: Function,
   forRoute?: string,
-  withConditions?: (location: Location) => bool,
+  withConditions?: (location: Location) => boolean,
   parentId?: string,
   children: React.Element<*>
 };
@@ -28,12 +28,11 @@ const relativePaths = (ComposedComponent: ReactClass<*>) => {
       return {
         // Append the parent route if this isn't the first
         // RelativeFragment in the hierarchy.
-        parentRoute:
-          parentRoute &&
+        parentRoute: parentRoute &&
           parentRoute !== '/' &&
           parentRoute !== forRoute
-            ? `${parentRoute}${forRoute || ''}`
-            : forRoute,
+          ? `${parentRoute}${forRoute || ''}`
+          : forRoute,
         parentId: this.id
       };
     }
@@ -48,8 +47,7 @@ const relativePaths = (ComposedComponent: ReactClass<*>) => {
 
       const location = store.getState().router;
 
-      const routePrefix = parentRoute &&
-        parentRoute !== '/' ? parentRoute : '';
+      const routePrefix = parentRoute && parentRoute !== '/' ? parentRoute : '';
 
       return (
         <ComposedComponent
@@ -94,8 +92,8 @@ const Fragment = (props: Props) => {
 
   if (
     !matchResult ||
-    withConditions && !withConditions(location) ||
-    forRoute && matchResult.route !== forRoute
+    (withConditions && !withConditions(location)) ||
+    (forRoute && matchResult.route !== forRoute)
   ) {
     return null;
   }
@@ -109,7 +107,7 @@ const Fragment = (props: Props) => {
     }
   }
 
-  return <div>{children}</div>;
+  return Children.only(children);
 };
 
 export default relativePaths(Fragment);

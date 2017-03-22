@@ -26,19 +26,27 @@ describe('Fragment', () => {
   it('renders deeply nested fragments', () => {
     const wrapper = mount(
       <Fragment forRoute='/this'>
-        <p>one</p>
-        <Fragment forRoute='/is'>
-          <p>two</p>
-          <Fragment forRoute='/nested'>
-            <p>three</p>
-            <Fragment forRoute='/:times'>
-              <p>four</p>
-              <Fragment forRoute='/times'>
-                <p>five</p>
+        <div>
+          <p>one</p>
+          <Fragment forRoute='/is'>
+            <div>
+              <p>two</p>
+              <Fragment forRoute='/nested'>
+                <div>
+                  <p>three</p>
+                  <Fragment forRoute='/:times'>
+                    <div>
+                      <p>four</p>
+                      <Fragment forRoute='/times'>
+                        <p>five</p>
+                      </Fragment>
+                    </div>
+                  </Fragment>
+                </div>
               </Fragment>
-            </Fragment>
+            </div>
           </Fragment>
-        </Fragment>
+        </div>
       </Fragment>,
       fakeContext({
         pathname: '/this/is/nested/five/times',
@@ -55,19 +63,27 @@ describe('Fragment', () => {
   it('does not render nested fragments that do not match the route', () => {
     const wrapper = mount(
       <Fragment forRoute='/this'>
-        <p>one</p>
-        <Fragment forRoute='/is'>
-          <p>two</p>
-          <Fragment forRoute='/nested'>
-            <p>three</p>
-            <Fragment forRoute='/:times'>
-              <p>four</p>
-              <Fragment forRoute='/times'>
-                <p>five</p>
+        <div>
+          <p>one</p>
+          <Fragment forRoute='/is'>
+            <div>
+              <p>two</p>
+              <Fragment forRoute='/nested'>
+                <div>
+                  <p>three</p>
+                  <Fragment forRoute='/:times'>
+                    <div>
+                      <p>four</p>
+                      <Fragment forRoute='/times'>
+                        <p>five</p>
+                      </Fragment>
+                    </div>
+                  </Fragment>
+                </div>
               </Fragment>
-            </Fragment>
+            </div>
           </Fragment>
-        </Fragment>
+        </div>
       </Fragment>,
       fakeContext({
         pathname: '/this/is/nested',
@@ -88,33 +104,35 @@ describe('Fragment', () => {
 
   it('does greedy matching', () => {
     const wrapper = mount(
-      <Fragment forRoute='/play'>
-      <Fragment forRoute='/c/:code'>
-        <p>fist</p>
-      </Fragment>
-      <Fragment forRoute='/c'>
-        <p>second</p>
-      </Fragment>
-      <div>
-        <ul>
-          <li>
-          <Fragment forRoute='/c/:code'>
-            <p>third</p>
+      <Fragment forRoute='/oh'>
+        <div>
+          <Fragment forRoute='/hai/:mark'>
+            <p>first</p>
           </Fragment>
-          </li>
-        </ul>
-      </div>
-      <Fragment forRoute='/c/code'>
-        <p>fourth</p>
-      </Fragment>
+          <Fragment forRoute='/hai'>
+            <p>second</p>
+          </Fragment>
+          <div>
+            <ul>
+              <li>
+              <Fragment forRoute='/hai/:mark'>
+                <p>third</p>
+              </Fragment>
+              </li>
+            </ul>
+          </div>
+          <Fragment forRoute='/hai/mark'>
+            <p>fourth</p>
+          </Fragment>
+        </div>
       </Fragment>,
       fakeContext({
-        pathname: '/play/c/code',
-        route: '/play/c/:code'
+        pathname: '/oh/hai/mark',
+        route: '/oh/hai/:mark'
       })
     );
 
-    expect(wrapper.containsMatchingElement(<p>fist</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>first</p>)).to.be.true;
     expect(wrapper.containsMatchingElement(<p>second</p>)).to.be.false;
     expect(wrapper.containsMatchingElement(<p>third</p>)).to.be.true;
     expect(wrapper.containsMatchingElement(<p>fourth</p>)).to.be.false;
@@ -124,43 +142,53 @@ describe('Fragment', () => {
     // eslint-disable-next-line no-extra-parens
     const element = (
       <Fragment forRoute='/'>
-        <h1>App Title</h1>
-        <Fragment forRoute='/cheese'>
-          <p>Cheese</p>
-          <Fragment forRoute='/gifs'>
-            <p>Cheese Gifs</p>
+        <div>
+          <h1>App Title</h1>
+          <Fragment forRoute='/cheese'>
+            <div>
+              <p>Cheese</p>
+              <Fragment forRoute='/gifs'>
+                <p>Cheese Gifs</p>
+              </Fragment>
+              <Fragment forRoute='/:type'>
+                <p>Cheese Type</p>
+              </Fragment>
+            </div>
           </Fragment>
-          <Fragment forRoute='/:type'>
-            <p>Cheese Type</p>
+          <Fragment forRoute='/dog'>
+            <div>
+              <p>Dog</p>
+              <Fragment forRoute='/gifs'>
+                <p>Dog Gifs</p>
+              </Fragment>
+              <Fragment forRoute='/:type'>
+                <p>Dog Type</p>
+              </Fragment>
+            </div>
           </Fragment>
-        </Fragment>
-        <Fragment forRoute='/dog'>
-          <p>Dog</p>
-          <Fragment forRoute='/gifs'>
-            <p>Dog Gifs</p>
+          <Fragment forRoute='/cat'>
+            <div>
+              <p>Cat</p>
+              <Fragment forRoute='/gifs'>
+                <p>Cat Gifs</p>
+              </Fragment>
+              <Fragment forRoute='/:type'>
+                <p>Cat Type</p>
+              </Fragment>
+            </div>
           </Fragment>
-          <Fragment forRoute='/:type'>
-            <p>Dog Type</p>
+          <Fragment forRoute='/hipster'>
+            <div>
+              <p>Hipster</p>
+              <Fragment forRoute='/gifs'>
+                <p>Hipster Gifs</p>
+              </Fragment>
+              <Fragment forRoute='/:type'>
+                <p>Hipster Type</p>
+              </Fragment>
+            </div>
           </Fragment>
-        </Fragment>
-        <Fragment forRoute='/cat'>
-          <p>Cat</p>
-          <Fragment forRoute='/gifs'>
-            <p>Cat Gifs</p>
-          </Fragment>
-          <Fragment forRoute='/:type'>
-            <p>Cat Type</p>
-          </Fragment>
-        </Fragment>
-        <Fragment forRoute='/hipster'>
-          <p>Hipster</p>
-          <Fragment forRoute='/gifs'>
-            <p>Hipster Gifs</p>
-          </Fragment>
-          <Fragment forRoute='/:type'>
-            <p>Hipster Type</p>
-          </Fragment>
-        </Fragment>
+        </div>
       </Fragment>
     );
 

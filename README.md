@@ -253,14 +253,20 @@ You can use `withConditions` in conjunction with `forRoute` to set strict condit
 
 ```jsx
 <Fragment forRoute='/home'>
-  <h1>Home</h1>
-  <Fragment forRoute='/bio'>
-    <h2>Bios</h2>
-    <Fragment forRoute='/dat-boi'>
-      <h3>Dat Boi</h3>
-      <p>Something something whaddup</p>
+  <div>
+    <h1>Home</h1>
+    <Fragment forRoute='/bio'>
+      <div>
+        <h2>Bios</h2>
+        <Fragment forRoute='/dat-boi'>
+          <div>
+            <h3>Dat Boi</h3>
+            <p>Something something whaddup</p>
+          </div>
+        </Fragment>
+      </div>
     </Fragment>
-  </Fragment>
+  </div>
 </Fragment>
 ```
 
@@ -283,10 +289,12 @@ You can use `withConditions` in conjunction with `forRoute` to set strict condit
 
 ```jsx
 <Fragment forRoute='/'>
-  <Fragment forRoute='/home'><Home /></Fragment>
-  <Fragment forRoute='/about'><About /></Fragment>
-  <Fragment forRoute='/messages'><Messages /></Fragment>
-  <Fragment forRoute='/feed'><Feed /></Fragment>
+  <div>
+    <Fragment forRoute='/home'><Home /></Fragment>
+    <Fragment forRoute='/about'><About /></Fragment>
+    <Fragment forRoute='/messages'><Messages /></Fragment>
+    <Fragment forRoute='/feed'><Feed /></Fragment>
+  </div>
 </Fragment>
 ```
 

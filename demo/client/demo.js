@@ -21,11 +21,7 @@ const Gallery = ({ images, columns, ...rest }) => (
     {columnize(images, columns).map((column, index) => (
       <div key={index} className={styles.column}>
         {column.map((image, imageIndex) => (
-          <img
-            key={imageIndex}
-            className={styles.image}
-            src={image}
-          />
+          <img key={imageIndex} className={styles.image} src={image} />
         ))}
       </div>
     ))}
@@ -43,29 +39,35 @@ const Demo = ({ router }) => {
   return (
     <div className={styles.container}>
       <Fragment forRoute='/' className={styles.container}>
-        <h1 className={styles.tagline}>
-          <span className={styles.secondary}>A Compendium of</span>
-          <br />
-          <span className={styles.primary}>Ipsums and GIFs</span>
-        </h1>
+        <div>
+          <h1 className={styles.tagline}>
+            <span className={styles.secondary}>A Compendium of</span>
+            <br />
+            <span className={styles.primary}>Ipsums and GIFs</span>
+          </h1>
 
-        <div className={styles.nav}>
-          <Link href={{ pathname: '/cheese', query: { is: 'cheese' } }}>Cheese</Link>
-          <Link href='/dog'>Dog</Link>
-          <Link href='/cat?is=cat'>Cat</Link>
-          <Link href='/hipster'>Hipster</Link>
-        </div>
+          <div className={styles.nav}>
+            <Link href={{ pathname: '/cheese', query: { is: 'cheese' } }}>
+              Cheese
+            </Link>
+            <Link href='/dog'>Dog</Link>
+            <Link href='/cat?is=cat'>Cat</Link>
+            <Link href='/hipster'>Hipster</Link>
+          </div>
 
-        <div className={styles.panes}>
-          {demoRoutes.map(route => (
-            <Fragment key={route} forRoute={route}>
-              <p>{router.result.text}</p>
-              <Gallery
-                images={router.result.images}
-                columns={COLUMN_COUNT}
-              />
-            </Fragment>
-          ))}
+          <div className={styles.panes}>
+            {demoRoutes.map(route => (
+              <Fragment key={route} forRoute={route}>
+                <div>
+                  <p>{router.result.text}</p>
+                  <Gallery
+                    images={router.result.images}
+                    columns={COLUMN_COUNT}
+                  />
+                </div>
+              </Fragment>
+            ))}
+          </div>
         </div>
       </Fragment>
     </div>
