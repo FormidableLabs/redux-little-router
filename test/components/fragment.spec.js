@@ -138,6 +138,110 @@ describe('Fragment', () => {
     expect(wrapper.containsMatchingElement(<p>fourth</p>)).to.be.false;
   });
 
+  it('matches nested index', () => {
+    const wrapper = mount(
+      <Fragment forRoute='/foo'>
+        <div>
+          <p>first</p>
+          <Fragment forRoute='/'>
+            <p>second</p>
+          </Fragment>
+          <Fragment forRoute='/bar'>
+            <p>third</p>
+          </Fragment>
+        </div>
+      </Fragment>,
+      fakeContext({
+        pathname: '/foo',
+        route: '/foo'
+      })
+    );
+
+    expect(wrapper.containsMatchingElement(<p>first</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>second</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>third</p>)).to.be.false;
+  });
+
+  it('matches double nested index', () => {
+    const wrapper = mount(
+      <Fragment forRoute='/foo'>
+        <Fragment forRoute='/bar'>
+          <div>
+            <p>first</p>
+            <Fragment forRoute='/'>
+              <p>second</p>
+            </Fragment>
+            <Fragment forRoute='/you'>
+              <p>third</p>
+            </Fragment>
+          </div>
+        </Fragment>
+      </Fragment>,
+      fakeContext({
+        pathname: '/foo/bar',
+        route: '/foo/bar'
+      })
+    );
+
+    expect(wrapper.containsMatchingElement(<p>first</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>second</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>third</p>)).to.be.false;
+  });
+
+  it('doesnt match nested index', () => {
+    const wrapper = mount(
+      <Fragment forRoute='/foo'>
+        <div>
+          <p>first</p>
+          <Fragment forRoute='/'>
+            <p>second</p>
+          </Fragment>
+          <Fragment forRoute='/bar'>
+            <p>third</p>
+          </Fragment>
+        </div>
+      </Fragment>,
+      fakeContext({
+        pathname: '/foo/bar',
+        route: '/foo/bar'
+      })
+    );
+    expect(wrapper.containsMatchingElement(<p>first</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>second</p>)).to.be.false;
+    expect(wrapper.containsMatchingElement(<p>third</p>)).to.be.true;
+  });
+
+  it('doesnt match double nested index', () => {
+    const wrapper = mount(
+      <Fragment forRoute='/foo'>
+        <Fragment forRoute='/bar'>
+          <div>
+            <p>first</p>
+            <Fragment forRoute='/'>
+              <p>second</p>
+            </Fragment>
+            <Fragment forRoute='/you'>
+              <p>third</p>
+            </Fragment>
+            <Fragment forRoute='/me'>
+              <p>fourth</p>
+            </Fragment>
+          </div>
+        </Fragment>
+      </Fragment>,
+      fakeContext({
+        pathname: '/foo/bar/you',
+        route: '/foo/bar/you'
+      })
+    );
+
+    expect(wrapper.containsMatchingElement(<p>first</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>second</p>)).to.be.false;
+    expect(wrapper.containsMatchingElement(<p>third</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>fourth</p>)).to.be.false;
+  });
+
+
   describe('basic page-by-page routing', () => {
     // eslint-disable-next-line no-extra-parens
     const element = (
