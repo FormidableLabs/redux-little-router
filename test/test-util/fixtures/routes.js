@@ -57,6 +57,12 @@ export default flattenRoutes({
     '/hipster': {
       '/gifs': {},
       '/:type': {}
+    },
+    '/foo': {
+      '/bar': {
+        '/you': {},
+        '/me': {}
+      }
     }
   }
 });

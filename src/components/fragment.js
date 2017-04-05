@@ -8,7 +8,9 @@ import generateId from '../util/generate-id';
 type Props = {
   location: Location,
   matchRoute: Function,
+  matchWildcardRoute: Function,
   forRoute?: string,
+  parentRoute?: string,
   withConditions?: (location: Location) => boolean,
   parentId?: string,
   children: React.Element<*>
@@ -53,8 +55,10 @@ const relativePaths = (ComposedComponent: ReactClass<*>) => {
         <ComposedComponent
           parentId={parentId}
           location={location}
-          matchRoute={store.matchWildcardRoute}
-          forRoute={forRoute && `${routePrefix}${forRoute}`}
+          matchRoute={store.matchRoute}
+          matchWildcardRoute={store.matchWildcardRoute}
+          parentRoute={parentRoute}
+          forRoute={forRoute && `${routePrefix}${forRoute === '/' && parentId ? '' : forRoute}`}
           children={children}
           {...rest}
         />
@@ -82,13 +86,16 @@ const Fragment = (props: Props) => {
   const {
     location,
     matchRoute,
+    matchWildcardRoute,
     forRoute,
     withConditions,
     children,
-    parentId
+    parentId,
+    parentRoute
   } = props;
 
-  const matchResult = matchRoute(location.pathname, forRoute);
+  const matcher = (forRoute === parentRoute) ? matchRoute : matchWildcardRoute;
+  const matchResult = matcher(location.pathname, forRoute);
 
   if (
     !matchResult ||
