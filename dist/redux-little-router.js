@@ -6106,8 +6106,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return _react2.default.createElement(ComposedComponent, _extends({
 	          parentId: parentId,
 	          location: location,
-	          matchRoute: store.matchWildcardRoute,
-	          forRoute: forRoute && '' + routePrefix + forRoute,
+	          matchRoute: store.matchRoute,
+	          matchWildcardRoute: store.matchWildcardRoute,
+	          parentRoute: parentRoute,
+	          forRoute: forRoute && '' + routePrefix + (forRoute === '/' && parentId ? '' : forRoute),
 	          children: children
 	        }, rest));
 	      }
@@ -6137,13 +6139,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Fragment = function Fragment(props) {
 	  var location = props.location,
 	      matchRoute = props.matchRoute,
+	      matchWildcardRoute = props.matchWildcardRoute,
 	      forRoute = props.forRoute,
 	      withConditions = props.withConditions,
 	      children = props.children,
-	      parentId = props.parentId;
+	      parentId = props.parentId,
+	      parentRoute = props.parentRoute;
 	
 	
-	  var matchResult = matchRoute(location.pathname, forRoute);
+	  var matcher = forRoute === parentRoute ? matchRoute : matchWildcardRoute;
+	  var matchResult = matcher(location.pathname, forRoute);
 	
 	  if (!matchResult || withConditions && !withConditions(location) || forRoute && matchResult.route !== forRoute) {
 	    return null;
