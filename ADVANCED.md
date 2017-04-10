@@ -29,7 +29,7 @@ const routes = {
   }
 };
 
-app.use('/*', (req, res) => {
+app.get('/*', (req, res) => {
   // Create the Redux store, passing in the Express
   // request to the routerForExpress factory.
   // 
