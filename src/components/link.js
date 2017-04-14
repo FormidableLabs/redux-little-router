@@ -2,7 +2,8 @@
 import type { Href } from '../types';
 import type { RouterContext } from './provider';
 
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import { push, replace } from '../actions';
 import normalizeHref from '../util/normalize-href';
