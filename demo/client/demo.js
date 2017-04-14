@@ -1,5 +1,6 @@
 /* eslint-disable no-magic-numbers */
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import chunk from 'lodash.chunk';
 import { Link, Fragment } from '../../src';
 import styles from './demo.css';
