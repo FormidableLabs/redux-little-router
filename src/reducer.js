@@ -12,6 +12,14 @@ type ResolverArgs = {
   options: LocationOptions
 };
 
+
+const mergeSearch = (oldSearch, newSearch) => {
+  if (oldSearch && newSearch) {
+    return oldSearch + newSearch.replace('?', '&');
+  }
+  return oldSearch || newSearch;
+};
+
 const resolveQuery = ({
   oldLocation,
   newLocation,
@@ -52,19 +60,13 @@ const resolveQuery = ({
           ...newLocation.query
         },
         search: mergeSearch(oldSearch, newLocation.search)
-      }
-    }
+      },
+      options
+    };
   }
 
   return { oldLocation, newLocation, options };
 };
-
-const mergeSearch = (oldSearch, newSearch) => {
-  if (oldSearch && newSearch) {
-    return oldSearch + newSearch.replace('?', '&');
-  }
-  return oldSearch || newSearch;
-}
 
 const resolveBasename = ({
   oldLocation,
