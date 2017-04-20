@@ -51,12 +51,10 @@ const relativePaths = (ComposedComponent: ReactClass<*>) => {
       const location = store.getState().router;
 
       const routePrefix = parentRoute && parentRoute !== '/'
-        ? parentRoute
-        : '';
+        ? parentRoute : '';
 
       const routeSuffix = (forRoute === '/' && parentRoute && parentRoute !== '/')
-        ? ''
-        : forRoute || '';
+        ? '' : forRoute || '';
 
       const combinedRoute = forRoute && `${routePrefix}${routeSuffix}`;
 
