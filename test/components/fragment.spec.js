@@ -210,7 +210,7 @@ describe('Fragment', () => {
     expect(wrapper.containsMatchingElement(<p>first</p>)).to.be.true;
     expect(wrapper.containsMatchingElement(<p>second</p>)).to.be.false;
     expect(wrapper.containsMatchingElement(<p>third</p>)).to.be.true;
-    expect(wrapper.containsMatchingElement(<p>fourth</p>)).to.be.flase;
+    expect(wrapper.containsMatchingElement(<p>fourth</p>)).to.be.false;
   });
 
   it('does exact matching for non-root / (reversed order)', () => {
