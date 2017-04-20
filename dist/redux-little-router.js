@@ -301,11 +301,13 @@ return /******/ (function(modules) { // webpackBootstrap
 			case 'bracket':
 				return function (key, value, accumulator) {
 					result = /(\[\])$/.exec(key);
-	
 					key = key.replace(/\[\]$/, '');
 	
-					if (!result || accumulator[key] === undefined) {
+					if (!result) {
 						accumulator[key] = value;
+						return;
+					} else if (accumulator[key] === undefined) {
+						accumulator[key] = [value];
 						return;
 					}
 	
@@ -6969,13 +6971,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        var routePrefix = parentRoute && parentRoute !== '/' ? parentRoute : '';
 	
+	        var routeSuffix = forRoute === '/' && parentRoute && parentRoute !== '/' ? '' : forRoute || '';
+	
+	        var combinedRoute = forRoute && '' + routePrefix + routeSuffix;
+	
 	        return _react2.default.createElement(ComposedComponent, _extends({
 	          parentId: parentId,
 	          location: location,
 	          matchRoute: store.matchRoute,
 	          matchWildcardRoute: store.matchWildcardRoute,
 	          parentRoute: parentRoute,
-	          forRoute: forRoute && '' + routePrefix + (forRoute === '/' && parentId ? '' : forRoute),
+	          forRoute: combinedRoute,
 	          children: children
 	        }, rest));
 	      }
