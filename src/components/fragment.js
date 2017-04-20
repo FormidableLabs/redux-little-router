@@ -50,7 +50,15 @@ const relativePaths = (ComposedComponent: ReactClass<*>) => {
 
       const location = store.getState().router;
 
-      const routePrefix = parentRoute && parentRoute !== '/' ? parentRoute : '';
+      const routePrefix = parentRoute && parentRoute !== '/'
+        ? parentRoute
+        : '';
+
+      const routeSuffix = (forRoute === '/' && parentRoute && parentRoute !== '/')
+        ? ''
+        : forRoute || '';
+
+      const combinedRoute = forRoute && `${routePrefix}${routeSuffix}`;
 
       return (
         <ComposedComponent
@@ -59,7 +67,7 @@ const relativePaths = (ComposedComponent: ReactClass<*>) => {
           matchRoute={store.matchRoute}
           matchWildcardRoute={store.matchWildcardRoute}
           parentRoute={parentRoute}
-          forRoute={forRoute && `${routePrefix}${forRoute === '/' && parentId ? '' : forRoute}`}
+          forRoute={combinedRoute}
           children={children}
           {...rest}
         />

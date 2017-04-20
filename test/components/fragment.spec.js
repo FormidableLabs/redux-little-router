@@ -138,6 +138,104 @@ describe('Fragment', () => {
     expect(wrapper.containsMatchingElement(<p>fourth</p>)).to.be.false;
   });
 
+  it('renders nested /', () => {
+    const wrapper = mount(
+        <Fragment forRoute='/'>
+          <div>
+            <p>first</p>
+            <Fragment forRoute='/'>
+              <p>second</p>
+            </Fragment>
+            <Fragment forRoute='/oh'>
+              <p>third</p>
+            </Fragment>
+          </div>
+        </Fragment>,
+      fakeContext({
+        pathname: '/',
+        route: '/'
+      })
+    );
+    expect(wrapper.containsMatchingElement(<p>first</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>second</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>third</p>)).to.be.false;
+  });
+
+  it('renders nested / with reversed order', () => {
+    const wrapper = mount(
+        <Fragment forRoute='/'>
+          <div>
+            <p>first</p>
+            <Fragment forRoute='/oh'>
+              <p>second</p>
+            </Fragment>
+            <Fragment forRoute='/'>
+              <p>third</p>
+            </Fragment>
+          </div>
+        </Fragment>,
+      fakeContext({
+        pathname: '/',
+        route: '/'
+      })
+    );
+    expect(wrapper.containsMatchingElement(<p>first</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>second</p>)).to.be.false;
+    expect(wrapper.containsMatchingElement(<p>third</p>)).to.be.true;
+  });
+
+  it('does exact matching for non-root /', () => {
+    const wrapper = mount(
+        <Fragment forRoute='/'>
+          <div>
+            <p>first</p>
+            <Fragment forRoute='/'>
+              <p>second</p>
+            </Fragment>
+            <Fragment forRoute='/oh'>
+              <div>
+                <p>third</p>
+                <Fragment forRoute='/hai'>
+                  <p>fourth</p>
+                </Fragment>
+              </div>
+            </Fragment>
+          </div>
+        </Fragment>,
+      fakeContext({
+        pathname: '/oh',
+        route: '/oh'
+      })
+    );
+    expect(wrapper.containsMatchingElement(<p>first</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>second</p>)).to.be.false;
+    expect(wrapper.containsMatchingElement(<p>third</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>fourth</p>)).to.be.flase;
+  });
+
+  it('does exact matching for non-root / (reversed order)', () => {
+    const wrapper = mount(
+        <Fragment forRoute='/'>
+          <div>
+            <p>first</p>
+            <Fragment forRoute='/oh'>
+              <p>second</p>
+            </Fragment>
+            <Fragment forRoute='/'>
+              <p>third</p>
+            </Fragment>
+          </div>
+        </Fragment>,
+      fakeContext({
+        pathname: '/oh',
+        route: '/oh'
+      })
+    );
+    expect(wrapper.containsMatchingElement(<p>first</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>second</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>third</p>)).to.be.false;
+  });
+
   it('matches nested index', () => {
     const wrapper = mount(
       <Fragment forRoute='/foo'>
@@ -188,7 +286,7 @@ describe('Fragment', () => {
     expect(wrapper.containsMatchingElement(<p>third</p>)).to.be.false;
   });
 
-  it('doesnt match nested index', () => {
+  it('doesnt greedy match nested index', () => {
     const wrapper = mount(
       <Fragment forRoute='/foo'>
         <div>
@@ -211,7 +309,7 @@ describe('Fragment', () => {
     expect(wrapper.containsMatchingElement(<p>third</p>)).to.be.true;
   });
 
-  it('doesnt match double nested index', () => {
+  it('doesnt greedy match double nested index', () => {
     const wrapper = mount(
       <Fragment forRoute='/foo'>
         <Fragment forRoute='/bar'>
@@ -221,17 +319,25 @@ describe('Fragment', () => {
               <p>second</p>
             </Fragment>
             <Fragment forRoute='/you'>
-              <p>third</p>
+              <div>
+                <p>third</p>
+                <Fragment forRoute='/'>
+                  <p>fourth</p>
+                </Fragment>
+                <Fragment forRoute='/again'>
+                  <p>fifth</p>
+                </Fragment>
+              </div>
             </Fragment>
             <Fragment forRoute='/me'>
-              <p>fourth</p>
+              <p>sixth</p>
             </Fragment>
           </div>
         </Fragment>
       </Fragment>,
       fakeContext({
-        pathname: '/foo/bar/you',
-        route: '/foo/bar/you'
+        pathname: '/foo/bar/you/again',
+        route: '/foo/bar/you/again'
       })
     );
 
@@ -239,6 +345,8 @@ describe('Fragment', () => {
     expect(wrapper.containsMatchingElement(<p>second</p>)).to.be.false;
     expect(wrapper.containsMatchingElement(<p>third</p>)).to.be.true;
     expect(wrapper.containsMatchingElement(<p>fourth</p>)).to.be.false;
+    expect(wrapper.containsMatchingElement(<p>fifth</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>sixth</p>)).to.be.false;
   });
 
 
