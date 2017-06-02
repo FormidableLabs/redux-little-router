@@ -93,7 +93,10 @@ const Link = (
     <a
       href={stringifyHref(href, basename)}
       onClick={clickHandler}
-      {...rest}
+      {...{
+        ...rest,
+        target
+      }}
     >
       {children}
     </a>
