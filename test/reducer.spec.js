@@ -126,6 +126,49 @@ describe('Router reducer', () => {
         },
         search: '?clap=please',
         options: {
+          mergeQuery: true
+        }
+      }
+    };
+
+    const result = reducer()({
+      pathname: '/waffle',
+      query: {
+        please: 'clap'
+      },
+      search: '?please=clap'
+    }, action);
+
+    expect(result).to.deep.equal({
+      pathname: '/rofl',
+      query: {
+        clap: 'please',
+        please: 'clap'
+      },
+      search: '?please=clap&clap=please',
+      options: {
+        mergeQuery: true
+      },
+      previous: {
+        pathname: '/waffle',
+        query: {
+          please: 'clap'
+        },
+        search: '?please=clap'
+      }
+    });
+  });
+
+  it('merges the old query with the new queries with mergeQuery', () => {
+    const action = {
+      type: LOCATION_CHANGED,
+      payload: {
+        pathname: '/rofl',
+        query: {
+          clap: 'please'
+        },
+        search: '?clap=please',
+        options: {
           persistQuery: true
         }
       }

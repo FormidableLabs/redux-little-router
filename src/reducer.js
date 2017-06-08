@@ -12,6 +12,14 @@ type ResolverArgs = {
   options: LocationOptions
 };
 
+
+const mergeSearch = (oldSearch, newSearch) => {
+  if (oldSearch && newSearch) {
+    return oldSearch + newSearch.replace('?', '&');
+  }
+  return oldSearch || newSearch;
+};
+
 const resolveQuery = ({
   oldLocation,
   newLocation,
@@ -33,6 +41,25 @@ const resolveQuery = ({
         ...newLocation,
         query: oldQuery,
         search: oldSearch
+      },
+      options
+    };
+  }
+
+  // Only merge the previous query if it exists
+  if (
+    options.mergeQuery &&
+    oldQuery
+  ) {
+    return {
+      oldLocation,
+      newLocation: {
+        ...newLocation,
+        query: {
+          ...oldQuery,
+          ...newLocation.query
+        },
+        search: mergeSearch(oldSearch, newLocation.search)
       },
       options
     };
