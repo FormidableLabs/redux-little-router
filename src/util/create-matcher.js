@@ -1,5 +1,6 @@
 // @flow
 import UrlPattern from 'url-pattern';
+import find from 'lodash.find';
 
 type RouteCache = {
   route: string,
@@ -7,27 +8,13 @@ type RouteCache = {
   result: Object
 };
 
-const find = (list, predicate) => {
-  for (let i = 0; i < list.length; i++) {
-    const item = list[i];
-    if (predicate(item)) {
-      return item;
-    }
-  }
-  return null;
-};
-
 const wildcardMatcher = (routeList: Array<RouteCache>) =>
   (incomingUrl: string, routeToMatch: string = '') => {
-    // Discard query strings
-    const pathname = incomingUrl.split('?')[0];
-
-    const storedRoute = find(routeList, route =>
-      route.route === routeToMatch
-    );
-
+    const storedRoute = find(routeList, ({route}) => route === routeToMatch);
     if (!storedRoute) { return null; }
 
+    // Discard query strings
+    const pathname = incomingUrl.split('?')[0];
     const match = storedRoute.pattern.match(pathname);
 
     if (match) {
