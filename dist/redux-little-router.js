@@ -6692,10 +6692,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    'a',
 	    _extends({
 	      href: (0, _stringifyHref2.default)(href, basename),
-	      onClick: clickHandler
-	    }, _extends({}, rest, {
+	      onClick: clickHandler,
 	      target: target
-	    })),
+	    }, rest),
 	    children
 	  );
 	};
