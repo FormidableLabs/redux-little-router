@@ -77,7 +77,8 @@ export default
       // No-op the initial route action
       if (
         state.pathname === action.payload.pathname &&
-        state.search === action.payload.search
+        state.search === action.payload.search &&
+        state.hash === action.payload.hash
       ) {
         return state;
       }
