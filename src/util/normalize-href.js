@@ -1,7 +1,7 @@
 // @flow
 import type { Href, Location } from '../types';
 
-import { parsePath } from 'history';
+import { parsePath } from 'history/PathUtils';
 import qs from 'query-string';
 
 export default (href: Href): Location => {
