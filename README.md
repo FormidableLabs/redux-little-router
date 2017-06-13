@@ -356,7 +356,7 @@ import createYourStore from './state';
 
 ReactDOM.render(
   <RouterProvider store={createYourStore()}>
-    <YourAppComponent />
+    <YourAppComponent /> # <YourAppComponent> should be wrapped in a <Provider store={...}> component
   </RouterProvider>,
   document.getElementById('root')
 );
