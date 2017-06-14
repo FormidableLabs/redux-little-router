@@ -10,7 +10,8 @@ import {
   REPLACE,
   GO,
   GO_BACK,
-  GO_FORWARD
+  GO_FORWARD,
+  BLOCK
 } from '../src/types';
 
 chai.use(sinonChai);
@@ -38,7 +39,8 @@ const actionMethodMap = {
   [REPLACE]: 'replace',
   [GO]: 'go',
   [GO_BACK]: 'goBack',
-  [GO_FORWARD]: 'goForward'
+  [GO_FORWARD]: 'goForward',
+  [BLOCK]: 'block'
 };
 
 describe('Router middleware', () => {
@@ -52,7 +54,8 @@ describe('Router middleware', () => {
       go: sandbox.stub(),
       goBack: sandbox.stub(),
       goForward: sandbox.stub(),
-      listen: sandbox.stub()
+      listen: sandbox.stub(),
+      block: sandbox.stub()
     };
 
     store = createStore(
