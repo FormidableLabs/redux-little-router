@@ -5,7 +5,9 @@ import {
   REPLACE,
   GO,
   GO_BACK,
-  GO_FORWARD
+  GO_FORWARD,
+  BLOCK,
+  UNBLOCK
 } from './types';
 
 import {
@@ -14,7 +16,9 @@ import {
   go,
   goBack,
   goForward,
-  initializeCurrentLocation
+  initializeCurrentLocation,
+  block,
+  unblock
 } from './actions';
 
 import routerForBrowser from './environment/browser-router';
@@ -45,6 +49,8 @@ export {
   go,
   goBack,
   goForward,
+  block,
+  unblock,
 
   // Public action types
   LOCATION_CHANGED,
@@ -52,5 +58,7 @@ export {
   REPLACE,
   GO,
   GO_FORWARD,
-  GO_BACK
+  GO_BACK,
+  BLOCK,
+  UNBLOCK
 };

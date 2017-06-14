@@ -7,7 +7,9 @@ import {
   GO,
   GO_BACK,
   GO_FORWARD,
-  LOCATION_CHANGED
+  LOCATION_CHANGED,
+  BLOCK,
+  UNBLOCK
 } from '../src/types';
 
 import {
@@ -17,6 +19,8 @@ import {
   goBack,
   goForward,
   locationDidChange,
+  block,
+  unblock,
   initializeCurrentLocation
 } from '../src/actions';
 
@@ -83,6 +87,15 @@ describe('Action creators', () => {
 
   it('creates a GO_FORWARD action', () => {
     expect(goForward()).to.deep.equal({ type: GO_FORWARD });
+  });
+
+  it('creates a BLOCK action', () => {
+    const callback = () => {}
+    expect(block(callback)).to.deep.equal({ type: BLOCK, callback });
+  });
+
+  it('creates a UNBLOCK action', () => {
+    expect(unblock()).to.deep.equal({ type: UNBLOCK });
   });
 
   it('combines the location descriptor and the route match into a LOCATION_CHANGED action', () => {

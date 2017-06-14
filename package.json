@@ -16,6 +16,7 @@
     "clean-lib": "rimraf lib",
     "build-lib": "npm run clean-lib && babel src -d lib --copy-files",
     "watch-lib": "watch 'npm run build-lib' src/ -d",
+    "watch": "watch 'npm run build' src/ -d",
     "clean": "npm run clean-lib && npm run clean-dist",
     "build": "npm run build-lib && npm run build-dist",
     "lint": "concurrently 'eslint --color --ext .js,.jsx src test' 'flow check'",
