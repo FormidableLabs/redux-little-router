@@ -11,7 +11,9 @@ import {
   GO,
   GO_BACK,
   GO_FORWARD,
-  LOCATION_CHANGED
+  LOCATION_CHANGED,
+  BLOCK,
+  UNBLOCK
 } from './types';
 
 import normalizeHref from './util/normalize-href';
@@ -44,3 +46,6 @@ export const initializeCurrentLocation = (location: Location) => ({
   type: LOCATION_CHANGED,
   payload: location
 });
+
+export const block = (callback) => ({ type: BLOCK, callback });
+export const unblock = () => ({ type: UNBLOCK });

@@ -7,10 +7,14 @@ import type { RouterAction } from './types';
 
 import {
   PUSH, REPLACE, GO,
-  GO_BACK, GO_FORWARD
+  GO_BACK, GO_FORWARD,
+  BLOCK, UNBLOCK
 } from './types';
 
 type MiddlewareArgs = { history: History };
+
+let unblock
+
 export default
   ({ history }: MiddlewareArgs) => () =>
   (next: Dispatch<*>) =>
@@ -32,6 +36,12 @@ export default
       break;
     case GO_FORWARD:
       history.goForward();
+      break;
+    case BLOCK:
+      unblock = history.block(action.callback);
+      break;
+    case UNBLOCK:
+      if (unblock) { unblock(); }
       break;
     default:
       // ...but we want to leave all events we don't care about undisturbed

@@ -1,7 +1,7 @@
 // @flow
 import type { Location, LocationOptions, LocationAction } from './types';
 
-import { LOCATION_CHANGED } from './types';
+import { BLOCK, LOCATION_CHANGED } from './types';
 
 const flow = (...funcs: Array<Function>) =>
   funcs.reduce((prev, curr) => (...args) => curr(prev(...args)));
