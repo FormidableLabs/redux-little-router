@@ -260,18 +260,18 @@ You can also match a fragment against anything in the current `location` object:
 
 You can use `withConditions` in conjunction with `forRoute` to set strict conditions for when a `<Fragment>` should display.
 
-`<Fragment>` lets you nest fragments to match your UI hierarchy to your route hierarchy, much like the `<Route>` component does in `react-router@v3`. Given a URL of `/movie/actor/bio`, and the following elements:
+`<Fragment>` lets you nest fragments to match your UI hierarchy to your route hierarchy, much like the `<Route>` component does in `react-router@v3`. Given a URL of `/about/bio/dat-boi`, and the following elements:
 
 ```jsx
-<Fragment forRoute='/movie'>
+<Fragment forRoute='/about'>
   <div>
-    <h1>Movie</h1>
-    <Fragment forRoute='/actor'>
+    <h1>About</h1>
+    <Fragment forRoute='/bio'>
       <div>
-        <h2>Actor</h2>
-        <Fragment forRoute='/bio'>
+        <h2>Bios</h2>
+        <Fragment forRoute='/dat-boi'>
           <div>
-            <h3>Bio</h3>
+            <h3>Dat Boi</h3>
             <p>Something something whaddup</p>
           </div>
         </Fragment>
@@ -285,11 +285,11 @@ You can use `withConditions` in conjunction with `forRoute` to set strict condit
 
 ```html
 <div>
-  <h1>Movie</h1>
+  <h1>About</h1>
     <div>
-      <h2>Actor</h2>
+      <h2>Bios</h2>
         <div>
-          <h3>Bio</h3>
+          <h3>Dat Boi</h3>
           <p>Something something whaddup<p>
         </div>
     </div>
