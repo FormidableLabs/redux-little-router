@@ -1,11 +1,14 @@
 // @flow
-import type { Href } from '../types';
-import type { RouterContext } from './provider';
+import type { Href, Location } from '../types';
 
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { push, replace } from '../actions';
+import {
+  push as pushAction,
+  replace as replaceAction
+} from '../actions';
 import normalizeHref from '../util/normalize-href';
 import stringifyHref from '../util/stringify-href';
 
@@ -17,7 +20,10 @@ type Props = {
   replaceState: bool,
   target: string,
   onClick: EventHandler,
-  style: Object
+  style: Object,
+  location: Location,
+  push: Function,
+  replace: Function
 };
 
 const LEFT_MOUSE_BUTTON = 0;
@@ -41,7 +47,8 @@ const handleClick = ({
   onClick,
   replaceState,
   persistQuery,
-  store
+  push,
+  replace
 }) => {
   if (onClick) {
     onClick(e);
@@ -54,27 +61,22 @@ const handleClick = ({
   e.preventDefault();
 
   const navigate = replaceState ? replace : push;
-  store.dispatch(navigate(href, { persistQuery }));
+  navigate(href, { persistQuery });
 };
 
-const Link = (
-  props: Props,
-  context: {
-    router: RouterContext
-  }
-) => {
+const Link = (props: Props) => {
   const {
     href: rawHref,
+    location: { basename },
     children,
     onClick,
     target,
     replaceState,
     persistQuery,
+    push,
+    replace,
     ...rest
   } = props;
-
-  const { store } = context.router;
-  const { router: { basename } } = store.getState();
 
   // Ensure the href has both a search and a query when needed
   const href = normalizeHref(rawHref);
@@ -86,7 +88,8 @@ const Link = (
     onClick,
     replaceState,
     persistQuery,
-    store
+    push,
+    replace
   });
 
   return (
@@ -101,10 +104,6 @@ const Link = (
   );
 };
 
-Link.contextTypes = {
-  router: PropTypes.object
-};
-
 const PersistentQueryLink = class extends Component {
   render() {
     const { children, ...rest } = this.props;
@@ -116,8 +115,17 @@ PersistentQueryLink.propTypes = {
   children: PropTypes.node
 };
 
-PersistentQueryLink.contextTypes = {
-  router: PropTypes.object
+const mapStateToProps = state => ({ location: state.router });
+const mapDispatchToProps = {
+  push: pushAction,
+  replace: replaceAction
 };
+const withLocation = connect(mapStateToProps, mapDispatchToProps);
 
-export { Link, PersistentQueryLink };
+const LinkWithLocation = withLocation(Link);
+const PersistentQueryLinkWithLocation = withLocation(PersistentQueryLink);
+
+export {
+  LinkWithLocation as Link,
+  PersistentQueryLinkWithLocation as PersistentQueryLink
+};

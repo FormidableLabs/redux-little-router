@@ -1,5 +1,6 @@
 /* eslint-disable no-magic-numbers */
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import chunk from 'lodash.chunk';
 import { Link, Fragment } from '../../src';
@@ -35,7 +36,7 @@ Gallery.propTypes = {
 };
 
 // eslint-disable-next-line react/no-multi-comp
-const Demo = ({ router }) => {
+const Demo = ({ location }) => {
   const demoRoutes = ['/cheese', '/cat', '/dog', '/hipster'];
   return (
     <div className={styles.container}>
@@ -60,9 +61,9 @@ const Demo = ({ router }) => {
             {demoRoutes.map(route => (
               <Fragment key={route} forRoute={route}>
                 <div>
-                  <p>{router.result.text}</p>
+                  <p>{location.result.text}</p>
                   <Gallery
-                    images={router.result.images}
+                    images={location.result.images}
                     columns={COLUMN_COUNT}
                   />
                 </div>
@@ -76,7 +77,10 @@ const Demo = ({ router }) => {
 };
 
 Demo.propTypes = {
-  router: PropTypes.object
+  location: PropTypes.object
 };
 
-export default Demo;
+const mapStateToProps = state => ({
+  location: state.router
+});
+export default connect(mapStateToProps)(Demo);

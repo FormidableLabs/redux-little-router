@@ -21,7 +21,6 @@ import routerForBrowser from './environment/browser-router';
 import routerForExpress from './environment/express-router';
 import routerForHapi from './environment/hapi-router';
 
-import provideRouter, { RouterProvider } from './components/provider';
 import { Link, PersistentQueryLink } from './components/link';
 import Fragment from './components/fragment';
 
@@ -33,8 +32,6 @@ export {
   initializeCurrentLocation,
 
   // React API
-  provideRouter,
-  RouterProvider,
   Link,
   PersistentQueryLink,
   Fragment,

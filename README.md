@@ -152,7 +152,7 @@ goBack();
 goForward();
 ```
 
-These actions will be performed once dispatched, e.g. redirect using a [thunk](https://github.com/gaearon/redux-thunk):
+These actions will execute once dispatched. For example, here's how to redirect using a [thunk](https://github.com/gaearon/redux-thunk):
 
 ```js
 import { push } from 'redux-little-router';
@@ -226,10 +226,9 @@ Your custom reducers or selectors can derive a large portion of your app's state
 `redux-little-router` provides the following to make React integration easier:
 
 - A `<Fragment>` component that conditionally renders children based on current route and/or location conditions.
-- A `<Link>` component that sends navigation actions to the middleware when tapped or clicked. `<Link>` respects default modifier key and right-click behavior. A sibling component, `<PersistentQueryLink>`, persists the existing query string on navigation
-- A `provideRouter` HOC that passes down everything `<Fragment>` and `<Link>` need via context.
+- A `<Link>` component that sends navigation actions to the middleware when tapped or clicked. `<Link>` respects default modifier key and right-click behavior. A sibling component, `<PersistentQueryLink>`, persists the existing query string on navigation.
 
-`redux-little-router` assumes and requires that your root component is a direct or indirect child of `<Provider>` from  `react-redux`. Both `provideRouter` and `<RouterProvider>` automatically `connect()` to updates from the router state.
+Instances of each component automatically `connect()` to the router state with `react-redux`.
 
 You can inspect the router state in any child component by using `connect()`:
 
@@ -333,57 +332,6 @@ Alternatively, you can pass in a location object to `href`. This is useful for p
 ```
 
 `<Link>` takes an optional valueless prop, `replaceState`, that changes the link navigation behavior from `pushState` to `replaceState` in the History API.
-
-### `provideRouter` or `<RouterProvider>`
-
-Like React Router's `<Router>` component, you'll want to wrap `provideRouter` around your app's top-level component like so:
-
-```jsx
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { provideRouter } from 'redux-little-router';
-import YourAppComponent from './';
-
-import createYourStore from './state';
-
-const AppComponentWithRouter = provideRouter({
-  store: createYourStore()
-})(YourAppComponent);
-
-ReactDOM.render(
-  <Provider store={store}>
-    <AppComponentWithRouter />
-  </Provider>,
-  document.getElementById('root')
-);
-```
-
-This allows `<Fragment>` and `<Link>` to obtain their `history` and `dispatch` instances without manual prop passing.
-
-If you'd rather use a plain component instead of a higher-ordered component, use `<RouterProvider>` like so:
-
-```jsx
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { RouterProvider } from 'redux-little-router';
-import YourAppComponent from './';
-
-import createYourStore from './state';
-const store = createYourStore();
-
-ReactDOM.render(
-  <Provider store={store}>
-    <RouterProvider store={store}>
-      <YourAppComponent />
-    </RouterProvider>
-  </Provider>,
-  document.getElementById('root')
-);
-```
-
-Note: Provider and RouteProvider can wrap in either order, it is only important that they are parent to your app component.
 
 ## Environment
 
