@@ -41,8 +41,10 @@ import { routerForBrowser } from 'redux-little-router';
 import yourReducer from './your-app';
 
 // Define your routes in a route-to-anything hash like below.
-// The value of the route key can be any serializable data.
-// This data gets attached to the `router` key of the state
+// The value of the route key can be any serializable data,
+// including an empty object.
+
+// This data gets attached to the `router.result` key of the state
 // tree when its corresponding route is matched and dispatched.
 // Useful for page titles and other route-specific data.
 
@@ -89,7 +91,7 @@ const clientOnlyStore = createStore(
 );
 ```
 
-Often, you'll want to update state or trigger side effects after loading the initial URL. To maintain compatibility with other store enhancers (particularly ones that handle side effects, like `redux-loop` or `redux-saga`), we require this optional initial dispatch to happen in userland code by doing the following:
+Often, you'll want to update state or trigger side effects after loading the initial URL. To maintain compatibility with other store enhancers (particularly ones that handle side effects, like `redux-loop` or `redux-saga`), we require this optional initial dispatch to happen in client code by doing the following:
 
 ```js
 import { initializeCurrentLocation } from 'redux-little-router';
@@ -103,7 +105,7 @@ if (initialLocation) {
 
 ### Provided actions and state
 
-`redux-little-router` provides the following action creators for navigation:
+`redux-little-router` provides the following **action creators** for navigation:
 
 ```js
 import { push, replace, go, goBack, goForward } from 'redux-little-router';
@@ -148,6 +150,16 @@ goBack();
 
 // Equivalent to the browser forward button
 goForward();
+```
+
+These actions will be performed once dispatched, e.g. redirect using a [thunk](https://github.com/gaearon/redux-thunk):
+
+```js
+import { push } from 'redux-little-router';
+
+export const redirect = href => dispatch => {
+  dispatch(push(href));
+};
 ```
 
 On location changes, the store enhancer dispatches a `LOCATION_CHANGED` action that contains at least the following properties:
@@ -222,9 +234,8 @@ Your custom reducers or selectors can derive a large portion of your app's state
 You can inspect the router state in any child component by using `connect()`:
 
 ```js
-export default connect(state => ({
-  router: state.router
-}))(YourComponent);
+const mapStateToProps = state => ({ router: state.router });
+export default connect(mapStateToProps)(YourComponent);
 ```
 
 ### `<Fragment>`
@@ -249,18 +260,18 @@ You can also match a fragment against anything in the current `location` object:
 
 You can use `withConditions` in conjunction with `forRoute` to set strict conditions for when a `<Fragment>` should display.
 
-`<Fragment>` lets you nest fragments to match your UI hierarchy to your route hierarchy, much like the `<Route>` component does in `react-router@v3`. Given a URL of `/home/bio/dat-boi`, and the following elements:
+`<Fragment>` lets you nest fragments to match your UI hierarchy to your route hierarchy, much like the `<Route>` component does in `react-router@v3`. Given a URL of `/movie/actor/bio`, and the following elements:
 
 ```jsx
-<Fragment forRoute='/home'>
+<Fragment forRoute='/movie'>
   <div>
-    <h1>Home</h1>
-    <Fragment forRoute='/bio'>
+    <h1>Movie</h1>
+    <Fragment forRoute='/actor'>
       <div>
-        <h2>Bios</h2>
-        <Fragment forRoute='/dat-boi'>
+        <h2>Actor</h2>
+        <Fragment forRoute='/bio'>
           <div>
-            <h3>Dat Boi</h3>
+            <h3>Bio</h3>
             <p>Something something whaddup</p>
           </div>
         </Fragment>
@@ -274,11 +285,11 @@ You can use `withConditions` in conjunction with `forRoute` to set strict condit
 
 ```html
 <div>
-  <h1>Home</h1>
+  <h1>Movie</h1>
     <div>
-      <h2>Bios</h2>
+      <h2>Actor</h2>
         <div>
-          <h3>Dat Boi</h3>
+          <h3>Bio</h3>
           <p>Something something whaddup<p>
         </div>
     </div>
@@ -290,7 +301,7 @@ You can use `withConditions` in conjunction with `forRoute` to set strict condit
 ```jsx
 <Fragment forRoute='/'>
   <div>
-    <Fragment forRoute='/home'><Home /></Fragment>
+    <Fragment forRoute='/'><Home /></Fragment>
     <Fragment forRoute='/about'><About /></Fragment>
     <Fragment forRoute='/messages'><Messages /></Fragment>
     <Fragment forRoute='/feed'><Feed /></Fragment>
@@ -330,6 +341,7 @@ Like React Router's `<Router>` component, you'll want to wrap `provideRouter` ar
 ```jsx
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import { provideRouter } from 'redux-little-router';
 import YourAppComponent from './';
 
@@ -339,7 +351,12 @@ const AppComponentWithRouter = provideRouter({
   store: createYourStore()
 })(YourAppComponent);
 
-ReactDOM.render(<AppComponentWithRouter />, document.getElementById('root');
+ReactDOM.render(
+  <Provider store={store}>
+    <AppComponentWithRouter />
+  </Provider>,
+  document.getElementById('root')
+);
 ```
 
 This allows `<Fragment>` and `<Link>` to obtain their `history` and `dispatch` instances without manual prop passing.
@@ -349,18 +366,24 @@ If you'd rather use a plain component instead of a higher-ordered component, use
 ```jsx
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import { RouterProvider } from 'redux-little-router';
 import YourAppComponent from './';
 
 import createYourStore from './state';
+const store = createYourStore();
 
 ReactDOM.render(
-  <RouterProvider store={createYourStore()}>
-    <YourAppComponent />
-  </RouterProvider>,
+  <Provider store={store}>
+    <RouterProvider store={store}>
+      <YourAppComponent />
+    </RouterProvider>
+  </Provider>,
   document.getElementById('root')
 );
 ```
+
+Note: Provider and RouteProvider can wrap in either order, it is only important that they are parent to your app component.
 
 ## Environment
 
