@@ -12,13 +12,11 @@ type EnhancerArgs = {
   routes: Object,
   history: History,
   matchRoute: Function,
-  matchWildcardRoute: Function
 };
 export default ({
   routes,
   history,
-  matchRoute,
-  matchWildcardRoute
+  matchRoute
 }: EnhancerArgs) =>
 (createStore: StoreCreator<*, *>) => (
   userReducer: Reducer<*, *>,
@@ -42,7 +40,6 @@ export default ({
   return {
     ...store,
     routes,
-    matchRoute,
-    matchWildcardRoute
+    matchRoute
   };
 };
