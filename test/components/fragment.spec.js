@@ -23,6 +23,56 @@ describe('Fragment', () => {
     );
   });
 
+  it('renders `withLocations` without `forRoute` in the correct order', () => {
+    const wrapper = mount(
+      <Fragment forRoute='/'>
+        <div>
+          <Fragment withConditions={location => location.query.renderMe}>
+            <p>Render me pls</p>
+          </Fragment>
+          <Fragment forRoute='/boop'>
+            <p>Boop</p>
+          </Fragment>
+        </div>
+      </Fragment>,
+      fakeContext({
+        pathname: '/boop',
+        route: '/boop',
+        query: { renderMe: true }
+      })
+    );
+
+    expect(wrapper.containsMatchingElement(<p>Render me pls</p>))
+      .to.be.true;
+    expect(wrapper.containsMatchingElement(<p>Boop</p>))
+      .to.be.false;
+  });
+
+  it('renders `withLocations` without `forRoute` in the correct order when reversed', () => {
+    const wrapper = mount(
+      <Fragment forRoute='/'>
+        <div>
+          <Fragment forRoute='/boop'>
+            <p>Boop</p>
+          </Fragment>
+          <Fragment withConditions={location => location.query.renderMe}>
+            <p>Render me pls</p>
+          </Fragment>
+        </div>
+      </Fragment>,
+      fakeContext({
+        pathname: '/boop',
+        route: '/boop',
+        query: { renderMe: true }
+      })
+    );
+
+    expect(wrapper.containsMatchingElement(<p>Render me pls</p>))
+      .to.be.false;
+    expect(wrapper.containsMatchingElement(<p>Boop</p>))
+      .to.be.true;
+  });
+
   it('renders deeply nested fragments', () => {
     const wrapper = mount(
       <Fragment forRoute='/this'>
@@ -323,7 +373,6 @@ describe('Fragment', () => {
     expect(wrapper.containsMatchingElement(<p>fifth</p>)).to.be.false;
     expect(wrapper.containsMatchingElement(<p>sixth</p>)).to.be.false;
   });
-
 
   describe('basic page-by-page routing', () => {
     // eslint-disable-next-line no-extra-parens

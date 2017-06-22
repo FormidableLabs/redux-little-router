@@ -62,6 +62,23 @@ const resolveCurrentRoute = (parentRoute, currentRoute) => {
   return `${routePrefix}${routeSuffix}${wildcard}`;
 };
 
+const shouldShowFragment = ({
+  forRoute,
+  withConditions,
+  matcher,
+  location
+}) => {
+  if (!forRoute) {
+    return withConditions && withConditions(location);
+  }
+
+  const matchesRoute = matcher && matcher.match(location.pathname);
+
+  return withConditions
+    ? matchesRoute && withConditions(location)
+    : matchesRoute;
+};
+
 type Props = {
   location: Location,
   matchRoute: Function,
@@ -76,8 +93,8 @@ type Props = {
 class Fragment extends Component {
   matcher: ?Object;
 
-  constructor(props: Props, context: typeof Fragment.contextTypes) {
-    super(props, context);
+  constructor(props: Props) {
+    super(props);
 
     const currentRoute = resolveCurrentRoute(
       props.parentRoute,
@@ -92,6 +109,12 @@ class Fragment extends Component {
     if (this.props.forRoute !== nextProps.forRoute) {
       throw new Error('Updating route props is not yet supported.');
     }
+
+    // When Fragment rerenders, matchCache can get out of sync.
+    // Blow it away at the root Fragment on every render.
+    if (!this.props.parentId) {
+      matchCache.clear();
+    }
   }
 
   render() {
@@ -105,19 +128,25 @@ class Fragment extends Component {
       parentId
     } = this.props;
 
+    const shouldShow = shouldShowFragment({
+      forRoute,
+      withConditions,
+      matcher,
+      location
+    });
+
+    if (!shouldShow) {
+      return null;
+    }
+
     const currentRoute = resolveCurrentRoute(parentRoute, forRoute);
-
-    if (matcher && !matcher.match(location.pathname)) {
-      return null;
-    }
-
-    if (withConditions && !withConditions(location)) {
-      return null;
-    }
 
     if (parentId) {
       const previousMatch = matchCache.get(parentId);
-      if (previousMatch && previousMatch !== currentRoute) {
+      if (
+        previousMatch &&
+        previousMatch !== currentRoute
+      ) {
         return null;
       } else {
         matchCache.add(parentId, currentRoute);
