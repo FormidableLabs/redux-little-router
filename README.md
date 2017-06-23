@@ -86,6 +86,13 @@ const {
 
 const clientOnlyStore = createStore(
   combineReducers({ router: reducer, yourReducer }),
+  // Or alternatively, if yourReducer is already the top-level reducers.
+  // (state, action) => {
+  //   return {
+  //     ...yourReducer(state, action),
+  //     router: routerReducer(state, action)
+  //   };
+  // },
   initialState,
   compose(enhancer, applyMiddleware(middleware))
 );
