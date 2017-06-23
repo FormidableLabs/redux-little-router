@@ -86,6 +86,18 @@ const {
 
 const clientOnlyStore = createStore(
   combineReducers({ router: reducer, yourReducer }),
+  // Or alternatively, if yourReducer is already the top-level reducers.
+  // (state, action) => {
+  //   const s = { ...state };
+  //   if (s.hasOwnProperty('router')) {
+  //     delete s.router;
+  //   }
+  //
+  //   return {
+  //     ...yourReducer(s, action),
+  //     router: routerReducer(state && state.hasOwnProperty('router') ? state.router : undefined, action)
+  //   };
+  // },
   initialState,
   compose(enhancer, applyMiddleware(middleware))
 );
@@ -111,7 +123,7 @@ if (initialLocation) {
 import { push, replace, go, goBack, goForward } from 'redux-little-router';
 
 // `push` and `replace`
-// 
+//
 // Equivalent to pushState and replaceState in the History API.
 // If you installed the router with a basename, `push` and `replace`
 // know to automatically prepend paths with it. Both action creators
