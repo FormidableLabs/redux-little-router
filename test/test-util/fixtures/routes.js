@@ -60,7 +60,9 @@ export default flattenRoutes({
     },
     '/foo': {
       '/bar': {
-        '/you': {},
+        '/you': {
+          '/again': {}
+        },
         '/me': {}
       }
     }

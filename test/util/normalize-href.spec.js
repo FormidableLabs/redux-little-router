@@ -13,12 +13,23 @@ describe('normalizeHref', () => {
 
   it('converts a string href into an object with parsed search and query', () => {
     expect(normalizeHref('/string')).to.deep.equal({
-      pathname: '/string'
+      pathname: '/string',
+      hash: ''
     });
 
     expect(normalizeHref('/string?things=stuff')).to.deep.equal({
       pathname: '/string',
       search: '?things=stuff',
+      hash: '',
+      query: {
+        things: 'stuff'
+      }
+    });
+
+    expect(normalizeHref('/string?things=stuff#anchor')).to.deep.equal({
+      pathname: '/string',
+      search: '?things=stuff',
+      hash: '#anchor',
       query: {
         things: 'stuff'
       }

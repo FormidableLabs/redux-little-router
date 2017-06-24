@@ -41,8 +41,10 @@ import { routerForBrowser } from 'redux-little-router';
 import yourReducer from './your-app';
 
 // Define your routes in a route-to-anything hash like below.
-// The value of the route key can be any serializable data.
-// This data gets attached to the `router` key of the state
+// The value of the route key can be any serializable data,
+// including an empty object.
+
+// This data gets attached to the `router.result` key of the state
 // tree when its corresponding route is matched and dispatched.
 // Useful for page titles and other route-specific data.
 
@@ -89,7 +91,7 @@ const clientOnlyStore = createStore(
 );
 ```
 
-Often, you'll want to update state or trigger side effects after loading the initial URL. To maintain compatibility with other store enhancers (particularly ones that handle side effects, like `redux-loop` or `redux-saga`), we require this optional initial dispatch to happen in userland code by doing the following:
+Often, you'll want to update state or trigger side effects after loading the initial URL. To maintain compatibility with other store enhancers (particularly ones that handle side effects, like `redux-loop` or `redux-saga`), we require this optional initial dispatch to happen in client code by doing the following:
 
 ```js
 import { initializeCurrentLocation } from 'redux-little-router';
@@ -103,7 +105,7 @@ if (initialLocation) {
 
 ### Provided actions and state
 
-`redux-little-router` provides the following action creators for navigation:
+`redux-little-router` provides the following **action creators** for navigation:
 
 ```js
 import { push, replace, go, goBack, goForward } from 'redux-little-router';
@@ -148,6 +150,16 @@ goBack();
 
 // Equivalent to the browser forward button
 goForward();
+```
+
+These actions will execute once dispatched. For example, here's how to redirect using a [thunk](https://github.com/gaearon/redux-thunk):
+
+```js
+import { push } from 'redux-little-router';
+
+export const redirect = href => dispatch => {
+  dispatch(push(href));
+};
 ```
 
 On location changes, the store enhancer dispatches a `LOCATION_CHANGED` action that contains at least the following properties:
@@ -214,17 +226,15 @@ Your custom reducers or selectors can derive a large portion of your app's state
 `redux-little-router` provides the following to make React integration easier:
 
 - A `<Fragment>` component that conditionally renders children based on current route and/or location conditions.
-- A `<Link>` component that sends navigation actions to the middleware when tapped or clicked. `<Link>` respects default modifier key and right-click behavior. A sibling component, `<PersistentQueryLink>`, persists the existing query string on navigation
-- A `provideRouter` HOC that passes down everything `<Fragment>` and `<Link>` need via context.
+- A `<Link>` component that sends navigation actions to the middleware when tapped or clicked. `<Link>` respects default modifier key and right-click behavior. A sibling component, `<PersistentQueryLink>`, persists the existing query string on navigation.
 
-`redux-little-router` assumes and requires that your root component is a direct or indirect child of `<Provider>` from  `react-redux`. Both `provideRouter` and `<RouterProvider>` automatically `connect()` to updates from the router state.
+Instances of each component automatically `connect()` to the router state with `react-redux`.
 
 You can inspect the router state in any child component by using `connect()`:
 
 ```js
-export default connect(state => ({
-  router: state.router
-}))(YourComponent);
+const mapStateToProps = state => ({ router: state.router });
+export default connect(mapStateToProps)(YourComponent);
 ```
 
 ### `<Fragment>`
@@ -249,12 +259,12 @@ You can also match a fragment against anything in the current `location` object:
 
 You can use `withConditions` in conjunction with `forRoute` to set strict conditions for when a `<Fragment>` should display.
 
-`<Fragment>` lets you nest fragments to match your UI hierarchy to your route hierarchy, much like the `<Route>` component does in `react-router@v3`. Given a URL of `/home/bio/dat-boi`, and the following elements:
+`<Fragment>` lets you nest fragments to match your UI hierarchy to your route hierarchy, much like the `<Route>` component does in `react-router@v3`. Given a URL of `/about/bio/dat-boi`, and the following elements:
 
 ```jsx
-<Fragment forRoute='/home'>
+<Fragment forRoute='/about'>
   <div>
-    <h1>Home</h1>
+    <h1>About</h1>
     <Fragment forRoute='/bio'>
       <div>
         <h2>Bios</h2>
@@ -274,7 +284,7 @@ You can use `withConditions` in conjunction with `forRoute` to set strict condit
 
 ```html
 <div>
-  <h1>Home</h1>
+  <h1>About</h1>
     <div>
       <h2>Bios</h2>
         <div>
@@ -290,7 +300,7 @@ You can use `withConditions` in conjunction with `forRoute` to set strict condit
 ```jsx
 <Fragment forRoute='/'>
   <div>
-    <Fragment forRoute='/home'><Home /></Fragment>
+    <Fragment forRoute='/'><Home /></Fragment>
     <Fragment forRoute='/about'><About /></Fragment>
     <Fragment forRoute='/messages'><Messages /></Fragment>
     <Fragment forRoute='/feed'><Feed /></Fragment>
@@ -323,45 +333,6 @@ Alternatively, you can pass in a location object to `href`. This is useful for p
 
 `<Link>` takes an optional valueless prop, `replaceState`, that changes the link navigation behavior from `pushState` to `replaceState` in the History API.
 
-### `provideRouter` or `<RouterProvider>`
-
-Like React Router's `<Router>` component, you'll want to wrap `provideRouter` around your app's top-level component like so:
-
-```jsx
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { provideRouter } from 'redux-little-router';
-import YourAppComponent from './';
-
-import createYourStore from './state';
-
-const AppComponentWithRouter = provideRouter({
-  store: createYourStore()
-})(YourAppComponent);
-
-ReactDOM.render(<AppComponentWithRouter />, document.getElementById('root');
-```
-
-This allows `<Fragment>` and `<Link>` to obtain their `history` and `dispatch` instances without manual prop passing.
-
-If you'd rather use a plain component instead of a higher-ordered component, use `<RouterProvider>` like so:
-
-```jsx
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { RouterProvider } from 'redux-little-router';
-import YourAppComponent from './';
-
-import createYourStore from './state';
-
-ReactDOM.render(
-  <RouterProvider store={createYourStore()}>
-    <YourAppComponent />
-  </RouterProvider>,
-  document.getElementById('root')
-);
-```
-
 ## Environment
 
 `redux-little-router` requires an ES5 compatible environment (no IE8).
@@ -373,3 +344,7 @@ We consider `redux-little-router` to be **stable**. Any API changes will be incr
 ## Versioning
 
 `redux-little-router` follows **strict semver**. Don't be alarmed by the high version number! Major version bumps represent _any_ breaking change, no matter how small, and do not represent a major shift in direction. We strive to make breaking changes small and compartmentalized.
+
+## Examples
+
+[react-redux-boiler](https://github.com/justrossthings/react-redux-boiler)

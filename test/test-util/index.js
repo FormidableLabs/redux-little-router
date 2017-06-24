@@ -58,15 +58,13 @@ export const fakeContext = ({
   query = { test: 'ing' }
 } = {}) => ({
   context: {
-    router: {
-      store: fakeStore({
-        assertion,
-        basename,
-        pathname,
-        query,
-        route
-      })
-    }
+    store: fakeStore({
+      assertion,
+      basename,
+      pathname,
+      query,
+      route
+    })
   }
 });
 
