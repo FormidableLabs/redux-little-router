@@ -9,7 +9,10 @@ import {
   applyMiddleware
 } from 'redux';
 
-import { routerForBrowser } from '../../src';
+import {
+  routerForBrowser,
+  initializeCurrentLocation
+} from '../../src';
 
 import routes from './routes';
 import wrap from './wrap';
@@ -33,6 +36,11 @@ const store = createStore(
       window.devToolsExtension() : f => f
   )
 );
+
+const initialLocation = store.getState().router;
+if (initialLocation) {
+  store.dispatch(initializeCurrentLocation(initialLocation));
+}
 
 render(
   wrap(store)(Demo),

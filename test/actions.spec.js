@@ -36,13 +36,9 @@ describe('Action creators', () => {
       payload: {
         pathname: '/boop',
         search: '?the=snoot',
-        state: {
-          reduxLittleRouter: {
-            options: {},
-            query: {
-              the: 'snoot'
-            }
-          }
+        options: {},
+        query: {
+          the: 'snoot'
         }
       }
     });
@@ -61,13 +57,9 @@ describe('Action creators', () => {
       payload: {
         pathname: '/boop',
         search: '?the=snoot',
-        state: {
-          reduxLittleRouter: {
-            options: {},
-            query: {
-              the: 'snoot'
-            }
-          }
+        options: {},
+        query: {
+          the: 'snoot'
         }
       }
     });

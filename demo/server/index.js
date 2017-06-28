@@ -39,6 +39,7 @@ const compose = redux.compose;
 const applyMiddleware = redux.applyMiddleware;
 
 const PORT = 4567;
+const DISABLE_SSR = process.env.DISABLE_SSR;
 
 const templateFile = fs.readFileSync(path.join(__dirname, './index.hbs'));
 const template = Handlebars.compile(templateFile.toString());
@@ -64,6 +65,15 @@ app.use(webpackDevMiddleware(compiler, {
 app.use('/favicon.ico', (req, res) => res.end());
 
 app.get('/*', (req, res) => {
+  const assets = res.locals.webpackStats.toJson().assetsByChunkName.app;
+  const css = assets.filter(asset => path.extname(asset) === '.css');
+  const js = assets.filter(asset => path.extname(asset) === '.js');
+
+  if (DISABLE_SSR) {
+    console.log('SSR DISABLED');
+    return res.send(template({ css, js }));
+  }
+
   const initialState = {};
   const router = routerForExpress({
     routes,
@@ -80,9 +90,6 @@ app.get('/*', (req, res) => {
 
   const content = renderToString(wrap(store)(Root));
 
-  const assets = res.locals.webpackStats.toJson().assetsByChunkName.app;
-  const css = assets.filter(asset => path.extname(asset) === '.css');
-  const js = assets.filter(asset => path.extname(asset) === '.js');
   return res.send(template({
     initialState: encode(JSON.stringify(initialState)),
     css, js, content

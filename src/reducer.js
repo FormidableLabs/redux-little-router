@@ -1,7 +1,7 @@
 // @flow
 import type { Location, LocationOptions, LocationAction } from './types';
 
-import { LOCATION_CHANGED } from './types';
+import { LOCATION_CHANGED, isNavigationAction } from './types';
 
 const flow = (...funcs: Array<Function>) =>
   funcs.reduce((prev, curr) => (...args) => curr(prev(...args)));
@@ -38,7 +38,14 @@ const resolveQuery = ({
     };
   }
 
-  return { oldLocation, newLocation, options };
+  return {
+    oldLocation,
+    newLocation: {
+      ...newLocation,
+      query: newLocation.query || {}
+    },
+    options
+  };
 };
 
 const resolveBasename = ({
@@ -70,37 +77,54 @@ const resolvePrevious = ({
   options
 });
 
-export default
-  (initialLocation: Location) =>
-  (state: Location = initialLocation, action: LocationAction) => {
-    if (action.type === LOCATION_CHANGED) {
-      // No-op the initial route action
-      if (
-        state.pathname === action.payload.pathname &&
-        state.search === action.payload.search &&
-        state.hash === action.payload.hash
-      ) {
-        return state;
-      }
+export default (initialLocation: Location) => (
+  state: Location = { ...initialLocation, queue: [] },
+  action: LocationAction
+) => {
+  if (isNavigationAction(action)) {
+    return {
+      ...state,
+      queue: state.queue &&
+        state.queue.concat([action.payload])
+    };
+  }
 
-      // Extract the previous state, but dump the
-      // previous state's previous state so that the
-      // state tree doesn't keep growing indefinitely
-      // eslint-disable-next-line no-unused-vars
-      const { previous, ...oldLocation } = state;
-      const { options } = action.payload;
-
-      const resolveLocation = flow(
-        resolveQuery,
-        resolveBasename,
-        resolvePrevious
-      );
-
-      return resolveLocation({
-        oldLocation,
-        newLocation: action.payload,
-        options: options || {}
-      }).newLocation;
+  if (action.type === LOCATION_CHANGED) {
+    // No-op the initial route action
+    if (
+      state.pathname === action.payload.pathname &&
+      state.search === action.payload.search &&
+      state.hash === action.payload.hash
+    ) {
+      return state;
     }
-    return state;
-  };
+
+    const queuedLocation = state.queue && state.queue[0] || {};
+    const queue = state.queue && state.queue.slice(1) || [];
+
+    // Extract the previous state, but dump the
+    // previous state's previous state so that the
+    // state tree doesn't keep growing indefinitely
+    // eslint-disable-next-line no-unused-vars
+    const { previous, ...oldLocation } = state;
+    const { options, query } = queuedLocation;
+
+    const resolveLocation = flow(
+      resolveQuery,
+      resolveBasename,
+      resolvePrevious
+    );
+
+    const { newLocation } = resolveLocation({
+      oldLocation,
+      newLocation: {
+        ...action.payload,
+        query
+      },
+      options: options || {}
+    });
+
+    return { ...newLocation, queue };
+  }
+  return state;
+};

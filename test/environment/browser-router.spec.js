@@ -15,13 +15,17 @@ import routes from '../test-util/fixtures/routes';
 chai.use(sinonChai);
 
 describe('Browser router', () => {
-  it('creates a browser store enhancer using window.location', () => {
+  it('creates a browser store enhancer using history location', () => {
     const { enhancer, middleware, reducer } = routerForBrowser({
       routes,
-      getLocation: () => ({
-        pathname: '/home',
-        search: '?get=schwifty'
-      })
+      history: {
+        location: {
+          pathname: '/home',
+          search: '?get=schwifty',
+          hash: '#wubbalubbadubdub'
+        },
+        listen() {}
+      }
     });
     const store = createStore(
       combineReducers({ router: reducer }),
@@ -34,6 +38,7 @@ describe('Browser router', () => {
     const state = store.getState();
     expect(state).to.have.deep.property('router.pathname', '/home');
     expect(state).to.have.deep.property('router.search', '?get=schwifty');
+    expect(state).to.have.deep.property('router.hash', '#wubbalubbadubdub');
     expect(state).to.have.deep.property('router.query')
       .that.deep.equals({ get: 'schwifty' });
   });
@@ -42,10 +47,14 @@ describe('Browser router', () => {
     const { enhancer, middleware, reducer } = routerForBrowser({
       routes,
       basename: '/cob-planet',
-      getLocation: () => ({
-        pathname: '/cob-planet/home',
-        search: '?get=schwifty'
-      })
+      history: {
+        location: {
+          pathname: '/cob-planet/home',
+          search: '?get=schwifty',
+          hash: '#wubbalubbadubdub'
+        },
+        listen() {}
+      }
     });
     const store = createStore(
       combineReducers({ router: reducer }),
@@ -59,6 +68,7 @@ describe('Browser router', () => {
     expect(state).to.have.deep.property('router.basename', '/cob-planet');
     expect(state).to.have.deep.property('router.pathname', '/home');
     expect(state).to.have.deep.property('router.search', '?get=schwifty');
+    expect(state).to.have.deep.property('router.hash', '#wubbalubbadubdub');
     expect(state).to.have.deep.property('router.query')
       .that.deep.equals({ get: 'schwifty' });
   });

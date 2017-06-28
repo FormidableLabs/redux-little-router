@@ -22,7 +22,8 @@ describe('Router installer', () => {
       route: '/:thing',
       result: {
         congratulations: 'you played yourself'
-      }
+      },
+      queue: []
     });
   });
 
