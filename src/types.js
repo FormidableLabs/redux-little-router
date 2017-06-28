@@ -14,7 +14,8 @@ export type Location = HistoryLocation & {
   params?: Params,
   previous?: Location,
   query?: Query,
-  result?: Object
+  result?: Object,
+  queue?: Array<Location>
 };
 
 export type Href = string | Location;
@@ -25,6 +26,10 @@ export const REPLACE = 'ROUTER_REPLACE';
 export const GO = 'ROUTER_GO';
 export const GO_BACK = 'ROUTER_GO_BACK';
 export const GO_FORWARD = 'ROUTER_GO_FORWARD';
+export const POP = 'ROUTER_POP';
+
+export const isNavigationAction = (action: { type: $Subtype<string> }) =>
+  [PUSH, REPLACE, GO, GO_BACK, GO_FORWARD, POP].indexOf(action.type) !== -1;
 
 export type BareAction = {
   type: 'ROUTER_GO_BACK' | 'ROUTER_GO_FORWARD'

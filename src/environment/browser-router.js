@@ -1,4 +1,6 @@
 // @flow
+import type { History } from 'history';
+
 import createBrowserHistory from 'history/createBrowserHistory';
 
 import normalizeHref from '../util/normalize-href';
@@ -7,21 +9,20 @@ import install from '../install';
 type BrowserRouterArgs = {
   routes: Object,
   basename: string,
-  getLocation: () => Location,
-  passRouterStateToReducer?: bool
+  history: History
 };
-
-/* istanbul ignore next: unstubbable! */
-const realLocation = () => window.location;
 
 export default ({
   routes,
   basename,
-  getLocation = realLocation
+  history = createBrowserHistory({ basename })
 }: BrowserRouterArgs) => {
-  const history = createBrowserHistory({ basename });
-
-  const { pathname: fullPathname, search } = getLocation();
+  const {
+    pathname: fullPathname,
+    search,
+    hash,
+    state: { key, state } = {}
+  } = history.location;
 
   // Strip the basename from the initial pathname
   const pathname = basename
@@ -29,8 +30,8 @@ export default ({
     : fullPathname;
 
   const descriptor = basename
-    ? { pathname, basename, search }
-    : { pathname, search };
+    ? { pathname, basename, search, hash, key, state }
+    : { pathname, search, hash, key, state };
 
   const location = normalizeHref(descriptor);
 

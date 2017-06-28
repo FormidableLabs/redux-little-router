@@ -42,7 +42,7 @@ describe('Link', () => {
                   .that.equal('?test=ing');
               } else {
                 expect(payload).to
-                  .have.deep.property('state.reduxLittleRouter.query')
+                  .have.deep.property('query')
                   .that.deep.equals({ test: 'ing' });
               }
             });
@@ -63,7 +63,7 @@ describe('Link', () => {
             const { payload } = action;
             captureErrors(done, () => {
               expect(payload).to.have.deep.property(
-                'state.reduxLittleRouter.options.persistQuery', true
+                'options.persistQuery', true
               );
             });
           }
@@ -104,7 +104,7 @@ describe('Link', () => {
                   .that.equal('?test=ing');
               } else {
                 expect(payload).to
-                  .have.deep.property('state.reduxLittleRouter.query')
+                  .have.deep.property('query')
                   .that.deep.equals({ test: 'ing' });
               }
             });

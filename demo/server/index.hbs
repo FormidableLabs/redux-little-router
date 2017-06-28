@@ -12,10 +12,12 @@
   <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:600|Work+Sans" rel="stylesheet">
 </head>
 <body>
-  <div id="content">{{{content}}}</div>
-  <script>
-    window.__INITIAL_STATE = {{{initialState}}};
-  </script>
+  <div id="content">{{#if content}}{{{content}}}{{/if}}</div>
+  {{#if initialState}}
+    <script>
+      window.__INITIAL_STATE = {{{initialState}}};
+    </script>
+  {{/if}}
   {{#each js}}
     <script type="text/javascript" src="/{{this}}"></script>
   {{/each}}
