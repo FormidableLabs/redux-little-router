@@ -2,8 +2,8 @@
 // Project: https://github.com/FormidableLabs/redux-little-router
 // Definitions by: priecint <https://github.com/priecint>
 
+import * as React from "react";
 import {Reducer, Middleware, StoreEnhancer} from "redux";
-// import React, {Component} from "react";
 
 export interface Routes {
   [index: string]: {
@@ -33,7 +33,7 @@ export type Location = {
 
 interface BrowserRouterOptions {
   routes: Routes;
-  basename: string;
+  basename?: string;
 }
 
 export function routerForBrowser(options: BrowserRouterOptions): {
@@ -80,6 +80,38 @@ export function routerForHapi(options: HapiRouterOptions): {
 export function initializeCurrentLocation(location: Location): {
   type: string;
   payload: Location;
+}
+
+interface PersistentQueryLinkProps {
+  className?: string;
+  href: Href;
+  persistQuery?: boolean;
+  target?: string;
+  onClick?: React.EventHandler<React.MouseEvent<HTMLAnchorElement>>;
+}
+
+interface LinkProps extends PersistentQueryLinkProps {
+  replaceState?: boolean;
+}
+
+declare class Link extends React.Component<LinkProps, any> {
+}
+
+declare class PersistentQueryLink extends React.Component<PersistentQueryLinkProps, any> {
+}
+
+interface FragmentPropsForRoute {
+  forRoute: string;
+}
+
+interface FragmentPropsWithConditions {
+  withConditions: (location: Location) => boolean;
+}
+
+// https://stackoverflow.com/q/37688318
+export type FragmentProps = FragmentPropsForRoute | FragmentPropsWithConditions | (FragmentPropsForRoute & FragmentPropsWithConditions);
+
+declare class Fragment extends React.Component<FragmentProps, any> {
 }
 
 export type Href = string | Location;
