@@ -281,6 +281,19 @@ describe('Link', () => {
         expect(wrapper.find('a').prop('href')).to.equal(`/base${expected[index]}`);
       });
     });
+
+    it('renders the correct href when persisting queries', () => {
+      const onClick = sandbox.stub();
+      const wrapper = mount(
+        <Link persistQuery href='/home?what=do' onClick={onClick} />,
+        fakeContext({
+          query: { persist: 'pls' }
+        })
+      );
+
+      expect(wrapper.find('a').prop('href'))
+        .to.equal('/home?persist=pls&what=do');
+    });
   });
 
   describe('PersistentQueryLink', () => {

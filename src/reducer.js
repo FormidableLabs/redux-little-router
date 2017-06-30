@@ -1,9 +1,11 @@
 // @flow
 import type { Location, LocationOptions, LocationAction } from './types';
 
+import qs from 'query-string';
+
 import { LOCATION_CHANGED, isNavigationAction } from './types';
 
-const flow = (...funcs: Array<Function>) =>
+const flow = (...funcs: Array<*>) =>
   funcs.reduce((prev, curr) => (...args) => curr(prev(...args)));
 
 type ResolverArgs = {
@@ -17,22 +19,18 @@ const resolveQuery = ({
   newLocation,
   options
 }: ResolverArgs): ResolverArgs => {
-  const { query: oldQuery, search: oldSearch } = oldLocation;
-
-  // Only use the query from state if it exists
-  // and the href doesn't provide its own query
-  if (
-    options.persistQuery &&
-    oldQuery &&
-    !newLocation.search &&
-    !newLocation.query
-  ) {
+  // Merge the old and new queries if asked to persist
+  if (options.persistQuery) {
+    const mergedQuery = {
+      ...oldLocation.query,
+      ...newLocation.query
+    };
     return {
       oldLocation,
       newLocation: {
         ...newLocation,
-        query: oldQuery,
-        search: oldSearch
+        query: mergedQuery,
+        search: `?${qs.stringify(mergedQuery)}`
       },
       options
     };
