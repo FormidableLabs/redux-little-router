@@ -152,6 +152,8 @@ goBack();
 goForward();
 ```
 
+Note: if you used the vanilla action types prior to `v13`, you'll need to migrate to using the public action creators.
+
 These actions will execute once dispatched. For example, here's how to redirect using a [thunk](https://github.com/gaearon/redux-thunk):
 
 ```js
