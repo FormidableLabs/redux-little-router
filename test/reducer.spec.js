@@ -121,7 +121,7 @@ describe('Router reducer', () => {
     });
   });
 
-  it('persists the previous query string if requested', () => {
+  it('persists the previous query if requested', () => {
     const reducerInstance = reducer();
 
     const navigationAction = {
@@ -180,7 +180,7 @@ describe('Router reducer', () => {
     });
   });
 
-  it('allows new queries to override persistQuery', () => {
+  it('merges old and new queries when requesting persistence', () => {
     const reducerInstance = reducer();
 
     const navigationAction = {
@@ -222,9 +222,10 @@ describe('Router reducer', () => {
     expect(result).to.deep.equal({
       pathname: '/rofl',
       query: {
-        clap: 'please'
+        clap: 'please',
+        please: 'clap'
       },
-      search: '?clap=please',
+      search: '?clap=please&please=clap',
       previous: {
         pathname: '/waffle',
         query: {

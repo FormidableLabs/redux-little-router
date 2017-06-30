@@ -4,6 +4,7 @@ import type { Href, Location } from '../types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import qs from 'query-string';
 
 import {
   push as pushAction,
@@ -22,8 +23,8 @@ type Props = {
   onClick: EventHandler,
   style: Object,
   location: Location,
-  push: Function,
-  replace: Function
+  push: typeof pushAction,
+  replace: typeof replaceAction
 };
 
 const LEFT_MOUSE_BUTTON = 0;
@@ -64,10 +65,29 @@ const handleClick = ({
   navigate(href, { persistQuery });
 };
 
+// When persisting queries, we need to merge the persisted
+// query with the link's new query.
+const contextifyHref = (href, location, persistQuery) => {
+  if (!persistQuery) { return href; }
+
+  const query = {
+    ...location.query || {},
+    ...href.query || {}
+  };
+
+  const search = qs.stringify(query);
+
+  return {
+    ...href,
+    query,
+    search: search && `?${search}` || ''
+  };
+};
+
 const Link = (props: Props) => {
   const {
     href: rawHref,
-    location: { basename },
+    location,
     children,
     onClick,
     target,
@@ -79,7 +99,12 @@ const Link = (props: Props) => {
   } = props;
 
   // Ensure the href has both a search and a query when needed
-  const href = normalizeHref(rawHref);
+  const normalizedHref = normalizeHref(rawHref);
+  const href = contextifyHref(
+    normalizedHref,
+    location,
+    persistQuery
+  );
 
   const clickHandler = e => handleClick({
     e,
@@ -94,7 +119,7 @@ const Link = (props: Props) => {
 
   return (
     <a
-      href={stringifyHref(href, basename)}
+      href={stringifyHref(href, location.basename)}
       onClick={clickHandler}
       target={target}
       {...rest}
