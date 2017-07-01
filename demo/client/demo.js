@@ -55,21 +55,37 @@ const Demo = ({ location }) => {
             <Link href='/dog'>Dog</Link>
             <Link href='/cat?is=cat'>Cat</Link>
             <Link href='/hipster'>Hipster</Link>
+            <Link href='/nonexistent'>My Design Skills</Link>
           </div>
 
           <div className={styles.panes}>
             {demoRoutes.map(route => (
               <Fragment key={route} forRoute={route}>
                 <div>
-                  <p>{location.result.text}</p>
+                  <p>{location.result && location.result.text}</p>
                   <Gallery
-                    images={location.result.images}
+                    images={location.result && location.result.images}
                     columns={COLUMN_COUNT}
                   />
                 </div>
               </Fragment>
             ))}
           </div>
+
+          <Fragment forRoute='/'>
+            <p>Pickum ipsum!</p>
+          </Fragment>
+
+          <Fragment forNoMatch>
+            <div>
+              <h2>FOUR O'FOUR</h2>
+              <p>Looks like you found something that doesn't exist!</p>
+              <img
+                className={styles.noMatchImage}
+                src='http://i1.kym-cdn.com/photos/images/original/001/018/866/e44.png'
+              />
+            </div>
+          </Fragment>
         </div>
       </Fragment>
     </div>

@@ -58,3 +58,7 @@
 .image {
   width: 100%;
 }
+
+.noMatchImage {
+  max-width: 100%;
+}
