@@ -86,6 +86,7 @@ type Props = {
   forRoute?: string,
   parentRoute?: string,
   withConditions?: (location: Location) => boolean,
+  forNoMatch?: boolean,
   parentId?: string,
   children: React.Element<*>
 };
@@ -123,6 +124,7 @@ class Fragment extends Component {
       children,
       forRoute,
       withConditions,
+      forNoMatch,
       location,
       parentRoute,
       parentId
@@ -135,7 +137,7 @@ class Fragment extends Component {
       location
     });
 
-    if (!shouldShow) {
+    if (!shouldShow && !forNoMatch) {
       return null;
     }
 
