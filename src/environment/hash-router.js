@@ -1,4 +1,5 @@
 // @flow
+import type { History } from 'history';
 import createHashHistory from 'history/createHashHistory';
 
 import normalizeHref from '../util/normalize-href';
@@ -8,16 +9,15 @@ type HashRouterArgs = {
   routes: Object,
   basename: string,
   hashType: string,
-  passRouterStateToReducer?: bool
+  history: History
 };
 
 export default ({
   routes,
   basename,
-  hashType = 'slash'
+  hashType = 'slash',
+  history = createHashHistory({ basename, hashType })
 }: HashRouterArgs) => {
-  const history = createHashHistory({ basename, hashType });
-
   const descriptor = basename
     ? { basename, ...history.location }
     : history.location;

@@ -8,7 +8,7 @@ export type LocationOptions = {
   persistQuery?: bool
 };
 
-export type Location = HistoryLocation & {
+export type Location = $Shape<HistoryLocation & {
   basename?: string,
   options?: LocationOptions,
   params?: Params,
@@ -16,7 +16,7 @@ export type Location = HistoryLocation & {
   query?: Query,
   result?: Object,
   queue?: Array<Location>
-};
+}>;
 
 export type Href = string | Location;
 

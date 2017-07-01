@@ -20,8 +20,14 @@ describe('Hash router', () => {
   });
 
   it('creates a browser store enhancer using window.location', () => {
-    window.location.hash = '/home?get=schwifty';
-    const { enhancer, middleware, reducer } = routerForHash({ routes });
+    const history = {
+      listen() {},
+      location: {
+        pathname: '/home',
+        search: '?get=schwifty'
+      }
+    };
+    const { enhancer, middleware, reducer } = routerForHash({ routes, history });
     const store = createStore(
       combineReducers({ router: reducer }),
       {},
@@ -38,9 +44,17 @@ describe('Hash router', () => {
   });
 
   it('supports basenames', () => {
-    window.location.hash = '/cob-planet/home?get=schwifty';
+    const history = {
+      listen() {},
+      location: {
+        pathname: '/home',
+        search: '?get=schwifty'
+      }
+    };
+
     const { enhancer, middleware, reducer } = routerForHash({
       routes,
+      history,
       basename: '/cob-planet'
     });
     const store = createStore(
