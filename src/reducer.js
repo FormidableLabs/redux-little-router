@@ -92,7 +92,8 @@ export default (initialLocation: Location) => (
     if (
       state.pathname === action.payload.pathname &&
       state.search === action.payload.search &&
-      state.hash === action.payload.hash
+      state.hash === action.payload.hash &&
+      (!state.queue || !state.queue.length)
     ) {
       return state;
     }
