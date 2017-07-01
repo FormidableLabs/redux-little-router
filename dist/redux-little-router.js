@@ -1689,7 +1689,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    if (action.type === _types.LOCATION_CHANGED) {
 	      // No-op the initial route action
-	      if (state.pathname === action.payload.pathname && state.search === action.payload.search && state.hash === action.payload.hash) {
+	      if (state.pathname === action.payload.pathname && state.search === action.payload.search && state.hash === action.payload.hash && (!state.queue || !state.queue.length)) {
 	        return state;
 	      }
 	
@@ -7178,6 +7178,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          children = _props.children,
 	          forRoute = _props.forRoute,
 	          withConditions = _props.withConditions,
+	          forNoMatch = _props.forNoMatch,
 	          location = _props.location,
 	          parentRoute = _props.parentRoute,
 	          parentId = _props.parentId;
@@ -7190,7 +7191,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        location: location
 	      });
 	
-	      if (!shouldShow) {
+	      if (!shouldShow && !forNoMatch) {
 	        return null;
 	      }
 	
