@@ -1,6 +1,6 @@
 {
   "name": "redux-little-router",
-  "version": "13.1.3",
+  "version": "14.0.0-1",
   "description": "A barebones routing solution for Redux applications.",
   "main": "lib/index.js",
   "scripts": {
@@ -15,12 +15,12 @@
     "build-dist": "npm run clean-dist && npm run build-dist-min && npm run build-dist-dev",
     "clean-lib": "rimraf lib",
     "build-lib": "npm run clean-lib && babel src -d lib --copy-files",
-    "watch-lib": "watch 'npm run build-lib' src/ -d",
+    "watch-lib": "watch \"npm run build-lib\" src/ -d",
     "clean": "npm run clean-lib && npm run clean-dist",
     "build": "npm run build-lib && npm run build-dist",
-    "lint": "concurrently 'eslint --color --ext .js,.jsx src test' 'flow check'",
-    "test": "mocha test/.setup.js 'test/**/*.spec.js'",
-    "test-cov": "BABEL_ENV=coverage nyc mocha test/.setup.js 'test/**/*.spec.js'",
+    "lint": "concurrently \"eslint --color --ext .js,.jsx src test\" \"flow check\"",
+    "test": "mocha test/.setup.js \"test/**/*.spec.js\"",
+    "test-cov": "BABEL_ENV=coverage nyc mocha test/.setup.js \"test/**/*.spec.js\"",
     "check": "npm run lint && npm run test",
     "check-cov": "npm run lint && npm run test-cov",
     "all": "npm run check && npm run check-cov && npm run clean && npm run build"
@@ -48,6 +48,7 @@
     "lodash.assign": "^4.2.0",
     "prop-types": "^15.5.8",
     "query-string": "^4.3.2",
+    "recompose": "^0.23.5",
     "url-pattern": "^1.0.3"
   },
   "devDependencies": {
@@ -56,6 +57,7 @@
     "babel-eslint": "^7.2.0",
     "babel-loader": "^6.4.1",
     "babel-plugin-istanbul": "^4.1.1",
+    "babel-plugin-lodash": "^3.2.11",
     "babel-polyfill": "^6.23.0",
     "babel-preset-es2015": "^6.24.0",
     "babel-preset-react": "^6.23.0",
@@ -79,8 +81,8 @@
     "eslint-plugin-react": "^6.10.3",
     "express": "^4.15.2",
     "extract-text-webpack-plugin": "^1.0.1",
-    "flow-bin": "^0.42.0",
-    "flow-typed": "^2.0.0",
+    "flow-bin": "^0.48.0",
+    "flow-typed": "^2.1.2",
     "handlebars": "^4.0.6",
     "jsdom": "^9.12.0",
     "lodash": "^4.17.4",

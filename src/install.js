@@ -25,9 +25,7 @@ export default ({
 }: InstallArgs) => {
   validateRoutes(nestedRoutes);
   const routes = flattenRoutes(nestedRoutes);
-
   const matchRoute = createMatcher(routes);
-  const matchWildcardRoute = createMatcher(routes, true);
 
   return {
     reducer: reducer({
@@ -38,8 +36,7 @@ export default ({
     enhancer: enhancer({
       routes,
       history,
-      matchRoute,
-      matchWildcardRoute
+      matchRoute
     })
   };
 };

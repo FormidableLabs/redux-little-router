@@ -1,11 +1,15 @@
 // @flow
-import type { Href } from '../types';
-import type { RouterContext } from './provider';
+import type { Href, Location } from '../types';
 
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import qs from 'query-string';
 
-import { push, replace } from '../actions';
+import {
+  push as pushAction,
+  replace as replaceAction
+} from '../actions';
 import normalizeHref from '../util/normalize-href';
 import stringifyHref from '../util/stringify-href';
 
@@ -17,7 +21,10 @@ type Props = {
   replaceState: bool,
   target: string,
   onClick: EventHandler,
-  style: Object
+  style: Object,
+  location: Location,
+  push: typeof pushAction,
+  replace: typeof replaceAction
 };
 
 const LEFT_MOUSE_BUTTON = 0;
@@ -41,7 +48,8 @@ const handleClick = ({
   onClick,
   replaceState,
   persistQuery,
-  store
+  push,
+  replace
 }) => {
   if (onClick) {
     onClick(e);
@@ -54,30 +62,49 @@ const handleClick = ({
   e.preventDefault();
 
   const navigate = replaceState ? replace : push;
-  store.dispatch(navigate(href, { persistQuery }));
+  navigate(href, { persistQuery });
 };
 
-const Link = (
-  props: Props,
-  context: {
-    router: RouterContext
-  }
-) => {
+// When persisting queries, we need to merge the persisted
+// query with the link's new query.
+const contextifyHref = (href, location, persistQuery) => {
+  if (!persistQuery) { return href; }
+
+  const query = {
+    ...location.query || {},
+    ...href.query || {}
+  };
+
+  const search = qs.stringify(query);
+
+  return {
+    ...href,
+    query,
+    search: search && `?${search}` || ''
+  };
+};
+
+const Link = (props: Props) => {
   const {
     href: rawHref,
+    location,
     children,
     onClick,
     target,
     replaceState,
     persistQuery,
+    push,
+    replace,
     ...rest
   } = props;
 
-  const { store } = context.router;
-  const { router: { basename } } = store.getState();
-
   // Ensure the href has both a search and a query when needed
-  const href = normalizeHref(rawHref);
+  const normalizedHref = normalizeHref(rawHref);
+  const href = contextifyHref(
+    normalizedHref,
+    location,
+    persistQuery
+  );
 
   const clickHandler = e => handleClick({
     e,
@@ -86,12 +113,13 @@ const Link = (
     onClick,
     replaceState,
     persistQuery,
-    store
+    push,
+    replace
   });
 
   return (
     <a
-      href={stringifyHref(href, basename)}
+      href={stringifyHref(href, location.basename)}
       onClick={clickHandler}
       target={target}
       {...rest}
@@ -99,10 +127,6 @@ const Link = (
       {children}
     </a>
   );
-};
-
-Link.contextTypes = {
-  router: PropTypes.object
 };
 
 const PersistentQueryLink = class extends Component {
@@ -116,8 +140,17 @@ PersistentQueryLink.propTypes = {
   children: PropTypes.node
 };
 
-PersistentQueryLink.contextTypes = {
-  router: PropTypes.object
+const mapStateToProps = state => ({ location: state.router });
+const mapDispatchToProps = {
+  push: pushAction,
+  replace: replaceAction
 };
+const withLocation = connect(mapStateToProps, mapDispatchToProps);
 
-export { Link, PersistentQueryLink };
+const LinkWithLocation = withLocation(Link);
+const PersistentQueryLinkWithLocation = withLocation(PersistentQueryLink);
+
+export {
+  LinkWithLocation as Link,
+  PersistentQueryLinkWithLocation as PersistentQueryLink
+};

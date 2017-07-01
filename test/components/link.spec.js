@@ -3,7 +3,7 @@ import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 
 import { PUSH, REPLACE } from '../../src/types';
 import { Link, PersistentQueryLink } from '../../src/components/link';
@@ -42,14 +42,14 @@ describe('Link', () => {
                   .that.equal('?test=ing');
               } else {
                 expect(payload).to
-                  .have.deep.property('state.reduxLittleRouter.query')
+                  .have.deep.property('query')
                   .that.deep.equals({ test: 'ing' });
               }
             });
           }
         };
 
-        const wrapper = shallow(
+        const wrapper = mount(
           <Link href={href} />,
           fakeContext({ assertion })
         );
@@ -63,13 +63,13 @@ describe('Link', () => {
             const { payload } = action;
             captureErrors(done, () => {
               expect(payload).to.have.deep.property(
-                'state.reduxLittleRouter.options.persistQuery', true
+                'options.persistQuery', true
               );
             });
           }
         };
 
-        const wrapper = shallow(
+        const wrapper = mount(
           <Link href={href} persistQuery />,
           fakeContext({ assertion })
         );
@@ -104,14 +104,14 @@ describe('Link', () => {
                   .that.equal('?test=ing');
               } else {
                 expect(payload).to
-                  .have.deep.property('state.reduxLittleRouter.query')
+                  .have.deep.property('query')
                   .that.deep.equals({ test: 'ing' });
               }
             });
           }
         };
 
-        const wrapper = shallow(
+        const wrapper = mount(
           <Link replaceState href={href} />,
           fakeContext({ assertion })
         );
@@ -124,7 +124,7 @@ describe('Link', () => {
   describe('Accessibility', () => {
     ['shiftKey', 'altKey', 'metaKey', 'ctrlKey'].forEach(modifierKey =>
       it(`uses default browser behavior when the user holds the ${modifierKey}`, () => {
-        const wrapper = shallow(
+        const wrapper = mount(
           <Link href='/home/things' />,
           fakeContext()
         );
@@ -141,7 +141,7 @@ describe('Link', () => {
     );
 
     it('uses default browser behavior when the user clicks a non-left mouse button', () => {
-      const wrapper = shallow(
+      const wrapper = mount(
         <Link href='/home/things' />,
         fakeContext()
       );
@@ -157,7 +157,7 @@ describe('Link', () => {
     });
 
     it('prevents default when the user left-clicks', () => {
-      const wrapper = shallow(
+      const wrapper = mount(
         <Link href='/home/things' />,
         fakeContext()
       );
@@ -173,7 +173,7 @@ describe('Link', () => {
     });
 
     it('passes through DOM props, including aria attributes', () => {
-      const wrapper = shallow(
+      const wrapper = mount(
         <Link
           href='/home/things'
           aria-label='a11y'
@@ -196,7 +196,7 @@ describe('Link', () => {
 
     it('calls the onClick prop if provided', () => {
       const onClick = sandbox.stub();
-      const wrapper = shallow(
+      const wrapper = mount(
         <Link href='/home/things' onClick={onClick} />,
         fakeContext()
       );
@@ -215,7 +215,7 @@ describe('Link', () => {
         'path/with/nested/routes'
       ];
       hrefs.forEach(href => {
-        const wrapper = shallow(
+        const wrapper = mount(
           <Link href={href} />,
           fakeContext()
         );
@@ -230,7 +230,7 @@ describe('Link', () => {
         'path/with/nested/routes'
       ];
       hrefs.forEach(href => {
-        const wrapper = shallow(
+        const wrapper = mount(
           <Link href={href} />,
           fakeContext({ basename: '/base' })
         );
@@ -252,7 +252,7 @@ describe('Link', () => {
         { pathname: 'path/with/nested/routes' }
       ];
       locations.forEach((location, index) => {
-        const wrapper = shallow(
+        const wrapper = mount(
           <Link href={location} />,
           fakeContext()
         );
@@ -274,12 +274,25 @@ describe('Link', () => {
         { pathname: 'path/with/nested/routes' }
       ];
       locations.forEach((location, index) => {
-        const wrapper = shallow(
+        const wrapper = mount(
           <Link href={location} />,
           fakeContext({ basename: '/base' })
         );
         expect(wrapper.find('a').prop('href')).to.equal(`/base${expected[index]}`);
       });
+    });
+
+    it('renders the correct href when persisting queries', () => {
+      const onClick = sandbox.stub();
+      const wrapper = mount(
+        <Link persistQuery href='/home?what=do' onClick={onClick} />,
+        fakeContext({
+          query: { persist: 'pls' }
+        })
+      );
+
+      expect(wrapper.find('a').prop('href'))
+        .to.equal('/home?persist=pls&what=do');
     });
   });
 
@@ -290,7 +303,9 @@ describe('Link', () => {
         <PersistentQueryLink href='/' />,
         fakeContext()
       );
-      expect(wrapper.find(Link).props())
+
+      const link = wrapper.findWhere(node => node.name() === 'Link');
+      expect(link.props())
         .to.have.property('persistQuery', true);
     });
   });

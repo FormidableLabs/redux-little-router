@@ -1,18 +1,17 @@
 // @flow
 import type { Href, Location } from '../types';
 
+import { parsePath } from 'history/PathUtils';
 import qs from 'query-string';
 
 export default (href: Href): Location => {
   if (typeof href === 'string') {
-    const pathnameAndSearch = href.split('?');
-    const pathname = pathnameAndSearch[0];
-    const search = pathnameAndSearch[1];
+    const { search = '', ...other } = parsePath(href);
     const query = search && qs.parse(search);
 
     return query
-      ? { pathname, query, search: `?${search}` }
-      : { pathname };
+      ? { ...other, query, search }
+      : { ...other };
   }
 
   const { search, query } = href;

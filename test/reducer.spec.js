@@ -1,6 +1,7 @@
 import { expect } from 'chai';
+import { flow, partialRight } from 'lodash';
 import reducer from '../src/reducer';
-import { LOCATION_CHANGED } from '../src/types';
+import { LOCATION_CHANGED, PUSH } from '../src/types';
 
 describe('Router reducer', () => {
   it('adds the pathname to the store', () => {
@@ -15,7 +16,16 @@ describe('Router reducer', () => {
         }
       }
     };
-    const result = reducer()({}, action);
+    const result = reducer()({
+      queue: [{
+        params: {},
+        result: 'rofl',
+        pathname: '/rofl',
+        state: {
+          bork: 'bork'
+        }
+      }]
+    }, action);
 
     expect(result).to.deep.equal({
       params: {},
@@ -24,7 +34,18 @@ describe('Router reducer', () => {
       state: {
         bork: 'bork'
       },
-      previous: {}
+      query: {},
+      queue: [],
+      previous: {
+        queue: [{
+          params: {},
+          result: 'rofl',
+          pathname: '/rofl',
+          state: {
+            bork: 'bork'
+          }
+        }]
+      }
     });
   });
 
@@ -36,13 +57,17 @@ describe('Router reducer', () => {
       }
     };
     const result = reducer()({
-      pathname: '/waffle'
+      pathname: '/waffle',
+      queue: [{ pathname: '/rofl' }]
     }, action);
 
     expect(result).to.deep.equal({
       pathname: '/rofl',
+      query: {},
+      queue: [],
       previous: {
-        pathname: '/waffle'
+        pathname: '/waffle',
+        queue: [{ pathname: '/rofl' }]
       }
     });
   });
@@ -61,7 +86,15 @@ describe('Router reducer', () => {
     };
 
     const result = reducer()({
-      basename: '/base'
+      basename: '/base',
+      queue: [{
+        params: {},
+        result: 'rofl',
+        pathname: '/rofl',
+        state: {
+          bork: 'bork'
+        }
+      }]
     }, action);
 
     expect(result).to.deep.equal({
@@ -73,14 +106,26 @@ describe('Router reducer', () => {
         bork: 'bork'
       },
       previous: {
-        basename: '/base'
-      }
+        basename: '/base',
+        queue: [{
+          params: {},
+          result: 'rofl',
+          pathname: '/rofl',
+          state: {
+            bork: 'bork'
+          }
+        }]
+      },
+      query: {},
+      queue: []
     });
   });
 
-  it('persists the previous query string if requested', () => {
-    const action = {
-      type: LOCATION_CHANGED,
+  it('persists the previous query if requested', () => {
+    const reducerInstance = reducer();
+
+    const navigationAction = {
+      type: PUSH,
       payload: {
         pathname: '/rofl',
         options: {
@@ -89,13 +134,26 @@ describe('Router reducer', () => {
       }
     };
 
-    const result = reducer()({
+    const listenerAction = {
+      type: LOCATION_CHANGED,
+      payload: {
+        pathname: '/rofl'
+      }
+    };
+
+    const state = {
       pathname: '/waffle',
       query: {
         please: 'clap'
       },
-      search: '?please=clap'
-    }, action);
+      search: '?please=clap',
+      queue: []
+    };
+
+    const result = flow(
+      partialRight(reducerInstance, navigationAction),
+      partialRight(reducerInstance, listenerAction)
+    )(state);
 
     expect(result).to.deep.equal({
       pathname: '/rofl',
@@ -103,58 +161,91 @@ describe('Router reducer', () => {
         please: 'clap'
       },
       search: '?please=clap',
-      options: {
-        persistQuery: true
-      },
       previous: {
         pathname: '/waffle',
         query: {
           please: 'clap'
         },
-        search: '?please=clap'
-      }
+        search: '?please=clap',
+        queue: [
+          {
+            options: {
+              persistQuery: true
+            },
+            pathname: '/rofl'
+          }
+        ]
+      },
+      queue: []
     });
   });
 
-  it('allows new queries to override persistQuery', () => {
-    const action = {
-      type: LOCATION_CHANGED,
+  it('merges old and new queries when requesting persistence', () => {
+    const reducerInstance = reducer();
+
+    const navigationAction = {
+      type: PUSH,
       payload: {
         pathname: '/rofl',
+        search: '?clap=please',
         query: {
           clap: 'please'
         },
-        search: '?clap=please',
         options: {
           persistQuery: true
         }
       }
     };
 
-    const result = reducer()({
+    const listenerAction = {
+      type: LOCATION_CHANGED,
+      payload: {
+        pathname: '/rofl',
+        search: '?clap=please'
+      }
+    };
+
+    const state = {
       pathname: '/waffle',
       query: {
         please: 'clap'
       },
-      search: '?please=clap'
-    }, action);
+      search: '?please=clap',
+      queue: []
+    };
+
+    const result = flow(
+      partialRight(reducerInstance, navigationAction),
+      partialRight(reducerInstance, listenerAction)
+    )(state);
 
     expect(result).to.deep.equal({
       pathname: '/rofl',
       query: {
-        clap: 'please'
+        clap: 'please',
+        please: 'clap'
       },
-      search: '?clap=please',
-      options: {
-        persistQuery: true
-      },
+      search: '?clap=please&please=clap',
       previous: {
         pathname: '/waffle',
         query: {
           please: 'clap'
         },
-        search: '?please=clap'
-      }
+        search: '?please=clap',
+        queue: [
+          {
+            options: {
+              persistQuery: true
+            },
+            pathname: '/rofl',
+            query: {
+              clap: 'please'
+            },
+            search: '?clap=please'
+          }
+        ]
+      },
+      queue: []
     });
   });
 
@@ -196,7 +287,7 @@ describe('Router reducer', () => {
       }
     };
     const result = reducer()(undefined, action);
-    expect(result).to.be.undefined;
+    expect(result).to.deep.equal({ queue: [] });
   });
 
   it('uses given location as initial state when no initial router state provided', () => {
@@ -220,7 +311,8 @@ describe('Router reducer', () => {
       search: '?as=af',
       query: {
         as: 'af'
-      }
+      },
+      queue: []
     });
   });
 });

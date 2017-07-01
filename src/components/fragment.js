@@ -1,10 +1,83 @@
 // @flow
+/* eslint-disable react/sort-comp */
 import type { Location } from '../types';
 
+import UrlPattern from 'url-pattern';
 import React, { Children, Component } from 'react';
+import { connect } from 'react-redux';
+import { compose, withContext, getContext } from 'recompose';
 import PropTypes from 'prop-types';
+
 import matchCache from '../util/match-cache';
 import generateId from '../util/generate-id';
+
+const withId = ComposedComponent =>
+  class WithId extends Component {
+    id: string;
+
+    constructor() {
+      super();
+      this.id = generateId();
+    }
+
+    render() {
+      return <ComposedComponent {...this.props} id={ this.id } />;
+    }
+  };
+
+const resolveChildRoute = (parentRoute, currentRoute) => {
+  const parentIsRootRoute =
+    parentRoute &&
+    parentRoute !== '/' &&
+    parentRoute !== currentRoute;
+
+  return parentIsRootRoute
+    ? `${parentRoute}${currentRoute || ''}`
+    : currentRoute;
+};
+
+const resolveCurrentRoute = (parentRoute, currentRoute) => {
+  if (!currentRoute) { return null; }
+
+  // First route will always be a wildcard
+  if (!parentRoute) { return `${currentRoute}*`; }
+
+  const currentIsRootRoute = currentRoute === '/';
+  const parentIsRootRoute = parentRoute === '/';
+
+  // Only prefix non-root parent routes
+  const routePrefix = !parentIsRootRoute && parentRoute || '';
+
+  // Support "index" routes:
+  // <Fragment forRoute='/home'>
+  //   <Fragment forRoute='/'>
+  //   </Fragment>
+  // </Fragment>
+  const routeSuffix = currentIsRootRoute &&
+    !parentIsRootRoute ? '' : currentRoute;
+
+  const wildcard = currentIsRootRoute &&
+    parentIsRootRoute ? '' : '*';
+
+  return `${routePrefix}${routeSuffix}${wildcard}`;
+};
+
+const shouldShowFragment = ({
+  forRoute,
+  withConditions,
+  matcher,
+  location
+}) => {
+  if (!forRoute) {
+    return withConditions && withConditions(location);
+  }
+
+  const matchesRoute = matcher && matcher.match(location.pathname);
+
+  return withConditions
+    ? matchesRoute && withConditions(location)
+    : matchesRoute;
+};
 
 type Props = {
   location: Location,
@@ -17,111 +90,90 @@ type Props = {
   children: React.Element<*>
 };
 
-const relativePaths = (ComposedComponent: ReactClass<*>) => {
-  class RelativeFragment extends Component {
-    constructor() {
-      super();
-      this.id = generateId();
+class Fragment extends Component {
+  matcher: ?Object;
+
+  constructor(props: Props) {
+    super(props);
+
+    const currentRoute = resolveCurrentRoute(
+      props.parentRoute,
+      props.forRoute
+    );
+
+    this.matcher = currentRoute &&
+      new UrlPattern(currentRoute) || null;
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    if (this.props.forRoute !== nextProps.forRoute) {
+      throw new Error('Updating route props is not yet supported.');
     }
 
-    getChildContext() {
-      const { parentRoute } = this.context;
-      const { forRoute } = this.props;
-
-      return {
-        // Append the parent route if this isn't the first
-        // RelativeFragment in the hierarchy.
-        parentRoute: parentRoute &&
-          parentRoute !== '/' &&
-          parentRoute !== forRoute
-          ? `${parentRoute}${forRoute || ''}`
-          : forRoute,
-        parentId: this.id
-      };
-    }
-
-    props: Props;
-    id: string;
-
-    render() {
-      const { children, forRoute, ...rest } = this.props;
-      const { router, parentRoute, parentId } = this.context;
-      const { store } = router;
-
-      const location = store.getState().router;
-
-      const routePrefix = parentRoute && parentRoute !== '/'
-        ? parentRoute : '';
-
-      const routeSuffix = (forRoute === '/' && parentRoute && parentRoute !== '/')
-        ? '' : forRoute || '';
-
-      const combinedRoute = forRoute && `${routePrefix}${routeSuffix}`;
-
-      return (
-        <ComposedComponent
-          parentId={parentId}
-          location={location}
-          matchRoute={store.matchRoute}
-          matchWildcardRoute={store.matchWildcardRoute}
-          parentRoute={parentRoute}
-          forRoute={combinedRoute}
-          children={children}
-          {...rest}
-        />
-      );
+    // When Fragment rerenders, matchCache can get out of sync.
+    // Blow it away at the root Fragment on every render.
+    if (!this.props.parentId) {
+      matchCache.clear();
     }
   }
 
-  // Consumes this context...
-  RelativeFragment.contextTypes = {
-    router: PropTypes.object,
-    parentRoute: PropTypes.string,
-    parentId: PropTypes.string
-  };
+  render() {
+    const { matcher } = this;
+    const {
+      children,
+      forRoute,
+      withConditions,
+      location,
+      parentRoute,
+      parentId
+    } = this.props;
 
-  // ...and provides this context.
-  RelativeFragment.childContextTypes = {
-    parentRoute: PropTypes.string,
-    parentId: PropTypes.string
-  };
+    const shouldShow = shouldShowFragment({
+      forRoute,
+      withConditions,
+      matcher,
+      location
+    });
 
-  return RelativeFragment;
-};
-
-const Fragment = (props: Props) => {
-  const {
-    location,
-    matchRoute,
-    matchWildcardRoute,
-    forRoute,
-    withConditions,
-    children,
-    parentId,
-    parentRoute
-  } = props;
-
-  const matcher = (forRoute === parentRoute) ? matchRoute : matchWildcardRoute;
-  const matchResult = matcher(location.pathname, forRoute);
-
-  if (
-    !matchResult ||
-    (withConditions && !withConditions(location)) ||
-    (forRoute && matchResult.route !== forRoute)
-  ) {
-    return null;
-  }
-
-  if (parentId) {
-    const previousMatch = matchCache.get(parentId);
-    if (previousMatch && previousMatch !== forRoute) {
+    if (!shouldShow) {
       return null;
-    } else {
-      matchCache.add(parentId, forRoute);
     }
+
+    const currentRoute = resolveCurrentRoute(parentRoute, forRoute);
+
+    if (parentId) {
+      const previousMatch = matchCache.get(parentId);
+      if (
+        previousMatch &&
+        previousMatch !== currentRoute
+      ) {
+        return null;
+      } else {
+        matchCache.add(parentId, currentRoute);
+      }
+    }
+
+    return Children.only(children);
   }
+}
 
-  return Children.only(children);
-};
-
-export default relativePaths(Fragment);
+export default compose(
+  connect(state => ({
+    location: state.router
+  })),
+  getContext({
+    parentRoute: PropTypes.string,
+    parentId: PropTypes.string
+  }),
+  withId,
+  withContext({
+    parentRoute: PropTypes.string,
+    parentId: PropTypes.string
+  }, props => ({
+    parentRoute: resolveChildRoute(
+      props.parentRoute,
+      props.forRoute
+    ),
+    parentId: props.id
+  }))
+)(Fragment);

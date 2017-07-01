@@ -60,6 +60,5 @@ describe('Router store enhancer', () => {
     expect(store.routes).to.deep.equal(defaultRoutes);
 
     expect(store).to.have.property('matchRoute');
-    expect(store).to.have.property('matchWildcardRoute');
   });
 });

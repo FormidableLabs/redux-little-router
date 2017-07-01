@@ -15,16 +15,15 @@ import {
 } from './types';
 
 import normalizeHref from './util/normalize-href';
-import { packState } from './util/location-state';
 
-export const push = (href: Href, options: LocationOptions) => ({
+export const push = (href: Href, options: LocationOptions = {}) => ({
   type: PUSH,
-  payload: packState(normalizeHref(href), options)
+  payload: { ...normalizeHref(href), options }
 });
 
-export const replace = (href: Href, options: LocationOptions) => ({
+export const replace = (href: Href, options: LocationOptions = {}) => ({
   type: REPLACE,
-  payload: packState(normalizeHref(href), options)
+  payload: { ...normalizeHref(href), options }
 });
 
 export const go = (index: number) => ({
