@@ -349,5 +349,5 @@ We consider `redux-little-router` to be **stable**. Any API changes will be incr
 
 ## Community
 
-[react-redux-boiler](https://github.com/justrossthings/react-redux-boiler)
-[hoc-little-router](https://github.com/Trampss/hoc-little-router)
+- [react-redux-boiler](https://github.com/justrossthings/react-redux-boiler)
+- [hoc-little-router](https://github.com/Trampss/hoc-little-router)
