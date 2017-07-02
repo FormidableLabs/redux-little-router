@@ -56,7 +56,7 @@ module.exports = {
     extensions: ['', '.js', '.jsx']
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.jsx?$/,
         // Use include specifically of our sources.
@@ -65,16 +65,17 @@ module.exports = {
         // **Note**: Cannot use shorthand `'babel-loader'` or `'babel'` when
         // we are playing around with `NODE_PATH` in builder. Manually
         // resolve path.
-        loader: require.resolve('babel-loader')
+        use: require.resolve('babel-loader')
       }
     ]
   },
   plugins: [
-    new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false
-      }
+      },
+
+      sourceMap: true
     }),
     new webpack.DefinePlugin({
       // Signal production, so that webpack removes non-production code that
@@ -83,6 +84,9 @@ module.exports = {
     }),
     new webpack.SourceMapDevToolPlugin({
       filename: '[file].map'
+    }),
+    new webpack.optimize.LoaderOptionsPlugin({
+      minimize: true
     })
   ]
 };

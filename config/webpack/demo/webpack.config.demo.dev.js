@@ -5,10 +5,12 @@ const compose = require('lodash/fp/compose');
 
 const babel = require('../partials/babel');
 const cssModules = require('../partials/css-modules');
+const sourceMaps = require('../partials/sourcemaps-inline');
 
 const extendConfig = compose(
   babel(),
-  cssModules()
+  cssModules(),
+  sourceMaps()
 );
 
 module.exports = extendConfig({
@@ -25,7 +27,6 @@ module.exports = extendConfig({
   },
 
   cache: true,
-  devtool: 'source-map',
   entry: {
     app: ['./demo/client/app.js']
   },

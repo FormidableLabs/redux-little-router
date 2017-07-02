@@ -1,7 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
-const mergeWebpackConfig = require('webpack-partial').default;
+const plugin = require('webpack-partial/plugin').default;
 const DefinePlugin = require('webpack').DefinePlugin;
 
 module.exports = function (opts) {
@@ -13,11 +13,5 @@ module.exports = function (opts) {
     return _.set(accumulator, key, JSON.stringify(value));
   }, {});
 
-  return function (config) {
-    return mergeWebpackConfig(config, {
-      plugins: [
-        new DefinePlugin(define)
-      ]
-    });
-  };
+  return plugin(new DefinePlugin(define));
 };
