@@ -1,6 +1,6 @@
 # redux-little-router
 
-[![Build Status](https://travis-ci.org/FormidableLabs/redux-little-router.svg?branch=master)](https://travis-ci.org/FormidableLabs/redux-little-router) <a href="https://overv.io/FormidableLabs/redux-little-router/board/"><img src="https://img.shields.io/badge/issues-board-green.svg" height="20" /></a>
+[![Build Status](https://travis-ci.org/FormidableLabs/redux-little-router.svg?branch=master)](https://travis-ci.org/FormidableLabs/redux-little-router) [![codecov](https://codecov.io/gh/FormidableLabs/redux-little-router/branch/master/graph/badge.svg)](https://codecov.io/gh/FormidableLabs/redux-little-router) <a href="https://overv.io/FormidableLabs/redux-little-router/board/"><img src="https://img.shields.io/badge/issues-board-green.svg" height="20" /></a> [![npm](https://img.shields.io/npm/v/redux-little-router.svg)]() [![npm (tag)](https://img.shields.io/npm/v/redux-little-router/next.svg)]()
 
 `redux-little-router` is a tiny router for Redux applications that lets the URL do the talking.
 
