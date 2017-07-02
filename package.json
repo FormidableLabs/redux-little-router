@@ -19,7 +19,7 @@
     "clean": "builder concurrent clean-lib clean-dist",
     "build": "builder concurrent --buffer build-lib build-dist",
     "lint-flow": "flow check",
-    "lint-src": "eslint --color --ext .js,.jsx src test demo",
+    "lint-src": "eslint --color --ext .js,.jsx src test demo config",
     "lint": "builder concurrent lint-src lint-flow",
     "test": "mocha test/.setup.js 'test/**/*.spec.js'",
     "test-cov": "builder run -q --env='{\"BABEL_ENV\":\"coverage\"}' test-cov-base",
