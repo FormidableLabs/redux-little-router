@@ -261,6 +261,8 @@ You can also match a fragment against anything in the current `location` object:
 
 You can use `withConditions` in conjunction with `forRoute` to set strict conditions for when a `<Fragment>` should display.
 
+To show a `Fragment` when other `Fragment`s match a route, use `<Fragment forNoMatch />`.
+
 `<Fragment>` lets you nest fragments to match your UI hierarchy to your route hierarchy, much like the `<Route>` component does in `react-router@v3`. Given a URL of `/about/bio/dat-boi`, and the following elements:
 
 ```jsx
