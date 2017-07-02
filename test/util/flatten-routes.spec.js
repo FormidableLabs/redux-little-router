@@ -56,98 +56,98 @@ describe('Route flattening', () => {
 
     expect(flattenRoutes(nestedRoutes)).to.deep.equal({
       '/messages/:user/:thing': {
-        'title': 'Thing',
-        'parent': {
-          'title': 'Messages by User',
-          'parent': {
-            'title': 'Messages',
-            'parent': {
-              'title': 'Home',
-              'route': '/'
+        title: 'Thing',
+        parent: {
+          title: 'Messages by User',
+          parent: {
+            title: 'Messages',
+            parent: {
+              title: 'Home',
+              route: '/'
             },
-            'route': '/messages'
+            route: '/messages'
           },
-          'route': '/messages/:user'
+          route: '/messages/:user'
         }
       },
       '/messages/:user': {
-        'title': 'Messages by User',
-        'parent': {
-          'title': 'Messages',
-          'parent': {
-            'title': 'Home',
-            'route': '/'
+        title: 'Messages by User',
+        parent: {
+          title: 'Messages',
+          parent: {
+            title: 'Home',
+            route: '/'
           },
-          'route': '/messages'
+          route: '/messages'
         }
       },
       '/lmao/:ayy': {
-        'title': 'lmaos with ayys',
-        'parent': {
-          'title': 'lmao',
-          'parent': {
-            'title': 'Home',
-            'route': '/'
+        title: 'lmaos with ayys',
+        parent: {
+          title: 'lmao',
+          parent: {
+            title: 'Home',
+            route: '/'
           },
-          'route': '/lmao'
+          route: '/lmao'
         }
       },
       '/nested/a/:f': {
-        'title': 'f',
-        'parent': {
-          'title': 'a',
-          'parent': {
-            'title': 'Nested',
-            'parent': {
-              'title': 'Home',
-              'route': '/'
+        title: 'f',
+        parent: {
+          title: 'a',
+          parent: {
+            title: 'Nested',
+            parent: {
+              title: 'Home',
+              route: '/'
             },
-            'route': '/nested'
+            route: '/nested'
           },
-          'route': '/nested/a'
+          route: '/nested/a'
         }
       },
       '/nested/a': {
-        'title': 'a',
-        'parent': {
-          'title': 'Nested',
-          'parent': {
-            'title': 'Home',
-            'route': '/'
+        title: 'a',
+        parent: {
+          title: 'Nested',
+          parent: {
+            title: 'Home',
+            route: '/'
           },
-          'route': '/nested'
+          route: '/nested'
         }
       },
       '/messages': {
-        'title': 'Messages',
-        'parent': {
-          'title': 'Home',
-          'route': '/'
+        title: 'Messages',
+        parent: {
+          title: 'Home',
+          route: '/'
         }
       },
       '/lmao': {
-        'title': 'lmao',
-        'parent': {
-          'title': 'Home',
-          'route': '/'
+        title: 'lmao',
+        parent: {
+          title: 'Home',
+          route: '/'
         }
       },
       '/things/stuff': {
-        'title': 'flat route!',
-        'parent': {
-          'title': 'Home',
-          'route': '/'
+        title: 'flat route!',
+        parent: {
+          title: 'Home',
+          route: '/'
         }
       },
       '/nested': {
-        'title': 'Nested',
-        'parent': {
-          'title': 'Home',
-          'route': '/'
+        title: 'Nested',
+        parent: {
+          title: 'Home',
+          route: '/'
         }
       },
       '/': {
-        'title': 'Home'
+        title: 'Home'
       }
     });
   });

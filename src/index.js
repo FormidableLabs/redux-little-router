@@ -32,19 +32,16 @@ export {
   routerForHapi,
   routerForHash,
   initializeCurrentLocation,
-
   // React API
   Link,
   PersistentQueryLink,
   Fragment,
-
   // Public action creators
   push,
   replace,
   go,
   goBack,
   goForward,
-
   // Public action types
   LOCATION_CHANGED,
   PUSH,

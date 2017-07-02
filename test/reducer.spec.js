@@ -16,16 +16,21 @@ describe('Router reducer', () => {
         }
       }
     };
-    const result = reducer()({
-      queue: [{
-        params: {},
-        result: 'rofl',
-        pathname: '/rofl',
-        state: {
-          bork: 'bork'
-        }
-      }]
-    }, action);
+    const result = reducer()(
+      {
+        queue: [
+          {
+            params: {},
+            result: 'rofl',
+            pathname: '/rofl',
+            state: {
+              bork: 'bork'
+            }
+          }
+        ]
+      },
+      action
+    );
 
     expect(result).to.deep.equal({
       params: {},
@@ -37,14 +42,16 @@ describe('Router reducer', () => {
       query: {},
       queue: [],
       previous: {
-        queue: [{
-          params: {},
-          result: 'rofl',
-          pathname: '/rofl',
-          state: {
-            bork: 'bork'
+        queue: [
+          {
+            params: {},
+            result: 'rofl',
+            pathname: '/rofl',
+            state: {
+              bork: 'bork'
+            }
           }
-        }]
+        ]
       }
     });
   });
@@ -56,10 +63,13 @@ describe('Router reducer', () => {
         pathname: '/rofl'
       }
     };
-    const result = reducer()({
-      pathname: '/waffle',
-      queue: [{ pathname: '/rofl' }]
-    }, action);
+    const result = reducer()(
+      {
+        pathname: '/waffle',
+        queue: [{ pathname: '/rofl' }]
+      },
+      action
+    );
 
     expect(result).to.deep.equal({
       pathname: '/rofl',
@@ -85,17 +95,22 @@ describe('Router reducer', () => {
       }
     };
 
-    const result = reducer()({
-      basename: '/base',
-      queue: [{
-        params: {},
-        result: 'rofl',
-        pathname: '/rofl',
-        state: {
-          bork: 'bork'
-        }
-      }]
-    }, action);
+    const result = reducer()(
+      {
+        basename: '/base',
+        queue: [
+          {
+            params: {},
+            result: 'rofl',
+            pathname: '/rofl',
+            state: {
+              bork: 'bork'
+            }
+          }
+        ]
+      },
+      action
+    );
 
     expect(result).to.deep.equal({
       basename: '/base',
@@ -107,14 +122,16 @@ describe('Router reducer', () => {
       },
       previous: {
         basename: '/base',
-        queue: [{
-          params: {},
-          result: 'rofl',
-          pathname: '/rofl',
-          state: {
-            bork: 'bork'
+        queue: [
+          {
+            params: {},
+            result: 'rofl',
+            pathname: '/rofl',
+            state: {
+              bork: 'bork'
+            }
           }
-        }]
+        ]
       },
       query: {},
       queue: []
@@ -257,10 +274,13 @@ describe('Router reducer', () => {
         other: 'stuff'
       }
     };
-    const result = reducer()({
-      pathname: '/rofl',
-      other: 'things'
-    }, action);
+    const result = reducer()(
+      {
+        pathname: '/rofl',
+        other: 'things'
+      },
+      action
+    );
 
     expect(result).to.deep.equal({
       pathname: '/rofl',

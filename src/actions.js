@@ -1,9 +1,5 @@
 // @flow
-import type {
-  Location,
-  LocationOptions,
-  Href
-} from './types';
+import type { Location, LocationOptions, Href } from './types';
 
 import {
   PUSH,

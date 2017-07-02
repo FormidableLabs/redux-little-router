@@ -12,11 +12,13 @@ type BrowserRouterArgs = {
   history: History
 };
 
-export default ({
-  routes,
-  basename,
-  history = createBrowserHistory({ basename })
-}: BrowserRouterArgs) => {
+export default (
+  {
+    routes,
+    basename,
+    history = createBrowserHistory({ basename })
+  }: BrowserRouterArgs
+) => {
   const {
     pathname: fullPathname,
     search,
@@ -25,9 +27,7 @@ export default ({
   } = history.location;
 
   // Strip the basename from the initial pathname
-  const pathname = basename
-    ? fullPathname.replace(basename, '')
-    : fullPathname;
+  const pathname = basename ? fullPathname.replace(basename, '') : fullPathname;
 
   const descriptor = basename
     ? { pathname, basename, search, hash, key, state }

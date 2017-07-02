@@ -1,7 +1,9 @@
 ---
 extends:
   - "formidable/configurations/es6-react"
-  - "../../.eslintrc-overrides"
+  - "prettier"
+  - "prettier/flowtype"
+  - "prettier/react"
 
 env:
   browser: true
@@ -13,6 +15,5 @@ plugins:
   - "flowtype"
 
 rules:
-  jsx-quotes: [2, "prefer-single"]
   flowtype/define-flow-type: warn
 

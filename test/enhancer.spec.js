@@ -1,12 +1,7 @@
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
-import {
-  combineReducers,
-  compose,
-  createStore,
-  applyMiddleware
-} from 'redux';
+import { combineReducers, compose, createStore, applyMiddleware } from 'redux';
 
 import { PUSH } from '../src/types';
 import install from '../src/install';
@@ -36,10 +31,7 @@ describe('Router store enhancer', () => {
     store = createStore(
       combineReducers({ router: reducer }),
       {},
-      compose(
-        enhancer,
-        applyMiddleware(middleware)
-      )
+      compose(enhancer, applyMiddleware(middleware))
     );
     sandbox.spy(store, 'dispatch');
   });

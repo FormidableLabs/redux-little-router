@@ -10,9 +10,9 @@ type ServerRouterArgs = {
     path: string,
     baseUrl: string,
     url: string,
-    query: {[key: string]: string}
+    query: { [key: string]: string }
   },
-  passRouterStateToReducer?: bool
+  passRouterStateToReducer?: boolean
 };
 
 const locationForRequest = request => {

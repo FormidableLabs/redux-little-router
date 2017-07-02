@@ -12,14 +12,16 @@ describe('Fragment', () => {
   it('renders if the current URL matches the given route', () => {
     const wrapper = mount(
       <Fragment forRoute='/home/messages/:team'>
-        <p>Hey, wait, I'm having one of those things...you know, a headache with pictures.</p>
+        <p>
+          Hey, wait, I'm having one of those things...you know, a headache with pictures.
+        </p>
       </Fragment>,
       fakeContext({
         pathname: '/home/messages/a-team'
       })
     );
     expect(wrapper.find('p').node.textContent).to.equal(
-      'Hey, wait, I\'m having one of those things...you know, a headache with pictures.'
+      "Hey, wait, I'm having one of those things...you know, a headache with pictures."
     );
   });
 
@@ -42,10 +44,8 @@ describe('Fragment', () => {
       })
     );
 
-    expect(wrapper.containsMatchingElement(<p>Render me pls</p>))
-      .to.be.true;
-    expect(wrapper.containsMatchingElement(<p>Boop</p>))
-      .to.be.false;
+    expect(wrapper.containsMatchingElement(<p>Render me pls</p>)).to.be.true;
+    expect(wrapper.containsMatchingElement(<p>Boop</p>)).to.be.false;
   });
 
   it('renders `withLocations` without `forRoute` in the correct order when reversed', () => {
@@ -67,10 +67,8 @@ describe('Fragment', () => {
       })
     );
 
-    expect(wrapper.containsMatchingElement(<p>Render me pls</p>))
-      .to.be.false;
-    expect(wrapper.containsMatchingElement(<p>Boop</p>))
-      .to.be.true;
+    expect(wrapper.containsMatchingElement(<p>Render me pls</p>)).to.be.false;
+    expect(wrapper.containsMatchingElement(<p>Boop</p>)).to.be.true;
   });
 
   it('renders deeply nested fragments', () => {
@@ -105,8 +103,7 @@ describe('Fragment', () => {
     );
 
     ['one', 'two', 'three', 'four', 'five'].forEach(text => {
-      expect(wrapper.containsMatchingElement(<p>{text}</p>))
-        .to.be.true;
+      expect(wrapper.containsMatchingElement(<p>{text}</p>)).to.be.true;
     });
   });
 
@@ -142,13 +139,11 @@ describe('Fragment', () => {
     );
 
     ['one', 'two', 'three'].forEach(text => {
-      expect(wrapper.containsMatchingElement(<p>{text}</p>))
-        .to.be.true;
+      expect(wrapper.containsMatchingElement(<p>{text}</p>)).to.be.true;
     });
 
     ['four', 'five'].forEach(text => {
-      expect(wrapper.containsMatchingElement(<p>{text}</p>))
-        .to.be.false;
+      expect(wrapper.containsMatchingElement(<p>{text}</p>)).to.be.false;
     });
   });
 
@@ -165,9 +160,9 @@ describe('Fragment', () => {
           <div>
             <ul>
               <li>
-              <Fragment forRoute='/hai/:mark'>
-                <p>third</p>
-              </Fragment>
+                <Fragment forRoute='/hai/:mark'>
+                  <p>third</p>
+                </Fragment>
               </li>
             </ul>
           </div>
@@ -433,114 +428,114 @@ describe('Fragment', () => {
         pathname: '/',
         route: '/',
         assertion: wrapper => {
-          expect(wrapper.containsMatchingElement(<h1>App Title</h1>))
-            .to.be.true;
+          expect(
+            wrapper.containsMatchingElement(<h1>App Title</h1>)
+          ).to.be.true;
         }
       },
       {
         pathname: '/cheese',
         route: '/cheese',
         assertion: wrapper => {
-          expect(wrapper.containsMatchingElement(<p>Cheese</p>))
-            .to.be.true;
+          expect(wrapper.containsMatchingElement(<p>Cheese</p>)).to.be.true;
         }
       },
       {
         pathname: '/cheese/gorgonzola',
         route: '/cheese/:type',
         assertion: wrapper => {
-          expect(wrapper.containsMatchingElement(<p>Cheese Type</p>))
-            .to.be.true;
+          expect(
+            wrapper.containsMatchingElement(<p>Cheese Type</p>)
+          ).to.be.true;
         }
       },
       {
         pathname: '/cheese/gifs',
         route: '/cheese/gifs',
         assertion: wrapper => {
-          expect(wrapper.containsMatchingElement(<p>Cheese Gifs</p>))
-            .to.be.true;
+          expect(
+            wrapper.containsMatchingElement(<p>Cheese Gifs</p>)
+          ).to.be.true;
         }
       },
       {
         pathname: '/dog',
         route: '/dog',
         assertion: wrapper => {
-          expect(wrapper.containsMatchingElement(<p>Dog</p>))
-            .to.be.true;
+          expect(wrapper.containsMatchingElement(<p>Dog</p>)).to.be.true;
         }
       },
       {
         pathname: '/dog/vizsla',
         route: '/dog/:type',
         assertion: wrapper => {
-          expect(wrapper.containsMatchingElement(<p>Dog Type</p>))
-            .to.be.true;
+          expect(wrapper.containsMatchingElement(<p>Dog Type</p>)).to.be.true;
         }
       },
       {
         pathname: '/dog/gifs',
         route: '/dog/gifs',
         assertion: wrapper => {
-          expect(wrapper.containsMatchingElement(<p>Dog Gifs</p>))
-            .to.be.true;
+          expect(wrapper.containsMatchingElement(<p>Dog Gifs</p>)).to.be.true;
         }
       },
       {
         pathname: '/cat',
         route: '/cat',
         assertion: wrapper => {
-          expect(wrapper.containsMatchingElement(<p>Cat</p>))
-            .to.be.true;
+          expect(wrapper.containsMatchingElement(<p>Cat</p>)).to.be.true;
         }
       },
       {
         pathname: '/cat/persian',
         route: '/cat/:type',
         assertion: wrapper => {
-          expect(wrapper.containsMatchingElement(<p>Cat Type</p>))
-            .to.be.true;
+          expect(wrapper.containsMatchingElement(<p>Cat Type</p>)).to.be.true;
         }
       },
       {
         pathname: '/cat/gifs',
         route: '/cat/gifs',
         assertion: wrapper => {
-          expect(wrapper.containsMatchingElement(<p>Cat Gifs</p>))
-            .to.be.true;
+          expect(wrapper.containsMatchingElement(<p>Cat Gifs</p>)).to.be.true;
         }
       },
       {
         pathname: '/hipster',
         route: '/hipster',
         assertion: wrapper => {
-          expect(wrapper.containsMatchingElement(<p>Hipster</p>))
-            .to.be.true;
+          expect(wrapper.containsMatchingElement(<p>Hipster</p>)).to.be.true;
         }
       },
       {
         pathname: '/hipster/freegan',
         route: '/hipster/:type',
         assertion: wrapper => {
-          expect(wrapper.containsMatchingElement(<p>Hipster Type</p>))
-            .to.be.true;
+          expect(
+            wrapper.containsMatchingElement(<p>Hipster Type</p>)
+          ).to.be.true;
         }
       },
       {
         pathname: '/hipster/gifs',
         route: '/hipster/gifs',
         assertion: wrapper => {
-          expect(wrapper.containsMatchingElement(<p>Hipster Gifs</p>))
-            .to.be.true;
+          expect(
+            wrapper.containsMatchingElement(<p>Hipster Gifs</p>)
+          ).to.be.true;
         }
       }
     ];
 
     contexts.forEach(context => {
       const { pathname, route, assertion } = context;
-      const wrapper = mount(element, fakeContext({
-        pathname,
-        route
-      }));
+      const wrapper = mount(
+        element,
+        fakeContext({
+          pathname,
+          route
+        })
+      );
 
       it(`${pathname} ${route}`, () => assertion(wrapper));
     });

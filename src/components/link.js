@@ -6,10 +6,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import qs from 'query-string';
 
-import {
-  push as pushAction,
-  replace as replaceAction
-} from '../actions';
+import { push as pushAction, replace as replaceAction } from '../actions';
 import normalizeHref from '../util/normalize-href';
 import stringifyHref from '../util/stringify-href';
 
@@ -17,8 +14,8 @@ type Props = {
   children: React.Element<*>,
   className: string,
   href: Href,
-  persistQuery: bool,
-  replaceState: bool,
+  persistQuery: boolean,
+  replaceState: boolean,
   target: string,
   onClick: EventHandler,
   style: Object,
@@ -29,28 +26,26 @@ type Props = {
 
 const LEFT_MOUSE_BUTTON = 0;
 
-const isNotLeftClick = e =>
-  e.button && e.button !== LEFT_MOUSE_BUTTON;
+const isNotLeftClick = e => e.button && e.button !== LEFT_MOUSE_BUTTON;
 
 const hasModifier = e =>
   Boolean(e.shiftKey || e.altKey || e.metaKey || e.ctrlKey);
 
 const shouldIgnoreClick = ({ e, target }) =>
-  hasModifier(e) ||
-  isNotLeftClick(e) ||
-  e.defaultPrevented ||
-  target; // let browser handle target="_blank"
+  hasModifier(e) || isNotLeftClick(e) || e.defaultPrevented || target; // let browser handle target="_blank"
 
-const handleClick = ({
-  e,
-  target,
-  href,
-  onClick,
-  replaceState,
-  persistQuery,
-  push,
-  replace
-}) => {
+const handleClick = (
+  {
+    e,
+    target,
+    href,
+    onClick,
+    replaceState,
+    persistQuery,
+    push,
+    replace
+  }
+) => {
   if (onClick) {
     onClick(e);
   }
@@ -68,11 +63,13 @@ const handleClick = ({
 // When persisting queries, we need to merge the persisted
 // query with the link's new query.
 const contextifyHref = (href, location, persistQuery) => {
-  if (!persistQuery) { return href; }
+  if (!persistQuery) {
+    return href;
+  }
 
   const query = {
-    ...location.query || {},
-    ...href.query || {}
+    ...(location.query || {}),
+    ...(href.query || {})
   };
 
   const search = qs.stringify(query);
@@ -80,7 +77,7 @@ const contextifyHref = (href, location, persistQuery) => {
   return {
     ...href,
     query,
-    search: search && `?${search}` || ''
+    search: (search && `?${search}`) || ''
   };
 };
 
@@ -100,22 +97,19 @@ const Link = (props: Props) => {
 
   // Ensure the href has both a search and a query when needed
   const normalizedHref = normalizeHref(rawHref);
-  const href = contextifyHref(
-    normalizedHref,
-    location,
-    persistQuery
-  );
+  const href = contextifyHref(normalizedHref, location, persistQuery);
 
-  const clickHandler = e => handleClick({
-    e,
-    target,
-    href,
-    onClick,
-    replaceState,
-    persistQuery,
-    push,
-    replace
-  });
+  const clickHandler = e =>
+    handleClick({
+      e,
+      target,
+      href,
+      onClick,
+      replaceState,
+      persistQuery,
+      push,
+      replace
+    });
 
   return (
     <a

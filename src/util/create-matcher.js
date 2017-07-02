@@ -9,7 +9,7 @@ type RouteCache = {
 
 const eagerMatcher = (routeList: Array<RouteCache>) =>
   (incomingUrl: string) => {
-  // Discard query strings
+    // Discard query strings
     const pathname = incomingUrl.split('?')[0];
 
     // Find the route that matches the URL
@@ -31,12 +31,11 @@ const eagerMatcher = (routeList: Array<RouteCache>) =>
   };
 
 export default (routes: Object) => {
-  const routeList = Object.keys(routes)
-    .sort().reverse().map(route => ({
-      route,
-      pattern: new UrlPattern(route),
-      result: routes[route]
-    }));
+  const routeList = Object.keys(routes).sort().reverse().map(route => ({
+    route,
+    pattern: new UrlPattern(route),
+    result: routes[route]
+  }));
 
   return eagerMatcher(routeList);
 };

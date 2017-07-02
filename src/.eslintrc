@@ -1,7 +1,9 @@
 ---
 extends:
   - "formidable/configurations/es6-react"
-  - "../.eslintrc-overrides"
+  - "prettier"
+  - "prettier/flowtype"
+  - "prettier/react"
 
 parser: "babel-eslint"
 
@@ -13,7 +15,7 @@ plugins:
   - "flowtype"
 
 rules:
-  jsx-quotes: [2, "prefer-single"]
+  react/prop-types: [2, { skipUndeclared: true }]
   flowtype/define-flow-type: warn
   react/no-multi-comp: "off"
 

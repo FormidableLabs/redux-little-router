@@ -17,12 +17,14 @@ type InstallArgs = {
   createMatcher?: Function
 };
 
-export default ({
-  routes: nestedRoutes,
-  history,
-  location,
-  createMatcher = matcherFactory
-}: InstallArgs) => {
+export default (
+  {
+    routes: nestedRoutes,
+    history,
+    location,
+    createMatcher = matcherFactory
+  }: InstallArgs
+) => {
   validateRoutes(nestedRoutes);
   const routes = flattenRoutes(nestedRoutes);
   const matchRoute = createMatcher(routes);

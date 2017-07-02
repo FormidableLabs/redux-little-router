@@ -22,12 +22,10 @@ const Handlebars = require('handlebars');
 
 const encode = require('ent/encode');
 
-const renderToString = require('react-dom/server')
-  .renderToString;
+const renderToString = require('react-dom/server').renderToString;
 
 const redux = require('redux');
-const routerForExpress = require('../../src')
-  .routerForExpress;
+const routerForExpress = require('../../src').routerForExpress;
 
 const routes = require('../client/routes').default;
 const wrap = require('../client/wrap').default;
@@ -48,19 +46,21 @@ const compiler = webpack(config);
 
 app.use(express.static('public'));
 
-app.use(webpackDevMiddleware(compiler, {
-  contentBase: './demo',
-  headers: {
-    'Access-Control-Allow-Origin': '*'
-  },
-  serverSideRender: true,
-  stats: {
-    chunks: false,
-    children: false,
-    colors: true,
-    hash: false
-  }
-}));
+app.use(
+  webpackDevMiddleware(compiler, {
+    contentBase: './demo',
+    headers: {
+      'Access-Control-Allow-Origin': '*'
+    },
+    serverSideRender: true,
+    stats: {
+      chunks: false,
+      children: false,
+      colors: true,
+      hash: false
+    }
+  })
+);
 
 app.use('/favicon.ico', (req, res) => res.end());
 
@@ -70,7 +70,8 @@ app.get('/*', (req, res) => {
   const js = assets.filter(asset => path.extname(asset) === '.js');
 
   if (DISABLE_SSR) {
-    console.log('SSR DISABLED');
+    // eslint-disable-next-line no-console
+    console.info('SSR DISABLED');
     return res.send(template({ css, js }));
   }
 
@@ -82,18 +83,19 @@ app.get('/*', (req, res) => {
   const store = createStore(
     combineReducers({ router: router.reducer }),
     initialState,
-    compose(
-      router.enhancer,
-      applyMiddleware(router.middleware)
-    )
+    compose(router.enhancer, applyMiddleware(router.middleware))
   );
 
   const content = renderToString(wrap(store)(Root));
 
-  return res.send(template({
-    initialState: encode(JSON.stringify(initialState)),
-    css, js, content
-  }));
+  return res.send(
+    template({
+      initialState: encode(JSON.stringify(initialState)),
+      css,
+      js,
+      content
+    })
+  );
 });
 
 app.listen(PORT, error => {

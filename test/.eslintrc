@@ -11,6 +11,5 @@ globals:
 
 rules:
   no-unused-expressions: "off"
-  jsx-quotes: [2, "prefer-single"]
   react/no-multi-comp: "off"
 

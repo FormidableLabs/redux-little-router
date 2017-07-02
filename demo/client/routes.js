@@ -3,8 +3,7 @@ export default {
     title: 'Home'
   },
   '/cheese': {
-    text:
-      `Fondue blue castello when the cheese comes out everybody's happy. \
+    text: `Fondue blue castello when the cheese comes out everybody's happy. \
       Pecorino cheddar edam roquefort bocconcini paneer cheesecake halloumi. \
       Camembert de normandie danish fontina bocconcini say cheese fromage swiss \
       halloumi cottage cheese. Macaroni cheese cauliflower cheese.
@@ -34,8 +33,7 @@ export default {
     ]
   },
   '/dog': {
-    text:
-      `Boerboel brussels griffon cardigan welsh corgi czechoslovakian vlcak dandie \
+    text: `Boerboel brussels griffon cardigan welsh corgi czechoslovakian vlcak dandie \
       dinmont terrier german pinscher german shepherd dog glen of imaal terrier great \
       pyrenees lowchen neapolitan mastiff samoyed st. bernard staffordshire bull terrier \
       tosa treeing walker coonhound weimaraner whippet. Affenpinscher alaskan malamute \
@@ -70,8 +68,7 @@ export default {
     ]
   },
   '/cat': {
-    text:
-      `Lick sellotape use lap as chair destroy couch sun bathe, slap owner's face at 5am \
+    text: `Lick sellotape use lap as chair destroy couch sun bathe, slap owner's face at 5am \
       until human fills food dish who's the baby. Ears back wide eyed stand in front of \
       the computer screen chase imaginary bugs. Pee in the shoe walk on car leaving trail \
       of paw prints on hood and windshield for walk on car leaving trail of paw prints on \
@@ -99,8 +96,7 @@ export default {
     ]
   },
   '/hipster': {
-    text:
-      `Franzen gluten-free fixie, stumptown drinking vinegar chia lo-fi tumblr cornhole \
+    text: `Franzen gluten-free fixie, stumptown drinking vinegar chia lo-fi tumblr cornhole \
       you probably haven't heard of them disrupt. Keytar chartreuse locavore, listicle \
       kinfolk celiac distillery bespoke. Tilde thundercats next level actually, flannel \
       kale chips raw denim art party pug. Next level paleo VHS, williamsburg venmo swag \

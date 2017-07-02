@@ -14,11 +14,13 @@ type ResolverArgs = {
   options: LocationOptions
 };
 
-const resolveQuery = ({
-  oldLocation,
-  newLocation,
-  options
-}: ResolverArgs): ResolverArgs => {
+const resolveQuery = (
+  {
+    oldLocation,
+    newLocation,
+    options
+  }
+): ResolverArgs => {
   // Merge the old and new queries if asked to persist
   if (options.persistQuery) {
     const mergedQuery = {
@@ -46,11 +48,13 @@ const resolveQuery = ({
   };
 };
 
-const resolveBasename = ({
-  oldLocation,
-  newLocation,
-  options
-}: ResolverArgs): ResolverArgs => {
+const resolveBasename = (
+  {
+    oldLocation,
+    newLocation,
+    options
+  }
+): ResolverArgs => {
   const { basename } = oldLocation;
   if (basename) {
     return {
@@ -62,11 +66,13 @@ const resolveBasename = ({
   return { oldLocation, newLocation, options };
 };
 
-const resolvePrevious = ({
-  oldLocation,
-  newLocation,
-  options
-}: ResolverArgs): ResolverArgs => ({
+const resolvePrevious = (
+  {
+    oldLocation,
+    newLocation,
+    options
+  }
+): ResolverArgs => ({
   oldLocation,
   newLocation: {
     ...newLocation,
@@ -75,55 +81,55 @@ const resolvePrevious = ({
   options
 });
 
-export default (initialLocation: Location) => (
-  state: Location = { ...initialLocation, queue: [] },
-  action: LocationAction
-) => {
-  if (isNavigationAction(action)) {
-    return {
-      ...state,
-      queue: state.queue &&
-        state.queue.concat([action.payload])
-    };
-  }
-
-  if (action.type === LOCATION_CHANGED) {
-    // No-op the initial route action
-    if (
-      state.pathname === action.payload.pathname &&
-      state.search === action.payload.search &&
-      state.hash === action.payload.hash &&
-      (!state.queue || !state.queue.length)
-    ) {
-      return state;
+export default (initialLocation: Location) =>
+  (
+    state: Location = { ...initialLocation, queue: [] },
+    action: LocationAction
+  ) => {
+    if (isNavigationAction(action)) {
+      return {
+        ...state,
+        queue: state.queue && state.queue.concat([action.payload])
+      };
     }
 
-    const queuedLocation = state.queue && state.queue[0] || {};
-    const queue = state.queue && state.queue.slice(1) || [];
+    if (action.type === LOCATION_CHANGED) {
+      // No-op the initial route action
+      if (
+        state.pathname === action.payload.pathname &&
+        state.search === action.payload.search &&
+        state.hash === action.payload.hash &&
+        (!state.queue || !state.queue.length)
+      ) {
+        return state;
+      }
 
-    // Extract the previous state, but dump the
-    // previous state's previous state so that the
-    // state tree doesn't keep growing indefinitely
-    // eslint-disable-next-line no-unused-vars
-    const { previous, ...oldLocation } = state;
-    const { options, query } = queuedLocation;
+      const queuedLocation = (state.queue && state.queue[0]) || {};
+      const queue = (state.queue && state.queue.slice(1)) || [];
 
-    const resolveLocation = flow(
-      resolveQuery,
-      resolveBasename,
-      resolvePrevious
-    );
+      // Extract the previous state, but dump the
+      // previous state's previous state so that the
+      // state tree doesn't keep growing indefinitely
+      // eslint-disable-next-line no-unused-vars
+      const { previous, ...oldLocation } = state;
+      const { options, query } = queuedLocation;
 
-    const { newLocation } = resolveLocation({
-      oldLocation,
-      newLocation: {
-        ...action.payload,
-        query
-      },
-      options: options || {}
-    });
+      const resolveLocation = flow(
+        resolveQuery,
+        resolveBasename,
+        resolvePrevious
+      );
 
-    return { ...newLocation, queue };
-  }
-  return state;
-};
+      const { newLocation } = resolveLocation({
+        oldLocation,
+        newLocation: {
+          ...action.payload,
+          query
+        },
+        options: options || {}
+      });
+
+      return { ...newLocation, queue };
+    }
+    return state;
+  };

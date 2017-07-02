@@ -18,17 +18,16 @@ const columnize = (array, columns) => {
   );
 };
 
-const Gallery = ({ images, columns, ...rest }) => (
+const Gallery = ({ images, columns, ...rest }) =>
   <div className={styles.gallery} {...rest}>
-    {columnize(images, columns).map((column, index) => (
+    {columnize(images, columns).map((column, index) =>
       <div key={index} className={styles.column}>
-        {column.map((image, imageIndex) => (
+        {column.map((image, imageIndex) =>
           <img key={imageIndex} className={styles.image} src={image} />
-        ))}
+        )}
       </div>
-    ))}
-  </div>
-);
+    )}
+  </div>;
 
 Gallery.propTypes = {
   columns: PropTypes.number,
@@ -40,7 +39,7 @@ const Demo = ({ location }) => {
   const demoRoutes = ['/cheese', '/cat', '/dog', '/hipster'];
   return (
     <div className={styles.container}>
-      <Fragment forRoute='/' className={styles.container}>
+      <Fragment forRoute="/" className={styles.container}>
         <div>
           <h1 className={styles.tagline}>
             <span className={styles.secondary}>A Compendium of</span>
@@ -52,27 +51,29 @@ const Demo = ({ location }) => {
             <Link href={{ pathname: '/cheese', query: { is: 'cheese' } }}>
               Cheese
             </Link>
-            <Link href='/dog'>Dog</Link>
-            <Link href='/cat?is=cat'>Cat</Link>
-            <Link href='/hipster'>Hipster</Link>
-            <Link href='/nonexistent'>My Design Skills</Link>
+            <Link href="/dog">Dog</Link>
+            <Link href="/cat?is=cat">Cat</Link>
+            <Link href="/hipster">Hipster</Link>
+            <Link href="/nonexistent">My Design Skills</Link>
           </div>
 
           <div className={styles.panes}>
-            {demoRoutes.map(route => (
+            {demoRoutes.map(route =>
               <Fragment key={route} forRoute={route}>
                 <div>
-                  <p>{location.result && location.result.text}</p>
+                  <p>
+                    {location.result && location.result.text}
+                  </p>
                   <Gallery
                     images={location.result && location.result.images}
                     columns={COLUMN_COUNT}
                   />
                 </div>
               </Fragment>
-            ))}
+            )}
           </div>
 
-          <Fragment forRoute='/'>
+          <Fragment forRoute="/">
             <p>Pickum ipsum!</p>
           </Fragment>
 
@@ -82,7 +83,7 @@ const Demo = ({ location }) => {
               <p>Looks like you found something that doesn't exist!</p>
               <img
                 className={styles.noMatchImage}
-                src='http://i1.kym-cdn.com/photos/images/original/001/018/866/e44.png'
+                src="http://i1.kym-cdn.com/photos/images/original/001/018/866/e44.png"
               />
             </div>
           </Fragment>
