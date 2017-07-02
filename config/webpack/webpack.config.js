@@ -15,7 +15,9 @@ const CLIENT = path.join(ROOT, 'test');
 // - PascalCased version of that name is exported class name.
 const PKG = require(path.join(ROOT, 'package.json'));
 const libPath = (PKG.name || '').toLowerCase();
-if (!libPath) { throw new Error('Need package.json:name field'); }
+if (!libPath) {
+  throw new Error('Need package.json:name field');
+}
 // PascalCase (with first character capitalized).
 const libName = libPath
   .replace(/^\s+|\s+$/g, '')
@@ -30,7 +32,7 @@ module.exports = {
   entry: './index.js',
   externals: [
     {
-      'react': {
+      react: {
         root: 'React',
         commonjs2: 'react',
         commonjs: 'react',
@@ -38,7 +40,7 @@ module.exports = {
       }
     },
     {
-      'radium': {
+      radium: {
         root: 'Radium',
         commonjs2: 'radium',
         commonjs: 'radium',
@@ -53,7 +55,7 @@ module.exports = {
     libraryTarget: 'umd'
   },
   resolve: {
-    extensions: ['', '.js', '.jsx']
+    extensions: ['.js', '.jsx']
   },
   module: {
     rules: [
@@ -85,7 +87,7 @@ module.exports = {
     new webpack.SourceMapDevToolPlugin({
       filename: '[file].map'
     }),
-    new webpack.optimize.LoaderOptionsPlugin({
+    new webpack.LoaderOptionsPlugin({
       minimize: true
     })
   ]
