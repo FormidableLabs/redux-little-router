@@ -1,12 +1,7 @@
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
-import {
-  applyMiddleware,
-  combineReducers,
-  createStore,
-  compose
-} from 'redux';
+import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
 
 import routerForBrowser from '../../src/environment/browser-router';
 
@@ -30,16 +25,14 @@ describe('Browser router', () => {
     const store = createStore(
       combineReducers({ router: reducer }),
       {},
-      compose(
-        enhancer,
-        applyMiddleware(middleware)
-      )
+      compose(enhancer, applyMiddleware(middleware))
     );
     const state = store.getState();
-    expect(state).to.have.deep.property('router.pathname', '/home');
-    expect(state).to.have.deep.property('router.search', '?get=schwifty');
-    expect(state).to.have.deep.property('router.hash', '#wubbalubbadubdub');
-    expect(state).to.have.deep.property('router.query')
+    expect(state).to.have.nested.property('router.pathname', '/home');
+    expect(state).to.have.nested.property('router.search', '?get=schwifty');
+    expect(state).to.have.nested.property('router.hash', '#wubbalubbadubdub');
+    expect(state).to.have.nested
+      .property('router.query')
       .that.deep.equals({ get: 'schwifty' });
   });
 
@@ -59,17 +52,15 @@ describe('Browser router', () => {
     const store = createStore(
       combineReducers({ router: reducer }),
       {},
-      compose(
-        enhancer,
-        applyMiddleware(middleware)
-      )
+      compose(enhancer, applyMiddleware(middleware))
     );
     const state = store.getState();
-    expect(state).to.have.deep.property('router.basename', '/cob-planet');
-    expect(state).to.have.deep.property('router.pathname', '/home');
-    expect(state).to.have.deep.property('router.search', '?get=schwifty');
-    expect(state).to.have.deep.property('router.hash', '#wubbalubbadubdub');
-    expect(state).to.have.deep.property('router.query')
+    expect(state).to.have.nested.property('router.basename', '/cob-planet');
+    expect(state).to.have.nested.property('router.pathname', '/home');
+    expect(state).to.have.nested.property('router.search', '?get=schwifty');
+    expect(state).to.have.nested.property('router.hash', '#wubbalubbadubdub');
+    expect(state).to.have.nested
+      .property('router.query')
       .that.deep.equals({ get: 'schwifty' });
   });
 });

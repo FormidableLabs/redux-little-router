@@ -6,25 +6,26 @@ const README_MESSAGE = `
 
 export default (routes: Object) => {
   if (!routes) {
-    throw Error(`
+    throw Error(
+      `
       Missing route configuration. You must define your routes as
       an object where the keys are routes and the values are any
       route-specific data.
 
       ${README_MESSAGE}
-    `);
+    `
+    );
   }
 
   // eslint-disable-next-line no-magic-numbers
-  if (
-    !Object.keys(routes)
-      .every(route => route.indexOf('/') === 0)
-  ) {
-    throw Error(`
+  if (!Object.keys(routes).every(route => route.indexOf('/') === 0)) {
+    throw Error(
+      `
       The route configuration you provided is malformed. Make sure
       that all of your routes start with a slash.
 
       ${README_MESSAGE}
-    `);
+    `
+    );
   }
 };

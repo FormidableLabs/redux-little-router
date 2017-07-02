@@ -13,53 +13,48 @@ import matchCache from './util/match-cache';
 type EnhancerArgs = {
   routes: Object,
   history: History,
-  matchRoute: Function,
+  matchRoute: Function
 };
-export default ({
-  routes,
-  history,
-  matchRoute
-}: EnhancerArgs) =>
-(createStore: StoreCreator<*, *>) => (
-  userReducer: Reducer<*, *>,
-  initialState: Location,
-  enhancer: StoreEnhancer<*, *>
-) => {
-  const store = createStore(
-    userReducer,
-    initialState,
-    enhancer
-  );
+export default ({ routes, history, matchRoute }: EnhancerArgs) =>
+  (createStore: StoreCreator<*, *>) =>
+    (
+      userReducer: Reducer<*, *>,
+      initialState: Location,
+      enhancer: StoreEnhancer<*, *>
+    ) => {
+      const store = createStore(userReducer, initialState, enhancer);
 
-  history.listen((location, action) => {
-    matchCache.clear();
+      history.listen((location, action) => {
+        matchCache.clear();
 
-    const match = matchRoute(location.pathname);
+        const match = matchRoute(location.pathname);
 
-    // Other actions come from the user, so they already have a
-    // corresponding queued navigation action.
-    if (action === 'POP') {
-      store.dispatch({
-        type: POP,
-        payload: {
-          // We need to parse the query here because there's no user-facing
-          // action creator for POP (where we usually parse query strings).
-          ...location,
-          ...match,
-          query: qs.parse(location.search)
+        // Other actions come from the user, so they already have a
+        // corresponding queued navigation action.
+        if (action === 'POP') {
+          store.dispatch({
+            type: POP,
+            payload: {
+              // We need to parse the query here because there's no user-facing
+              // action creator for POP (where we usually parse query strings).
+              ...location,
+              ...match,
+              query: qs.parse(location.search)
+            }
+          });
         }
+
+        store.dispatch(
+          locationDidChange({
+            ...location,
+            ...match
+          })
+        );
       });
-    }
 
-    store.dispatch(locationDidChange({
-      ...location,
-      ...match
-    }));
-  });
-
-  return {
-    ...store,
-    routes,
-    matchRoute
-  };
-};
+      return {
+        ...store,
+        routes,
+        matchRoute
+      };
+    };

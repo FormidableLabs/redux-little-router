@@ -28,22 +28,24 @@ describe('Router installer', () => {
   });
 
   it('throws if no routes are provided', () => {
-    expect(() => install({
-      routes: null,
-      history: {},
-      location: {}
-    })).to.throw(Error);
+    expect(() =>
+      install({
+        routes: null,
+        history: {},
+        location: {}
+      })).to.throw(Error);
   });
 
   it('throws if malformed routes are provided', () => {
-    expect(() => install({
-      routes: {
-        'jlshdkfjgh': {},
-        '/real-route': {},
-        'w': 'tf'
-      },
-      history: {},
-      location: {}
-    })).to.throw(Error);
+    expect(() =>
+      install({
+        routes: {
+          jlshdkfjgh: {},
+          '/real-route': {},
+          w: 'tf'
+        },
+        history: {},
+        location: {}
+      })).to.throw(Error);
   });
 });

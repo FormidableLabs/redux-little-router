@@ -9,18 +9,14 @@ export default (href: Href): Location => {
     const { search = '', ...other } = parsePath(href);
     const query = search && qs.parse(search);
 
-    return query
-      ? { ...other, query, search }
-      : { ...other };
+    return query ? { ...other, query, search } : { ...other };
   }
 
   const { search, query } = href;
 
-  const resolvedSearch = search || (
-    query &&
-    Object.keys(query).length &&
-    `?${qs.stringify(query)}`
-  ) || '';
+  const resolvedSearch = search ||
+    (query && Object.keys(query).length && `?${qs.stringify(query)}`) ||
+    '';
   const resolvedQuery = query || qs.parse(search);
 
   return {

@@ -13,10 +13,12 @@ type ServerRouterArgs = {
   }
 };
 
-export default ({
-  routes,
-  request
-}: ServerRouterArgs) => {
+export default (
+  {
+    routes,
+    request
+  }: ServerRouterArgs
+) => {
   const history = createMemoryHistory();
 
   const location = normalizeHref({

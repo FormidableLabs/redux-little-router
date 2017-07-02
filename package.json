@@ -19,9 +19,9 @@
     "clean": "builder concurrent clean-lib clean-dist",
     "build": "builder concurrent --buffer build-lib build-dist",
     "lint-flow": "flow check",
-    "lint-src": "eslint --color --ext .js,.jsx src test",
+    "lint-src": "eslint --color --ext .js,.jsx src test demo",
     "lint": "builder concurrent lint-src lint-flow",
-    "test": "mocha test/.setup.js test/**/*.spec.js",
+    "test": "mocha test/.setup.js 'test/**/*.spec.js'",
     "test-cov": "builder run -q --env='{\"BABEL_ENV\":\"coverage\"}' test-cov-base",
     "test-cov-base": "nyc mocha test/.setup.js 'test/**/*.spec.js'",
     "check": "builder concurrent --buffer lint test",
@@ -35,11 +35,7 @@
     "type": "git",
     "url": "git+https://tptee@github.com/FormidableLabs/redux-little-router.git"
   },
-  "keywords": [
-    "redux",
-    "router",
-    "middleware"
-  ],
+  "keywords": ["redux", "router", "middleware"],
   "author": "Tyler Thompson",
   "license": "MIT",
   "bugs": {
@@ -77,6 +73,7 @@
     "enzyme": "^2.7.1",
     "eslint": "^4.1.1",
     "eslint-config-formidable": "^3.0.0",
+    "eslint-config-prettier": "^2.3.0",
     "eslint-plugin-babel": "^4.1.1",
     "eslint-plugin-filenames": "^1.1.0",
     "eslint-plugin-flowtype": "^2.30.4",
@@ -87,7 +84,9 @@
     "flow-bin": "^0.49.1",
     "flow-typed": "^2.1.2",
     "handlebars": "^4.0.6",
+    "husky": "^0.14.2",
     "jsdom": "^9.12.0",
+    "lint-staged": "^4.0.0",
     "lodash": "^4.17.4",
     "lodash.chunk": "^4.2.0",
     "mocha": "^3.2.0",
@@ -98,6 +97,7 @@
     "postcss-import": "^10.0.0",
     "postcss-loader": "^2.0.6",
     "postcss-reporter": "^4.0.0",
+    "prettier": "^1.5.2",
     "react": "^15.4.2",
     "react-addons-test-utils": "^15.4.2",
     "react-dom": "^15.4.2",
@@ -115,9 +115,9 @@
     "webpack": "^3.0.0",
     "webpack-dev-middleware": "^1.7.0",
     "webpack-dev-server": "^2.5.0",
+    "webpack-merge": "^4.1.0",
     "webpack-partial": "^2.1.0",
-    "webpack-stats-plugin": "^0.1.4",
-    "webpack-merge": "^4.1.0"
+    "webpack-stats-plugin": "^0.1.4"
   },
   "peerDependencies": {
     "react": "^0.14.0 || ^15.0.0-0",
@@ -128,5 +128,8 @@
   "nyc": {
     "sourceMap": false,
     "instrument": false
+  },
+  "lint-staged": {
+    "*.js": ["prettier --single-quote --write", "git add"]
   }
 }

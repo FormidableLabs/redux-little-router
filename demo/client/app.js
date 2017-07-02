@@ -2,27 +2,15 @@ import 'normalize.css/normalize.css';
 import './global.css';
 
 import { render } from 'react-dom';
-import {
-  createStore,
-  combineReducers,
-  compose,
-  applyMiddleware
-} from 'redux';
+import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
 
-import {
-  routerForBrowser,
-  initializeCurrentLocation
-} from '../../src';
+import { routerForBrowser, initializeCurrentLocation } from '../../src';
 
 import routes from './routes';
 import wrap from './wrap';
 import Demo from './demo';
 
-const {
-  reducer,
-  enhancer,
-  middleware
-} = routerForBrowser({ routes });
+const { reducer, enhancer, middleware } = routerForBrowser({ routes });
 
 const store = createStore(
   combineReducers({ router: reducer }),
@@ -32,8 +20,7 @@ const store = createStore(
   compose(
     enhancer,
     applyMiddleware(middleware),
-    window.devToolsExtension ?
-      window.devToolsExtension() : f => f
+    window.devToolsExtension ? window.devToolsExtension() : f => f
   )
 );
 
@@ -42,7 +29,4 @@ if (initialLocation) {
   store.dispatch(initializeCurrentLocation(initialLocation));
 }
 
-render(
-  wrap(store)(Demo),
-  document.getElementById('content')
-);
+render(wrap(store)(Demo), document.getElementById('content'));

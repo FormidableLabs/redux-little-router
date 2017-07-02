@@ -5,13 +5,7 @@ import { createStore, applyMiddleware } from 'redux';
 
 import middleware from '../src/middleware';
 
-import {
-  PUSH,
-  REPLACE,
-  GO,
-  GO_BACK,
-  GO_FORWARD
-} from '../src/types';
+import { PUSH, REPLACE, GO, GO_BACK, GO_FORWARD } from '../src/types';
 
 chai.use(sinonChai);
 
@@ -58,10 +52,7 @@ describe('Router middleware', () => {
     store = createStore(
       state => state,
       {},
-      applyMiddleware(
-        middleware({ history: historyStub }),
-        consumerMiddleware
-      )
+      applyMiddleware(middleware({ history: historyStub }), consumerMiddleware)
     );
     sandbox.spy(store, 'dispatch');
   });
@@ -75,7 +66,7 @@ describe('Router middleware', () => {
         payload: {}
       });
 
-      expect(historyStub[method]).to.have.been.called.twice;
+      expect(historyStub[method]).to.have.been.calledOnce;
     });
   });
 
@@ -97,6 +88,6 @@ describe('Router middleware', () => {
       payload: {}
     });
 
-    expect(historyStub.push).to.have.been.called.once;
+    expect(historyStub.push).to.have.been.calledOnce;
   });
 });

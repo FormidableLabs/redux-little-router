@@ -5,7 +5,7 @@ export type Query = { [key: string]: string };
 export type Params = { [key: string]: string };
 
 export type LocationOptions = {
-  persistQuery?: bool
+  persistQuery?: boolean
 };
 
 export type Location = $Shape<HistoryLocation & {
@@ -45,7 +45,4 @@ export type LocationAction = {
   payload: Location
 };
 
-export type RouterAction =
-  | BareAction
-  | IndexedAction
-  | LocationAction;
+export type RouterAction = BareAction | IndexedAction | LocationAction;

@@ -8,11 +8,7 @@ import { mount } from 'enzyme';
 import { PUSH, REPLACE } from '../../src/types';
 import { Link, PersistentQueryLink } from '../../src/components/link';
 
-import {
-  captureErrors,
-  fakeContext,
-  standardClickEvent
-} from '../test-util';
+import { captureErrors, fakeContext, standardClickEvent } from '../test-util';
 
 chai.use(sinonChai);
 
@@ -34,25 +30,24 @@ describe('Link', () => {
           if (action.type === PUSH) {
             const { payload } = action;
             captureErrors(done, () => {
-              expect(payload).to.have.property('pathname')
+              expect(payload).to.have
+                .property('pathname')
                 .that.contains('/home/messages/a-team');
 
               if (typeof href === 'string') {
-                expect(payload).to.have.property('search')
+                expect(payload).to.have
+                  .property('search')
                   .that.equal('?test=ing');
               } else {
-                expect(payload).to
-                  .have.deep.property('query')
+                expect(payload).to.have
+                  .property('query')
                   .that.deep.equals({ test: 'ing' });
               }
             });
           }
         };
 
-        const wrapper = mount(
-          <Link href={href} />,
-          fakeContext({ assertion })
-        );
+        const wrapper = mount(<Link href={href} />, fakeContext({ assertion }));
 
         wrapper.find('a').simulate('click', standardClickEvent);
       });
@@ -62,8 +57,9 @@ describe('Link', () => {
           if (action.type === PUSH) {
             const { payload } = action;
             captureErrors(done, () => {
-              expect(payload).to.have.deep.property(
-                'options.persistQuery', true
+              expect(payload).to.have.nested.property(
+                'options.persistQuery',
+                true
               );
             });
           }
@@ -96,15 +92,17 @@ describe('Link', () => {
           if (action.type === REPLACE) {
             const { payload } = action;
             captureErrors(done, () => {
-              expect(payload).to.have.property('pathname')
+              expect(payload).to.have
+                .property('pathname')
                 .that.contains('/home/messages/a-team');
 
               if (typeof href === 'string') {
-                expect(payload).to.have.property('search')
+                expect(payload).to.have
+                  .property('search')
                   .that.equal('?test=ing');
               } else {
-                expect(payload).to
-                  .have.deep.property('query')
+                expect(payload).to.have.deep
+                  .property('query')
                   .that.deep.equals({ test: 'ing' });
               }
             });
@@ -124,10 +122,7 @@ describe('Link', () => {
   describe('Accessibility', () => {
     ['shiftKey', 'altKey', 'metaKey', 'ctrlKey'].forEach(modifierKey =>
       it(`uses default browser behavior when the user holds the ${modifierKey}`, () => {
-        const wrapper = mount(
-          <Link href='/home/things' />,
-          fakeContext()
-        );
+        const wrapper = mount(<Link href="/home/things" />, fakeContext());
 
         const spy = sandbox.spy();
         wrapper.find('a').simulate('click', {
@@ -141,10 +136,7 @@ describe('Link', () => {
     );
 
     it('uses default browser behavior when the user clicks a non-left mouse button', () => {
-      const wrapper = mount(
-        <Link href='/home/things' />,
-        fakeContext()
-      );
+      const wrapper = mount(<Link href="/home/things" />, fakeContext());
 
       const spy = sandbox.spy();
       wrapper.find('a').simulate('click', {
@@ -157,10 +149,7 @@ describe('Link', () => {
     });
 
     it('prevents default when the user left-clicks', () => {
-      const wrapper = mount(
-        <Link href='/home/things' />,
-        fakeContext()
-      );
+      const wrapper = mount(<Link href="/home/things" />, fakeContext());
 
       const spy = sandbox.spy();
       wrapper.find('a').simulate('click', {
@@ -175,9 +164,9 @@ describe('Link', () => {
     it('passes through DOM props, including aria attributes', () => {
       const wrapper = mount(
         <Link
-          href='/home/things'
-          aria-label='a11y'
-          className='classy'
+          href="/home/things"
+          aria-label="a11y"
+          className="classy"
           style={{
             fontFamily: 'Comic Sans'
           }}
@@ -188,16 +177,15 @@ describe('Link', () => {
       const props = wrapper.props();
       expect(props).to.have.property('aria-label', 'a11y');
       expect(props).to.have.property('className', 'classy');
-      expect(props).to.have.property('style')
-        .that.deep.equals({
-          fontFamily: 'Comic Sans'
-        });
+      expect(props).to.have.property('style').that.deep.equals({
+        fontFamily: 'Comic Sans'
+      });
     });
 
     it('calls the onClick prop if provided', () => {
       const onClick = sandbox.stub();
       const wrapper = mount(
-        <Link href='/home/things' onClick={onClick} />,
+        <Link href="/home/things" onClick={onClick} />,
         fakeContext()
       );
 
@@ -209,26 +197,15 @@ describe('Link', () => {
 
   describe('Rendering', () => {
     it('renders an <a /> with the correct href attribute', () => {
-      const hrefs = [
-        '/path',
-        '/path?key=value',
-        'path/with/nested/routes'
-      ];
+      const hrefs = ['/path', '/path?key=value', 'path/with/nested/routes'];
       hrefs.forEach(href => {
-        const wrapper = mount(
-          <Link href={href} />,
-          fakeContext()
-        );
+        const wrapper = mount(<Link href={href} />, fakeContext());
         expect(wrapper.find('a').prop('href')).to.equal(href);
       });
     });
 
     it('renders an <a /> with the correct href attribute using a basename', () => {
-      const hrefs = [
-        '/path',
-        '/path?key=value',
-        'path/with/nested/routes'
-      ];
+      const hrefs = ['/path', '/path?key=value', 'path/with/nested/routes'];
       hrefs.forEach(href => {
         const wrapper = mount(
           <Link href={href} />,
@@ -252,10 +229,7 @@ describe('Link', () => {
         { pathname: 'path/with/nested/routes' }
       ];
       locations.forEach((location, index) => {
-        const wrapper = mount(
-          <Link href={location} />,
-          fakeContext()
-        );
+        const wrapper = mount(<Link href={location} />, fakeContext());
         expect(wrapper.find('a').prop('href')).to.equal(expected[index]);
       });
     });
@@ -278,35 +252,34 @@ describe('Link', () => {
           <Link href={location} />,
           fakeContext({ basename: '/base' })
         );
-        expect(wrapper.find('a').prop('href')).to.equal(`/base${expected[index]}`);
+        expect(wrapper.find('a').prop('href')).to.equal(
+          `/base${expected[index]}`
+        );
       });
     });
 
     it('renders the correct href when persisting queries', () => {
       const onClick = sandbox.stub();
       const wrapper = mount(
-        <Link persistQuery href='/home?what=do' onClick={onClick} />,
+        <Link persistQuery href="/home?what=do" onClick={onClick} />,
         fakeContext({
           query: { persist: 'pls' }
         })
       );
 
-      expect(wrapper.find('a').prop('href'))
-        .to.equal('/home?persist=pls&what=do');
+      expect(wrapper.find('a').prop('href')).to.equal(
+        '/home?persist=pls&what=do'
+      );
     });
   });
 
   describe('PersistentQueryLink', () => {
     it('appends persistQuery to the props', () => {
       // Need mount() here since PQL is an HOC
-      const wrapper = mount(
-        <PersistentQueryLink href='/' />,
-        fakeContext()
-      );
+      const wrapper = mount(<PersistentQueryLink href="/" />, fakeContext());
 
       const link = wrapper.findWhere(node => node.name() === 'Link');
-      expect(link.props())
-        .to.have.property('persistQuery', true);
+      expect(link.props()).to.have.property('persistQuery', true);
     });
   });
 });

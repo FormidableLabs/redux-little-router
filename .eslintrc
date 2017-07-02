@@ -1,4 +1,6 @@
 ---
 extends:
   - "formidable"
-  - ".eslintrc-overrides"
+  - "prettier"
+  - "prettier/flowtype"
+  - "prettier/react"

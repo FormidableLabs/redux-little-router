@@ -12,12 +12,14 @@ type HashRouterArgs = {
   history: History
 };
 
-export default ({
-  routes,
-  basename,
-  hashType = 'slash',
-  history = createHashHistory({ basename, hashType })
-}: HashRouterArgs) => {
+export default (
+  {
+    routes,
+    basename,
+    hashType = 'slash',
+    history = createHashHistory({ basename, hashType })
+  }: HashRouterArgs
+) => {
   const descriptor = basename
     ? { basename, ...history.location }
     : history.location;

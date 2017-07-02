@@ -13,14 +13,16 @@ export const captureErrors = (done, assertions) => {
   }
 };
 
-export const fakeStore = ({
-  assertion,
-  basename,
-  pathname = '/home/messages/b-team',
-  query = { test: 'ing' },
-  route = '/home/messages/:team',
-  routes = defaultRoutes
-} = {}) => {
+export const fakeStore = (
+  {
+    assertion,
+    basename,
+    pathname = '/home/messages/b-team',
+    query = { test: 'ing' },
+    route = '/home/messages/:team',
+    routes = defaultRoutes
+  } = {}
+) => {
   const history = createMemoryHistory();
 
   return {
@@ -50,13 +52,15 @@ export const fakeStore = ({
   };
 };
 
-export const fakeContext = ({
-  assertion,
-  basename,
-  pathname = '/home/messages/b-team',
-  route = '/home/messages/:team',
-  query = { test: 'ing' }
-} = {}) => ({
+export const fakeContext = (
+  {
+    assertion,
+    basename,
+    pathname = '/home/messages/b-team',
+    route = '/home/messages/:team',
+    query = { test: 'ing' }
+  } = {}
+) => ({
   context: {
     store: fakeStore({
       assertion,

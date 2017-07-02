@@ -8,15 +8,15 @@ export class MatchCache {
     this._data = {};
   }
 
-  add(parentId: string, route: ?string) : void {
+  add(parentId: string, route: ?string): void {
     this._data[parentId] = route || ROUTE_FALLBACK;
   }
 
-  get(parentId: string) : null | string {
+  get(parentId: string): null | string {
     return this._data[parentId] || null;
   }
 
-  clear() : void {
+  clear(): void {
     this._data = {};
   }
 }
