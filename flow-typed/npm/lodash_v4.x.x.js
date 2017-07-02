@@ -1,5 +1,5 @@
-// flow-typed signature: 30b961321e07b9c4220a08ccb1df90a6
-// flow-typed version: b8b7c5fef5/lodash_v4.x.x/flow_>=v0.28.x
+// flow-typed signature: b611e91eea833723f66a55f458ee8e27
+// flow-typed version: 13ceae43c9/lodash_v4.x.x/flow_>=v0.47.x
 
 declare module 'lodash' {
   declare type TemplateSettings = {
@@ -29,27 +29,40 @@ declare module 'lodash' {
 
   declare type NestedArray<T> = Array<Array<T>>;
 
+  declare type matchesIterateeShorthand = Object;
+  declare type matchesPropertyIterateeShorthand = [string, any];
+  declare type propertyIterateeShorthand = string;
+
   declare type OPredicate<A, O> =
-                    | ((value: A, key: string, object: O) => any)
-                    | Object
-                    | string;
+    | ((value: A, key: string, object: O) => any)
+    | matchesIterateeShorthand
+    | matchesPropertyIterateeShorthand
+    | propertyIterateeShorthand;
+
   declare type OIterateeWithResult<V, O, R> = Object|string|((value: V, key: string, object: O) => R);
   declare type OIteratee<O> = OIterateeWithResult<any, O, any>;
+  declare type OFlatMapIteratee<T, U> = OIterateeWithResult<any, T, Array<U>>;
 
   declare type Predicate<T> =
-                    | ((value: T, index: number, array: Array<T>) => any)
-                    | Object
-                    | string;
+    | ((value: T, index: number, array: Array<T>) => any)
+    | matchesIterateeShorthand
+    | matchesPropertyIterateeShorthand
+    | propertyIterateeShorthand;
+
+  declare type _ValueOnlyIteratee<T> = (value: T) => mixed;
+  declare type ValueOnlyIteratee<T> = _ValueOnlyIteratee<T>|string;
   declare type _Iteratee<T> = (item: T, index: number, array: ?Array<T>) => mixed;
   declare type Iteratee<T> = _Iteratee<T>|Object|string;
-  declare type Iteratee2<T, U> = ((item: T, index: number, array: ?Array<T>) => U)|Object|string;
   declare type FlatMapIteratee<T, U> = ((item: T, index: number, array: ?Array<T>) => Array<U>)|Object|string;
   declare type Comparator<T> = (item: T, item2: T) => bool;
 
-  declare type MapIterator1<T,U> = (item: T) => U;
-  declare type MapIterator2<T,U> = (item: T, index: number) => U;
-  declare type MapIterator3<T,U> = (item: T, index: number, array: Array<T>) => U;
-  declare type MapIterator<T,U> = MapIterator1<T,U>|MapIterator2<T,U>|MapIterator3<T,U>;
+  declare type MapIterator<T,U> =
+    | ((item: T, index: number, array: Array<T>) => U)
+    | propertyIterateeShorthand;
+
+  declare type OMapIterator<T,O,U> =
+    | ((item: T, key: string, object: O) => U)
+    | propertyIterateeShorthand;
 
   declare class Lodash {
     // Array
@@ -57,7 +70,7 @@ declare module 'lodash' {
     compact<T,N:?T>(array: Array<N>): Array<T>;
     concat<T>(base: Array<T>, ...elements: Array<any>): Array<T|any>;
     difference<T>(array: ?Array<T>, values?: Array<T>): Array<T>;
-    differenceBy<T>(array: ?Array<T>, values: Array<T>, iteratee: Iteratee<T>): T[];
+    differenceBy<T>(array: ?Array<T>, values: Array<T>, iteratee: ValueOnlyIteratee<T>): T[];
     differenceWith<T>(array: T[], values: T[], comparator?: Comparator<T>): T[];
     drop<T>(array: ?Array<T>, n?: number): Array<T>;
     dropRight<T>(array: ?Array<T>, n?: number): Array<T>;
@@ -77,10 +90,10 @@ declare module 'lodash' {
     initial<T>(array: ?Array<T>): Array<T>;
     intersection<T>(...arrays: Array<Array<T>>): Array<T>;
     //Workaround until (...parameter: T, parameter2: U) works
-    intersectionBy<T>(a1: Array<T>, iteratee?: Iteratee<T>): Array<T>;
-    intersectionBy<T>(a1: Array<T>, a2: Array<T>, iteratee?: Iteratee<T>): Array<T>;
-    intersectionBy<T>(a1: Array<T>, a2: Array<T>, a3: Array<T>, iteratee?: Iteratee<T>): Array<T>;
-    intersectionBy<T>(a1: Array<T>, a2: Array<T>, a3: Array<T>, a4: Array<T>, iteratee?: Iteratee<T>): Array<T>;
+    intersectionBy<T>(a1: Array<T>, iteratee?: ValueOnlyIteratee<T>): Array<T>;
+    intersectionBy<T>(a1: Array<T>, a2: Array<T>, iteratee?: ValueOnlyIteratee<T>): Array<T>;
+    intersectionBy<T>(a1: Array<T>, a2: Array<T>, a3: Array<T>, iteratee?: ValueOnlyIteratee<T>): Array<T>;
+    intersectionBy<T>(a1: Array<T>, a2: Array<T>, a3: Array<T>, a4: Array<T>, iteratee?: ValueOnlyIteratee<T>): Array<T>;
     //Workaround until (...parameter: T, parameter2: U) works
     intersectionWith<T>(a1: Array<T>, comparator: Comparator<T>): Array<T>;
     intersectionWith<T>(a1: Array<T>, a2: Array<T>, comparator: Comparator<T>): Array<T>;
@@ -92,7 +105,7 @@ declare module 'lodash' {
     nth<T>(array: T[], n?: number): T;
     pull<T>(array: ?Array<T>, ...values?: Array<T>): Array<T>;
     pullAll<T>(array: ?Array<T>, values: Array<T>): Array<T>;
-    pullAllBy<T>(array: ?Array<T>, values: Array<T>, iteratee?: Iteratee<T>): Array<T>;
+    pullAllBy<T>(array: ?Array<T>, values: Array<T>, iteratee?: ValueOnlyIteratee<T>): Array<T>;
     pullAllWith<T>(array?: T[], values: T[], comparator?: Function): T[];
     pullAt<T>(array: ?Array<T>, ...indexed?: Array<number>): Array<T>;
     pullAt<T>(array: ?Array<T>, indexed?: Array<number>): Array<T>;
@@ -100,10 +113,10 @@ declare module 'lodash' {
     reverse<T>(array: ?Array<T>): Array<T>;
     slice<T>(array: ?Array<T>, start?: number, end?: number): Array<T>;
     sortedIndex<T>(array: ?Array<T>, value: T): number;
-    sortedIndexBy<T>(array: ?Array<T>, value: T, iteratee?: Iteratee<T>): number;
+    sortedIndexBy<T>(array: ?Array<T>, value: T, iteratee?: ValueOnlyIteratee<T>): number;
     sortedIndexOf<T>(array: ?Array<T>, value: T): number;
     sortedLastIndex<T>(array: ?Array<T>, value: T): number;
-    sortedLastIndexBy<T>(array: ?Array<T>, value: T, iteratee?: Iteratee<T>): number;
+    sortedLastIndexBy<T>(array: ?Array<T>, value: T, iteratee?: ValueOnlyIteratee<T>): number;
     sortedLastIndexOf<T>(array: ?Array<T>, value: T): number;
     sortedUniq<T>(array: ?Array<T>): Array<T>;
     sortedUniqBy<T>(array: ?Array<T>, iteratee?: (value: T) => mixed): Array<T>;
@@ -114,27 +127,27 @@ declare module 'lodash' {
     takeWhile<T>(array: ?Array<T>, predicate?: Predicate<T>): Array<T>;
     union<T>(...arrays?: Array<Array<T>>): Array<T>;
     //Workaround until (...parameter: T, parameter2: U) works
-    unionBy<T>(a1: Array<T>, iteratee?: Iteratee<T>): Array<T>;
-    unionBy<T>(a1: Array<T>, a2: Array<T>, iteratee?: Iteratee<T>): Array<T>;
-    unionBy<T>(a1: Array<T>, a2: Array<T>, a3: Array<T>, iteratee?: Iteratee<T>): Array<T>;
-    unionBy<T>(a1: Array<T>, a2: Array<T>, a3: Array<T>, a4: Array<T>, iteratee?: Iteratee<T>): Array<T>;
+    unionBy<T>(a1: Array<T>, iteratee?: ValueOnlyIteratee<T>): Array<T>;
+    unionBy<T>(a1: Array<T>, a2: Array<T>, iteratee?: ValueOnlyIteratee<T>): Array<T>;
+    unionBy<T>(a1: Array<T>, a2: Array<T>, a3: Array<T>, iteratee?: ValueOnlyIteratee<T>): Array<T>;
+    unionBy<T>(a1: Array<T>, a2: Array<T>, a3: Array<T>, a4: Array<T>, iteratee?: ValueOnlyIteratee<T>): Array<T>;
     //Workaround until (...parameter: T, parameter2: U) works
     unionWith<T>(a1: Array<T>, comparator?: Comparator<T>): Array<T>;
     unionWith<T>(a1: Array<T>, a2: Array<T>, comparator?: Comparator<T>): Array<T>;
     unionWith<T>(a1: Array<T>, a2: Array<T>, a3: Array<T>, comparator?: Comparator<T>): Array<T>;
     unionWith<T>(a1: Array<T>, a2: Array<T>, a3: Array<T>, a4: Array<T>, comparator?: Comparator<T>): Array<T>;
     uniq<T>(array: ?Array<T>): Array<T>;
-    uniqBy<T>(array: ?Array<T>, iteratee?: Iteratee<T>): Array<T>;
+    uniqBy<T>(array: ?Array<T>, iteratee?: ValueOnlyIteratee<T>): Array<T>;
     uniqWith<T>(array: ?Array<T>, comparator?: Comparator<T>): Array<T>;
     unzip<T>(array: ?Array<T>): Array<T>;
     unzipWith<T>(array: ?Array<T>, iteratee?: Iteratee<T>): Array<T>;
     without<T>(array: ?Array<T>, ...values?: Array<T>): Array<T>;
     xor<T>(...array: Array<Array<T>>): Array<T>;
     //Workaround until (...parameter: T, parameter2: U) works
-    xorBy<T>(a1: Array<T>, iteratee?: Iteratee<T>): Array<T>;
-    xorBy<T>(a1: Array<T>, a2: Array<T>, iteratee?: Iteratee<T>): Array<T>;
-    xorBy<T>(a1: Array<T>, a2: Array<T>, a3: Array<T>, iteratee?: Iteratee<T>): Array<T>;
-    xorBy<T>(a1: Array<T>, a2: Array<T>, a3: Array<T>, a4: Array<T>, iteratee?: Iteratee<T>): Array<T>;
+    xorBy<T>(a1: Array<T>, iteratee?: ValueOnlyIteratee<T>): Array<T>;
+    xorBy<T>(a1: Array<T>, a2: Array<T>, iteratee?: ValueOnlyIteratee<T>): Array<T>;
+    xorBy<T>(a1: Array<T>, a2: Array<T>, a3: Array<T>, iteratee?: ValueOnlyIteratee<T>): Array<T>;
+    xorBy<T>(a1: Array<T>, a2: Array<T>, a3: Array<T>, a4: Array<T>, iteratee?: ValueOnlyIteratee<T>): Array<T>;
     //Workaround until (...parameter: T, parameter2: U) works
     xorWith<T>(a1: Array<T>, comparator?: Comparator<T>): Array<T>;
     xorWith<T>(a1: Array<T>, a2: Array<T>, comparator?: Comparator<T>): Array<T>;
@@ -154,8 +167,8 @@ declare module 'lodash' {
     zipWith<T>(a1: NestedArray<T>, a2: NestedArray<T>, a3: NestedArray<T>, a4: NestedArray<T>, iteratee?: Iteratee<T>): Array<T>;
 
     // Collection
-    countBy<T>(array: ?Array<T>, iteratee?: Iteratee<T>): Object;
-    countBy<T: Object>(object: T, iteratee?: OIteratee<T>): Object;
+    countBy<T>(array: ?Array<T>, iteratee?: ValueOnlyIteratee<T>): Object;
+    countBy<T: Object>(object: T, iteratee?: ValueOnlyIteratee<T>): Object;
     // alias of _.forEach
     each<T>(array: ?Array<T>, iteratee?: Iteratee<T>): Array<T>;
     each<T: Object>(object: T, iteratee?: OIteratee<T>): T;
@@ -166,28 +179,31 @@ declare module 'lodash' {
     every<T: Object>(object: T, iteratee?: OIteratee<T>): bool;
     filter<T>(array: ?Array<T>, predicate?: Predicate<T>): Array<T>;
     filter<A, T: {[id: string]: A}>(object: T, predicate?: OPredicate<A, T>): Array<A>;
-    find<T>(array: ?Array<T>, predicate?: Predicate<T>): T;
+    find<T>(array: ?Array<T>, predicate?: Predicate<T>): T|void;
     find<V, A, T: {[id: string]: A}>(object: T, predicate?: OPredicate<A, T>): V;
-    findLast<T>(array: ?Array<T>, predicate?: Predicate<T>): T;
+    findLast<T>(array: ?Array<T>, predicate?: Predicate<T>): T|void;
     findLast<V, A, T: {[id: string]: A}>(object: T, predicate?: OPredicate<A, T>): V;
     flatMap<T, U>(array: ?Array<T>, iteratee?: FlatMapIteratee<T, U>): Array<U>;
+    flatMap<T: Object, U>(object: T, iteratee?: OFlatMapIteratee<T, U>): Array<U>;
     flatMapDeep<T, U>(array: ?Array<T>, iteratee?: FlatMapIteratee<T, U>): Array<U>;
+    flatMapDeep<T: Object, U>(object: T, iteratee?: OFlatMapIteratee<T, U>): Array<U>;
     flatMapDepth<T, U>(array: ?Array<T>, iteratee?: FlatMapIteratee<T, U>, depth?: number): Array<U>;
+    flatMapDepth<T: Object, U>(object: T, iteratee?: OFlatMapIteratee<T, U>, depth?: number): Array<U>;
     forEach<T>(array: ?Array<T>, iteratee?: Iteratee<T>): Array<T>;
     forEach<T: Object>(object: T, iteratee?: OIteratee<T>): T;
     forEachRight<T>(array: ?Array<T>, iteratee?: Iteratee<T>): Array<T>;
     forEachRight<T: Object>(object: T, iteratee?: OIteratee<T>): T;
-    groupBy<T>(array: ?Array<T>, iteratee?: Iteratee<T>): Object;
-    groupBy<T: Object>(object: T, iteratee?: OIteratee<T>): Object;
+    groupBy<V, T>(array: ?Array<T>, iteratee?: ValueOnlyIteratee<T>): {[key: V]: ?Array<T>};
+    groupBy<V, A, T: {[id: string]: A}>(object: T, iteratee?: ValueOnlyIteratee<A>): {[key: V]: ?Array<A>};
     includes<T>(array: ?Array<T>, value: T, fromIndex?: number): bool;
     includes<T: Object>(object: T, value: any, fromIndex?: number): bool;
     includes(str: string, value: string, fromIndex?: number): bool;
     invokeMap<T>(array: ?Array<T>, path: ((value: T) => Array<string>|string)|Array<string>|string, ...args?: Array<any>): Array<any>;
     invokeMap<T: Object>(object: T, path: ((value: any) => Array<string>|string)|Array<string>|string, ...args?: Array<any>): Array<any>;
-    keyBy<T, V>(array: ?Array<T>, iteratee?: Iteratee2<T, V>): {[key: V]: T};
-    keyBy<V, T: Object>(object: T, iteratee?: OIteratee<T>): Object;
+    keyBy<T, V>(array: ?Array<T>, iteratee?: ValueOnlyIteratee<T>): {[key: V]: ?T};
+    keyBy<V, A, I, T: {[id: I]: A}>(object: T, iteratee?: ValueOnlyIteratee<A>): {[key: V]: ?A};
     map<T, U>(array: ?Array<T>, iteratee?: MapIterator<T, U>): Array<U>;
-    map<V, T: Object, U>(object: ?T, iteratee?: OIterateeWithResult<V, T, U>): Array<U>;
+    map<V, T: Object, U>(object: ?T, iteratee?: OMapIterator<V, T, U>): Array<U>;
     map(str: ?string, iteratee?: (char: string, index: number, str: string) => any): string;
     orderBy<T>(array: ?Array<T>, iteratees?: Array<Iteratee<T>>|string, orders?: Array<'asc'|'desc'>|string): Array<T>;
     orderBy<V, T: Object>(object: T, iteratees?: Array<OIteratee<*>>|string, orders?: Array<'asc'|'desc'>|string): Array<V>;
@@ -286,7 +302,8 @@ declare module 'lodash' {
     isRegExp(value: any): bool;
     isSafeInteger(value: any): bool;
     isSet(value: any): bool;
-    isString(value: any): bool;
+    isString(value: string): true;
+    isString(value: number|Function|void|null|Object|Array<any>): false;
     isSymbol(value: any): bool;
     isTypedArray(value: any): bool;
     isUndefined(value: any): bool;
@@ -366,7 +383,7 @@ declare module 'lodash' {
     forOwnRight(object?: ?Object, iteratee?: OIteratee<*>): Object;
     functions(object?: ?Object): Array<string>;
     functionsIn(object?: ?Object): Array<string>;
-    get(object?: ?Object, path?: ?Array<string>|string, defaultValue?: any): any;
+    get(object?: ?Object|?Array<any>, path?: ?Array<string>|string, defaultValue?: any): any;
     has(object?: ?Object, path?: ?Array<string>|string): bool;
     hasIn(object?: ?Object, path?: ?Array<string>|string): bool;
     invert(object?: ?Object, multiVal?: bool): Object;
@@ -462,7 +479,7 @@ declare module 'lodash' {
     methodOf(object?: ?Object, ...args?: Array<any>): Function;
     mixin<T: Function|Object>(object?: T, source: Object, options?: { chain: bool }): T;
     noConflict(): Lodash;
-    noop(): void;
+    noop(...args: Array<mixed>): void;
     nthArg(n?: number): Function;
     over(...iteratees: Array<Function>): Function;
     over(iteratees: Array<Function>): Function;
@@ -483,7 +500,8 @@ declare module 'lodash' {
     stubObject(): {};
     stubString(): '';
     stubTrue(): true;
-    times(n: number, iteratee?: Function): Function;
+    times(n: number, ...rest: Array<void>): Array<number>;
+    times<T>(n: number, iteratee: ((i: number) => T)): Array<T>;
     toPath(value: any): Array<string>;
     uniqueId(prefix?: string): string;
 
