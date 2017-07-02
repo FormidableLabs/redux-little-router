@@ -1,6 +1,6 @@
 {
   "name": "redux-little-router",
-  "version": "14.0.0-3",
+  "version": "14.0.0",
   "description": "A barebones routing solution for Redux applications.",
   "main": "lib/index.js",
   "scripts": {
@@ -35,7 +35,11 @@
     "type": "git",
     "url": "git+https://tptee@github.com/FormidableLabs/redux-little-router.git"
   },
-  "keywords": ["redux", "router", "middleware"],
+  "keywords": [
+    "redux",
+    "router",
+    "middleware"
+  ],
   "author": "Tyler Thompson",
   "license": "MIT",
   "bugs": {
@@ -130,6 +134,9 @@
     "instrument": false
   },
   "lint-staged": {
-    "*.js": ["prettier --single-quote --write", "git add"]
+    "*.js": [
+      "prettier --single-quote --write",
+      "git add"
+    ]
   }
 }
