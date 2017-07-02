@@ -1,7 +1,6 @@
-// flow-typed signature: 540efbb64c39df0f64e06608870891c2
-// flow-typed version: c72c426249/express_v4.x.x/flow_>=v0.25.x
+// flow-typed signature: 78eec0fbe090057bc3c26451d513b4ce
+// flow-typed version: e7aa3314da/express_v4.x.x/flow_>=v0.32.x
 
-// @flow
 import type { Server } from 'http';
 
 declare type express$RouterOptions = {
@@ -17,10 +16,10 @@ declare class express$RequestResponseBase {
 
 declare class express$Request extends http$IncomingMessage mixins express$RequestResponseBase {
   baseUrl: string;
-  body: mixed;
+  body: any;
   cookies: {[cookie: string]: string};
   fresh: boolean;
-  hostname: boolean;
+  hostname: string;
   ip: string;
   ips: Array<string>;
   method: string;
@@ -65,7 +64,7 @@ declare type express$SendFileOptions = {
   dotfiles?: 'allow' | 'deny' | 'ignore'
 };
 
-declare class express$Response extends http$ClientRequest mixins express$RequestResponseBase {
+declare class express$Response extends http$ServerResponse mixins express$RequestResponseBase {
   headersSent: boolean;
   locals: {[name: string]: mixed};
   append(field: string, value?: string): this;
@@ -84,13 +83,16 @@ declare class express$Response extends http$ClientRequest mixins express$Request
   send(body?: mixed): this;
   sendFile(path: string, options?: express$SendFileOptions, callback?: (err?: ?Error) => mixed): this;
   sendStatus(statusCode: number): this;
-  set(field: string, value?: string): this;
+  header(field: string, value?: string): this;
+  header(headers: {[name: string]: string}): this;
+  set(field: string, value?: string|string[]): this;
+  set(headers: {[name: string]: string}): this;
   status(statusCode: number): this;
   type(type: string): this;
   vary(field: string): this;
 }
 
-declare type express$NextFunction = (err?: ?Error) => mixed;
+declare type express$NextFunction = (err?: ?Error | 'route') => mixed;
 declare type express$Middleware =
   ((req: express$Request, res: express$Response, next: express$NextFunction) => mixed) |
   ((error: ?Error, req: express$Request, res: express$Response, next: express$NextFunction) => mixed);
@@ -98,12 +100,6 @@ declare interface express$RouteMethodType<T> {
   (middleware: express$Middleware): T;
   (...middleware: Array<express$Middleware>): T;
   (path: string|RegExp|string[], ...middleware: Array<express$Middleware>): T;
-}
-declare interface express$RouterMethodType<T> {
-  (middleware: express$Middleware): T;
-  (...middleware: Array<express$Middleware>): T;
-  (path: string|RegExp|string[], ...middleware: Array<express$Middleware>): T;
-  (path: string, router: express$Router): T;
 }
 declare class express$Route {
   all: express$RouteMethodType<this>;
@@ -139,9 +135,16 @@ declare class express$Route {
 
 declare class express$Router extends express$Route {
   constructor(options?: express$RouterOptions): void;
-  use: express$RouterMethodType<this>;
   route(path: string): express$Route;
-  static (): express$Router;
+  static (options?: express$RouterOptions): express$Router;
+  use(middleware: express$Middleware): this;
+  use(...middleware: Array<express$Middleware>): this;
+  use(path: string|RegExp|string[], ...middleware: Array<express$Middleware>): this;
+  use(path: string, router: express$Router): this;
+  handle(req: http$IncomingMessage, res: http$ServerResponse, next: express$NextFunction): void;
+
+  // Can't use regular callable signature syntax due to https://github.com/facebook/flow/issues/3084
+  $call: (req: http$IncomingMessage, res: http$ServerResponse, next?: ?express$NextFunction) => void;
 }
 
 declare class express$Application extends express$Router mixins events$EventEmitter {
@@ -164,18 +167,19 @@ declare class express$Application extends express$Router mixins events$EventEmit
   //   get(name: string): mixed;
   set(name: string, value: mixed): mixed;
   render(name: string, optionsOrFunction: {[name: string]: mixed}, callback: express$RenderCallback): void;
+  handle(req: http$IncomingMessage, res: http$ServerResponse, next?: ?express$NextFunction): void;
 }
 
 declare module 'express' {
   declare function serveStatic(root: string, options?: Object): express$Middleware;
 
-  declare type RouterOptions = express$RouterOptions;
-  declare type CookieOptions = express$CookieOptions;
-  declare type Middleware = express$Middleware;
-  declare type NextFunction = express$NextFunction;
-  declare type $Response = express$Response;
-  declare type $Request = express$Request;
-  declare type $Application = express$Application;
+  declare export type RouterOptions = express$RouterOptions;
+  declare export type CookieOptions = express$CookieOptions;
+  declare export type Middleware = express$Middleware;
+  declare export type NextFunction = express$NextFunction;
+  declare export type $Response = express$Response;
+  declare export type $Request = express$Request;
+  declare export type $Application = express$Application;
 
   declare module.exports: {
     (): express$Application, // If you try to call like a function, it will use this signature
