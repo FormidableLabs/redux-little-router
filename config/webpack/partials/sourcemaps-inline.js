@@ -1,11 +1,8 @@
 'use strict';
 
-const mergeWebpackConfig = require('webpack-partial').default;
+const { smart: mergeWebpackConfig } = require('webpack-merge');
 
-module.exports = function () {
-  return function (config) {
-    return mergeWebpackConfig(config, {
-      devtool: 'inline-source-map'
-    });
-  };
-};
+module.exports = () => config =>
+  mergeWebpackConfig(config, {
+    devtool: 'cheap-module-source-map'
+  });

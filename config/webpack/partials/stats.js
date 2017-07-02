@@ -1,16 +1,9 @@
 'use strict';
 
-const mergeWebpackConfig = require('webpack-partial').default;
+const plugin = require('webpack-partial/plugin').default;
 const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 
-module.exports = function () {
-  return function (config) {
-    return mergeWebpackConfig(config, {
-      plugins: [
-        new StatsWriterPlugin({
-          filename: '../stats/stats.json'
-        })
-      ]
-    });
-  };
-};
+module.exports = () =>
+  plugin(new StatsWriterPlugin({
+    filename: '../stats/stats.json'
+  }));

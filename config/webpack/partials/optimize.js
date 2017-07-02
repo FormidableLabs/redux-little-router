@@ -1,22 +1,16 @@
 'use strict';
 
+const { flow } = require('lodash');
 const CompressionPlugin = require('compression-webpack-plugin');
-const mergeWebpackConfig = require('webpack-partial').default;
+const plugin = require('webpack-partial/plugin').default;
 const optimize = require('webpack').optimize;
 
-module.exports = function () {
-  return function (config) {
-    return mergeWebpackConfig(config, {
-      plugins: [
-        new optimize.DedupePlugin(),
-        new optimize.UglifyJsPlugin(),
-        new CompressionPlugin({
-          asset: '[path].gz[query]',
-          test: /\.js$|\.css$/,
-          algorithm: 'gzip',
-          threshold: 1500
-        })
-      ]
-    });
-  };
-};
+module.exports = () => flow(
+  plugin(new optimize.UglifyJsPlugin()),
+  plugin(new CompressionPlugin({
+    asset: '[path].gz[query]',
+    test: /\.js$|\.css$/,
+    algorithm: 'gzip',
+    threshold: 1500
+  }))
+);
