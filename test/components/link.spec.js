@@ -271,6 +271,38 @@ describe('Link', () => {
         '/home?persist=pls&what=do'
       );
     });
+
+    it('renders activeProps when the href pathname matches the current pathname', () => {
+      const wrapper = mount(
+        <Link
+          href="/mr-jackpots"
+          activeProps={{
+            style: { color: 'red' }
+          }}
+        />,
+        fakeContext({
+          pathname: '/mr-jackpots'
+        })
+      );
+
+      expect(wrapper.find('a').prop('style')).to.have.property('color', 'red');
+    });
+
+    it('renders without activeProps when href and location pathname do not match', () => {
+      const wrapper = mount(
+        <Link
+          href="/hello-oo-ooooooooo"
+          activeProps={{
+            style: { color: 'red' }
+          }}
+        />,
+        fakeContext({
+          pathname: '/mr-jackpots'
+        })
+      );
+
+      expect(wrapper.find('a').prop('style')).to.be.undefined;
+    });
   });
 
   describe('PersistentQueryLink', () => {

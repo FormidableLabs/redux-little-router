@@ -54,7 +54,16 @@ const Demo = ({ location }) => {
             <Link href="/dog">Dog</Link>
             <Link href="/cat?is=cat">Cat</Link>
             <Link href="/hipster">Hipster</Link>
-            <Link href="/nonexistent">My Design Skills</Link>
+            <Link
+              href="/nonexistent"
+              activeProps={{
+                style: {
+                  backgroundColor: '#e32636'
+                }
+              }}
+            >
+              My Design Skills
+            </Link>
           </div>
 
           <div className={styles.panes}>
