@@ -333,6 +333,18 @@ Alternatively, you can pass in a location object to `href`. This is useful for p
 </Link>
 ```
 
+To change how `<Link>` renders when its `href` matches the current location (i.e. the link is "active"), use `activeProps`. For example, you can add `className` to `activeProps` to use a different CSS class when the link is active:
+
+```jsx
+<Link
+  href='/wat'
+  className='normal-link' 
+  activeProps={{ className: 'active-link' }}
+>
+  Wat
+</Link>
+```
+
 `<Link>` takes an optional valueless prop, `replaceState`, that changes the link navigation behavior from `pushState` to `replaceState` in the History API.
 
 ## Environment

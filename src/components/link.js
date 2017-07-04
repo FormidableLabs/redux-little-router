@@ -21,7 +21,10 @@ type Props = {
   style: Object,
   location: Location,
   push: typeof pushAction,
-  replace: typeof replaceAction
+  replace: typeof replaceAction,
+  // TODO: replace with recursive Props definition
+  // https://github.com/yannickcr/eslint-plugin-react/issues/913
+  activeProps: Object
 };
 
 const LEFT_MOUSE_BUTTON = 0;
@@ -32,20 +35,18 @@ const hasModifier = e =>
   Boolean(e.shiftKey || e.altKey || e.metaKey || e.ctrlKey);
 
 const shouldIgnoreClick = ({ e, target }) =>
-  hasModifier(e) || isNotLeftClick(e) || e.defaultPrevented || target; // let browser handle target="_blank"
+  hasModifier(e) || isNotLeftClick(e) || e.defaultPrevented || target;
 
-const handleClick = (
-  {
-    e,
-    target,
-    href,
-    onClick,
-    replaceState,
-    persistQuery,
-    push,
-    replace
-  }
-) => {
+const handleClick = ({
+  e,
+  target,
+  href,
+  onClick,
+  replaceState,
+  persistQuery,
+  push,
+  replace
+}) => {
   if (onClick) {
     onClick(e);
   }
@@ -88,6 +89,7 @@ const Link = (props: Props) => {
     children,
     onClick,
     target,
+    activeProps,
     replaceState,
     persistQuery,
     push,
@@ -98,6 +100,8 @@ const Link = (props: Props) => {
   // Ensure the href has both a search and a query when needed
   const normalizedHref = normalizeHref(rawHref);
   const href = contextifyHref(normalizedHref, location, persistQuery);
+  const isActive = href.pathname === location.pathname;
+  const activeRest = (isActive && activeProps) || {};
 
   const clickHandler = e =>
     handleClick({
@@ -117,6 +121,7 @@ const Link = (props: Props) => {
       onClick={clickHandler}
       target={target}
       {...rest}
+      {...activeRest}
     >
       {children}
     </a>
@@ -126,7 +131,11 @@ const Link = (props: Props) => {
 const PersistentQueryLink = class extends Component {
   render() {
     const { children, ...rest } = this.props;
-    return <Link {...rest} persistQuery>{children}</Link>;
+    return (
+      <Link {...rest} persistQuery>
+        {children}
+      </Link>
+    );
   }
 };
 
