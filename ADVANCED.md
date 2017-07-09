@@ -140,3 +140,20 @@ const store = createStore(
 ```
 
 If you're using an Express sub-router, you should extract the inferred `basename` from `window.__INITIAL_STATE.router.basename` and pass it to `routerForBrowser`.
+
+## Code Splitting
+
+If you're using `Fragment`, you shouldn't have any restrictions on component-level code splitting. If you rely on static routes, you'll need to use the `replaceRoutes` action creator to update your routes after loading a component with new routes. `replaceRoutes` has no opinions on route updates and obliterates any existing routes, so you likely want to use `redux-thunk` to merge your new routes in:
+
+```js
+import { merge } from 'lodash';
+import { replaceRoutes } from 'redux-little-router';
+
+const mergeRoutes = newRoutes => (dispatch, getState) => {
+  const currentRoutes = getState().routes;
+  return dispatch(replaceRoutes(merge(currentRoutes, newRoutes)));
+}
+
+// Later, maybe in a `connect()ed component`
+loadSomeAsyncRoutes().then(routes => dispatch(mergeRoutes()))
+```
