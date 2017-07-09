@@ -20,6 +20,11 @@ describe('Router installer', () => {
         thing: 'stuff'
       },
       route: '/:thing',
+      routes: {
+        '/:thing': {
+          congratulations: 'you played yourself'
+        }
+      },
       result: {
         congratulations: 'you played yourself'
       },
@@ -33,7 +38,8 @@ describe('Router installer', () => {
         routes: null,
         history: {},
         location: {}
-      })).to.throw(Error);
+      })
+    ).to.throw(Error);
   });
 
   it('throws if malformed routes are provided', () => {
@@ -46,6 +52,7 @@ describe('Router installer', () => {
         },
         history: {},
         location: {}
-      })).to.throw(Error);
+      })
+    ).to.throw(Error);
   });
 });

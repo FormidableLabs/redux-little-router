@@ -5,7 +5,9 @@ import {
   REPLACE,
   GO,
   GO_BACK,
-  GO_FORWARD
+  GO_FORWARD,
+  REPLACE_ROUTES,
+  DID_REPLACE_ROUTES
 } from './types';
 
 import {
@@ -14,6 +16,7 @@ import {
   go,
   goBack,
   goForward,
+  replaceRoutes,
   initializeCurrentLocation
 } from './actions';
 
@@ -42,11 +45,14 @@ export {
   go,
   goBack,
   goForward,
+  replaceRoutes,
   // Public action types
   LOCATION_CHANGED,
   PUSH,
   REPLACE,
   GO,
   GO_FORWARD,
-  GO_BACK
+  GO_BACK,
+  REPLACE_ROUTES,
+  DID_REPLACE_ROUTES
 };

@@ -10,35 +10,36 @@ import { default as matcherFactory } from './util/create-matcher';
 import validateRoutes from './util/validate-routes';
 import flattenRoutes from './util/flatten-routes';
 
-type InstallArgs = {
+type InstallArgs = {|
   routes: Object,
   history: History,
   location: Location,
   createMatcher?: Function
-};
+|};
 
-export default (
-  {
-    routes: nestedRoutes,
-    history,
-    location,
-    createMatcher = matcherFactory
-  }: InstallArgs
-) => {
+export default ({
+  routes: nestedRoutes,
+  history,
+  location,
+  createMatcher = matcherFactory
+}: InstallArgs) => {
   validateRoutes(nestedRoutes);
   const routes = flattenRoutes(nestedRoutes);
   const matchRoute = createMatcher(routes);
 
   return {
     reducer: reducer({
-      ...location,
-      ...matchRoute(location.pathname)
+      routes,
+      initialLocation: {
+        ...location,
+        ...matchRoute(location.pathname)
+      }
     }),
     middleware: middleware({ history }),
     enhancer: enhancer({
-      routes,
       history,
-      matchRoute
+      matchRoute,
+      createMatcher
     })
   };
 };

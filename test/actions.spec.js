@@ -7,7 +7,8 @@ import {
   GO,
   GO_BACK,
   GO_FORWARD,
-  LOCATION_CHANGED
+  LOCATION_CHANGED,
+  DID_REPLACE_ROUTES
 } from '../src/types';
 
 import {
@@ -16,6 +17,8 @@ import {
   go,
   goBack,
   goForward,
+  replaceRoutes,
+  didReplaceRoutes,
   locationDidChange,
   initializeCurrentLocation
 } from '../src/actions';
@@ -75,6 +78,28 @@ describe('Action creators', () => {
 
   it('creates a GO_FORWARD action', () => {
     expect(goForward()).to.deep.equal({ type: GO_FORWARD });
+  });
+
+  it('creates a REPLACE_ROUTES action with flattened route payloads and options', () => {
+    const routes = { '/': { '/this': { '/is': { '/nested': '' } } } };
+    const action = replaceRoutes(routes);
+    expect(action).to.have.nested.property('payload.routes');
+    expect(action.payload.routes).to.have.all.keys(
+      '/',
+      '/this',
+      '/this/is',
+      '/this/is/nested'
+    );
+    expect(action).to.have.nested.property(
+      'payload.options.updateRoutes',
+      true
+    );
+  });
+
+  it('creates a DID_REPLACE_ROUTES action', () => {
+    expect(didReplaceRoutes()).to.deep.equal({
+      type: DID_REPLACE_ROUTES
+    });
   });
 
   it('combines the location descriptor and the route match into a LOCATION_CHANGED action', () => {

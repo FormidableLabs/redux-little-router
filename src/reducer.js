@@ -3,7 +3,12 @@ import type { Location, LocationOptions, LocationAction } from './types';
 
 import qs from 'query-string';
 
-import { LOCATION_CHANGED, isNavigationAction } from './types';
+import {
+  LOCATION_CHANGED,
+  REPLACE_ROUTES,
+  DID_REPLACE_ROUTES,
+  isNavigationAction
+} from './types';
 
 const flow = (...funcs: Array<*>) =>
   funcs.reduce((prev, curr) => (...args) => curr(prev(...args)));
@@ -14,13 +19,7 @@ type ResolverArgs = {
   options: LocationOptions
 };
 
-const resolveQuery = (
-  {
-    oldLocation,
-    newLocation,
-    options
-  }
-): ResolverArgs => {
+const resolveQuery = ({ oldLocation, newLocation, options }): ResolverArgs => {
   // Merge the old and new queries if asked to persist
   if (options.persistQuery) {
     const mergedQuery = {
@@ -48,13 +47,11 @@ const resolveQuery = (
   };
 };
 
-const resolveBasename = (
-  {
-    oldLocation,
-    newLocation,
-    options
-  }
-): ResolverArgs => {
+const resolveBasename = ({
+  oldLocation,
+  newLocation,
+  options
+}): ResolverArgs => {
   const { basename } = oldLocation;
   if (basename) {
     return {
@@ -66,13 +63,11 @@ const resolveBasename = (
   return { oldLocation, newLocation, options };
 };
 
-const resolvePrevious = (
-  {
-    oldLocation,
-    newLocation,
-    options
-  }
-): ResolverArgs => ({
+const resolvePrevious = ({
+  oldLocation,
+  newLocation,
+  options
+}): ResolverArgs => ({
   oldLocation,
   newLocation: {
     ...newLocation,
@@ -81,55 +76,72 @@ const resolvePrevious = (
   options
 });
 
-export default (initialLocation: Location) =>
-  (
-    state: Location = { ...initialLocation, queue: [] },
-    action: LocationAction
-  ) => {
-    if (isNavigationAction(action)) {
-      return {
-        ...state,
-        queue: state.queue && state.queue.concat([action.payload])
-      };
-    }
-
-    if (action.type === LOCATION_CHANGED) {
-      // No-op the initial route action
-      if (
-        state.pathname === action.payload.pathname &&
-        state.search === action.payload.search &&
-        state.hash === action.payload.hash &&
-        (!state.queue || !state.queue.length)
-      ) {
-        return state;
-      }
-
-      const queuedLocation = (state.queue && state.queue[0]) || {};
-      const queue = (state.queue && state.queue.slice(1)) || [];
-
-      // Extract the previous state, but dump the
-      // previous state's previous state so that the
-      // state tree doesn't keep growing indefinitely
-      // eslint-disable-next-line no-unused-vars
-      const { previous, ...oldLocation } = state;
-      const { options, query } = queuedLocation;
-
-      const resolveLocation = flow(
-        resolveQuery,
-        resolveBasename,
-        resolvePrevious
-      );
-
-      const { newLocation } = resolveLocation({
-        oldLocation,
-        newLocation: {
-          ...action.payload,
-          query
-        },
-        options: options || {}
-      });
-
-      return { ...newLocation, queue };
-    }
+const locationChangeReducer = (state, action) => {
+  // No-op the initial route action
+  if (
+    state.pathname === action.payload.pathname &&
+    state.search === action.payload.search &&
+    state.hash === action.payload.hash &&
+    (!state.queue || !state.queue.length)
+  ) {
     return state;
-  };
+  }
+
+  const queuedLocation = (state.queue && state.queue[0]) || {};
+  const queue = (state.queue && state.queue.slice(1)) || [];
+
+  // Extract the previous state, but dump the
+  // previous state's previous state so that the
+  // state tree doesn't keep growing indefinitely
+  // eslint-disable-next-line no-unused-vars
+  const { previous, routes: currentRoutes = {}, ...oldLocation } = state;
+  const { options, query } = queuedLocation;
+
+  const resolveLocation = flow(resolveQuery, resolveBasename, resolvePrevious);
+
+  const { newLocation } = resolveLocation({
+    oldLocation,
+    newLocation: {
+      ...action.payload,
+      query
+    },
+    options: options || {}
+  });
+
+  return { ...newLocation, routes: currentRoutes, queue };
+};
+
+type ReducerArgs = {|
+  routes: Object,
+  initialLocation: Location
+|};
+
+export default ({ routes = {}, initialLocation }: ReducerArgs = {}) => (
+  state: Location = { ...initialLocation, routes, queue: [] },
+  action: LocationAction
+) => {
+  if (isNavigationAction(action)) {
+    return {
+      ...state,
+      queue: state.queue && state.queue.concat([action.payload])
+    };
+  }
+
+  if (action.type === REPLACE_ROUTES) {
+    return {
+      ...state,
+      routes: action.payload.routes,
+      options: action.payload.options
+    };
+  }
+
+  if (action.type === DID_REPLACE_ROUTES) {
+    return { ...state, options: {} };
+  }
+
+  if (action.type === LOCATION_CHANGED) {
+    return locationChangeReducer(state, action);
+  }
+
+  return state;
+};

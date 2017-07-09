@@ -7,10 +7,13 @@ import {
   GO,
   GO_BACK,
   GO_FORWARD,
-  LOCATION_CHANGED
+  LOCATION_CHANGED,
+  REPLACE_ROUTES,
+  DID_REPLACE_ROUTES
 } from './types';
 
 import normalizeHref from './util/normalize-href';
+import flattenRoutes from './util/flatten-routes';
 
 export const push = (href: Href, options: LocationOptions = {}) => ({
   type: PUSH,
@@ -38,4 +41,18 @@ export const locationDidChange = (location: Location) => ({
 export const initializeCurrentLocation = (location: Location) => ({
   type: LOCATION_CHANGED,
   payload: location
+});
+
+export const replaceRoutes = (routes: Object) => ({
+  type: REPLACE_ROUTES,
+  payload: {
+    routes: flattenRoutes(routes),
+    options: {
+      updateRoutes: true
+    }
+  }
+});
+
+export const didReplaceRoutes = () => ({
+  type: DID_REPLACE_ROUTES
 });
