@@ -3,8 +3,9 @@ import sinonChai from 'sinon-chai';
 
 import { combineReducers, compose, createStore, applyMiddleware } from 'redux';
 
-import { PUSH } from '../src/types';
+import { PUSH, REPLACE_ROUTES } from '../src/types';
 import install from '../src/install';
+import createMatcher from '../src/util/create-matcher';
 
 import defaultRoutes from './test-util/fixtures/routes';
 
@@ -20,7 +21,8 @@ describe('Router store enhancer', () => {
 
     const listen = sandbox.spy(cb => cb({ pathname: '/' }));
     const push = sandbox.spy(() => listen(listenStub));
-    historyStub = { push, listen };
+    const replace = sandbox.spy(() => listen(listenStub));
+    historyStub = { push, replace, listen };
 
     const { reducer, middleware, enhancer } = install({
       routes: defaultRoutes,
@@ -47,10 +49,31 @@ describe('Router store enhancer', () => {
     expect(store.dispatch).to.be.calledOnce;
   });
 
-  it('attaches the routes and matchers to the store', () => {
-    expect(store).to.have.property('routes');
-    expect(store.routes).to.deep.equal(defaultRoutes);
-
+  it('attaches the matcher to the store', () => {
     expect(store).to.have.property('matchRoute');
+  });
+
+  it('replaces routes', () => {
+    store.dispatch({
+      type: REPLACE_ROUTES,
+      payload: {
+        routes: { '/': { could: 'you not' } },
+        options: {
+          updateRoutes: true
+        }
+      }
+    });
+
+    // This dispatch isn't the dispatch used in the enhancer
+    // (each enhancer has its own copy of dispatch)
+    expect(store.dispatch).to.be.calledOnce;
+    expect(historyStub.replace).to.be.calledOnce;
+    expect(listenStub).to.be.calledOnce;
+
+    const { routes } = store.getState().router;
+    const matcher = createMatcher(routes);
+    expect(matcher('/')).to.have.deep.property('result', {
+      could: 'you not'
+    });
   });
 });

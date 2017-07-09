@@ -1,7 +1,12 @@
 import { expect } from 'chai';
 import { flow, partialRight } from 'lodash';
 import reducer from '../src/reducer';
-import { LOCATION_CHANGED, PUSH } from '../src/types';
+import {
+  LOCATION_CHANGED,
+  PUSH,
+  REPLACE_ROUTES,
+  DID_REPLACE_ROUTES
+} from '../src/types';
 
 describe('Router reducer', () => {
   it('adds the pathname to the store', () => {
@@ -41,6 +46,7 @@ describe('Router reducer', () => {
       },
       query: {},
       queue: [],
+      routes: {},
       previous: {
         queue: [
           {
@@ -75,6 +81,7 @@ describe('Router reducer', () => {
       pathname: '/rofl',
       query: {},
       queue: [],
+      routes: {},
       previous: {
         pathname: '/waffle',
         queue: [{ pathname: '/rofl' }]
@@ -134,7 +141,8 @@ describe('Router reducer', () => {
         ]
       },
       query: {},
-      queue: []
+      queue: [],
+      routes: {}
     });
   });
 
@@ -193,7 +201,8 @@ describe('Router reducer', () => {
           }
         ]
       },
-      queue: []
+      queue: [],
+      routes: {}
     });
   });
 
@@ -262,7 +271,8 @@ describe('Router reducer', () => {
           }
         ]
       },
-      queue: []
+      queue: [],
+      routes: {}
     });
   });
 
@@ -307,7 +317,7 @@ describe('Router reducer', () => {
       }
     };
     const result = reducer()(undefined, action);
-    expect(result).to.deep.equal({ queue: [] });
+    expect(result).to.deep.equal({ routes: {}, queue: [] });
   });
 
   it('uses given location as initial state when no initial router state provided', () => {
@@ -319,10 +329,12 @@ describe('Router reducer', () => {
     };
 
     const result = reducer({
-      pathname: '/lol',
-      search: '?as=af',
-      query: {
-        as: 'af'
+      initialLocation: {
+        pathname: '/lol',
+        search: '?as=af',
+        query: {
+          as: 'af'
+        }
       }
     })(undefined, action);
 
@@ -332,7 +344,43 @@ describe('Router reducer', () => {
       query: {
         as: 'af'
       },
-      queue: []
+      queue: [],
+      routes: {}
     });
+  });
+
+  it('replaces routes', () => {
+    const reducerInstance = reducer({
+      routes: { '/': { pied: 'piper' } },
+      pathname: '/bachmanity'
+    });
+
+    const replaceRoutesAction = {
+      type: REPLACE_ROUTES,
+      payload: {
+        routes: { '/hoo': 'li' },
+        options: { updateRoutes: true }
+      }
+    };
+
+    const didReplaceRoutesAction = { type: DID_REPLACE_ROUTES };
+
+    flow(
+      partialRight(reducerInstance, replaceRoutesAction),
+      state => {
+        expect(state).to.have.deep.nested.property('routes', { '/hoo': 'li' });
+        expect(state).to.have.deep.nested.property(
+          'options.updateRoutes',
+          true
+        );
+        return state;
+      },
+      partialRight(reducerInstance, didReplaceRoutesAction),
+      state => {
+        expect(state).to.have.deep.nested.property('routes', { '/hoo': 'li' });
+        expect(state).to.not.have.deep.nested.property('options.updateRoutes');
+        return state;
+      }
+    )({});
   });
 });
