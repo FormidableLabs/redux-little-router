@@ -76,8 +76,5 @@ export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
     );
   });
 
-  return {
-    ...store,
-    matchRoute
-  };
+  return { ...store };
 };

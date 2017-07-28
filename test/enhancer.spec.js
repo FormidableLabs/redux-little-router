@@ -49,10 +49,6 @@ describe('Router store enhancer', () => {
     expect(store.dispatch).to.be.calledOnce;
   });
 
-  it('attaches the matcher to the store', () => {
-    expect(store).to.have.property('matchRoute');
-  });
-
   it('replaces routes', () => {
     store.dispatch({
       type: REPLACE_ROUTES,
