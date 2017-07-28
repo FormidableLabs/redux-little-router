@@ -18,12 +18,11 @@ const store = createStore(
   // initial state the hbs template inserted
   window.__INITIAL_STATE || {},
   compose(
-    enhancer,
     applyMiddleware(middleware),
     window.devToolsExtension ? window.devToolsExtension() : f => f
   )
 );
-
+enhancer(store);
 const initialLocation = store.getState().router;
 if (initialLocation) {
   store.dispatch(initializeCurrentLocation(initialLocation));

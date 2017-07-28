@@ -33,7 +33,6 @@ const Root = require('../client/demo').default;
 
 const createStore = redux.createStore;
 const combineReducers = redux.combineReducers;
-const compose = redux.compose;
 const applyMiddleware = redux.applyMiddleware;
 
 const PORT = 4567;
@@ -83,9 +82,10 @@ app.get('/*', (req, res) => {
   const store = createStore(
     combineReducers({ router: router.reducer }),
     initialState,
-    compose(router.enhancer, applyMiddleware(router.middleware))
+    applyMiddleware(router.middleware)
   );
 
+  router.enhancer(store);
   const content = renderToString(wrap(store)(Root));
 
   return res.send(

@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
-import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
+import { applyMiddleware, combineReducers, createStore } from 'redux';
 
 import routerForHapi from '../../src/environment/hapi-router';
 
@@ -21,8 +21,9 @@ describe('Hapi router', () => {
     const store = createStore(
       combineReducers({ router: reducer }),
       {},
-      compose(enhancer, applyMiddleware(middleware))
+      applyMiddleware(middleware)
     );
+    enhancer(store);
     const state = store.getState();
     expect(state).to.have.nested.property('router.pathname', '/home');
     expect(state).to.have.nested.property('router.search', '?get=schwifty');

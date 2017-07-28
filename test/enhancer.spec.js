@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
-import { combineReducers, compose, createStore, applyMiddleware } from 'redux';
+import { combineReducers, createStore, applyMiddleware } from 'redux';
 
 import { PUSH, REPLACE_ROUTES } from '../src/types';
 import install from '../src/install';
@@ -33,8 +33,9 @@ describe('Router store enhancer', () => {
     store = createStore(
       combineReducers({ router: reducer }),
       {},
-      compose(enhancer, applyMiddleware(middleware))
+      applyMiddleware(middleware)
     );
+    enhancer(store);
     sandbox.spy(store, 'dispatch');
   });
 
@@ -60,9 +61,7 @@ describe('Router store enhancer', () => {
       }
     });
 
-    // This dispatch isn't the dispatch used in the enhancer
-    // (each enhancer has its own copy of dispatch)
-    expect(store.dispatch).to.be.calledOnce;
+    expect(store.dispatch).to.be.calledThrice;
     expect(historyStub.replace).to.be.calledOnce;
     expect(listenStub).to.be.calledOnce;
 
