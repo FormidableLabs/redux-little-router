@@ -4,7 +4,7 @@ import type { Location } from './types';
 
 import reducer from './reducer';
 import middleware from './middleware';
-import enhancer from './enhancer';
+import connector from './connector';
 
 import { default as matcherFactory } from './util/create-matcher';
 import validateRoutes from './util/validate-routes';
@@ -36,7 +36,7 @@ export default ({
       }
     }),
     middleware: middleware({ history }),
-    enhancer: enhancer({
+    connect: connector({
       history,
       matchRoute,
       createMatcher

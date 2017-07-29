@@ -37,7 +37,7 @@ app.use('/*', (req, res) => {
   // routerForExpress will infer the basename
   // from req.baseUrl!
   // 
-  const { reducer, middleware, enhancer } = routerForExpress({
+  const { reducer, middleware, connect } = routerForExpress({
     routes,
     request: req
   })
@@ -45,8 +45,10 @@ app.use('/*', (req, res) => {
   const store = createStore(
     combineReducers({ router: reducer }),
     { what: 'ever' },
-    compose(enhancer, applyMiddleware(middleware))
+    applyMiddleware(middleware)
   );
+  
+  connect(store);
 
   // ...then renderToString() your components as usual,
   // passing your new store to your <Provider> component.
@@ -86,7 +88,7 @@ server.route({
 		// Create the Redux store, passing in the Hapi
 		// request to the routerForHapi factory.
 
-		const { reducer, middleware, enhancer } = routerForHapi({
+		const { reducer, middleware, connect } = routerForHapi({
 			routes,
 			request
 		})
@@ -94,8 +96,10 @@ server.route({
 		const store = createStore(
 			reducer,
 			{ what: 'ever' },
-			compose(enhancer, applyMiddleware(middleware))
+			applyMiddleware(middleware)
 		);
+		
+		connect(store);
 
 		// ...then renderToString() your components as usual,
 		// passing your new store to your <Provider> component.
@@ -125,15 +129,17 @@ const routes = {
 
 const {
   reducer,
-  enhancer,
+  connect,
   middleware
 } = routerForBrowser({ routes });
 
 const store = createStore(
   combineReducers({ router: reducer }),
   window.__INITIAL_STATE,
-  compose(enhancer, applyMiddleware(middleware))
+  applyMiddleware(middleware)
 );
+
+connect(store);
 
 // ...then render() your components as usual,
 // passing your new store to your <Provider> component.

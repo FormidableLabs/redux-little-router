@@ -10,13 +10,13 @@ import { locationDidChange, didReplaceRoutes, replace } from './actions';
 
 import matchCache from './util/match-cache';
 
-type EnhancerArgs = {|
+type ConnectorArgs = {|
   history: History,
   matchRoute: Function,
   createMatcher: Function
 |};
 
-export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
+export default ({ history, matchRoute, createMatcher }: ConnectorArgs) => (
   store: Store<*, *>
 ) => {
   let currentMatcher = matchRoute;

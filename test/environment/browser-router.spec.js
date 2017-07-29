@@ -10,8 +10,8 @@ import routes from '../test-util/fixtures/routes';
 chai.use(sinonChai);
 
 describe('Browser router', () => {
-  it('creates a browser store enhancer using history location', () => {
-    const { enhancer, middleware, reducer } = routerForBrowser({
+  it('creates a browser store connector using history location', () => {
+    const { connect, middleware, reducer } = routerForBrowser({
       routes,
       history: {
         location: {
@@ -27,7 +27,7 @@ describe('Browser router', () => {
       {},
       applyMiddleware(middleware)
     );
-    enhancer(store);
+    connect(store);
     const state = store.getState();
     expect(state).to.have.nested.property('router.pathname', '/home');
     expect(state).to.have.nested.property('router.search', '?get=schwifty');
@@ -38,7 +38,7 @@ describe('Browser router', () => {
   });
 
   it('supports basenames', () => {
-    const { enhancer, middleware, reducer } = routerForBrowser({
+    const { connect, middleware, reducer } = routerForBrowser({
       routes,
       basename: '/cob-planet',
       history: {
@@ -55,7 +55,7 @@ describe('Browser router', () => {
       {},
       applyMiddleware(middleware)
     );
-    enhancer(store);
+    connect(store);
     const state = store.getState();
     expect(state).to.have.nested.property('router.basename', '/cob-planet');
     expect(state).to.have.nested.property('router.pathname', '/home');

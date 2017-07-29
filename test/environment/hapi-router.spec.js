@@ -10,8 +10,8 @@ import routes from '../test-util/fixtures/routes';
 chai.use(sinonChai);
 
 describe('Hapi router', () => {
-  it('creates a server store enhancer using Hapi request object', () => {
-    const { enhancer, middleware, reducer } = routerForHapi({
+  it('creates a server store connector using Hapi request object', () => {
+    const { connect, middleware, reducer } = routerForHapi({
       routes,
       request: {
         path: '/home',
@@ -23,7 +23,7 @@ describe('Hapi router', () => {
       {},
       applyMiddleware(middleware)
     );
-    enhancer(store);
+    connect(store);
     const state = store.getState();
     expect(state).to.have.nested.property('router.pathname', '/home');
     expect(state).to.have.nested.property('router.search', '?get=schwifty');

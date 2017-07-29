@@ -85,7 +85,7 @@ app.get('/*', (req, res) => {
     applyMiddleware(router.middleware)
   );
 
-  router.enhancer(store);
+  router.connect(store);
   const content = renderToString(wrap(store)(Root));
 
   return res.send(

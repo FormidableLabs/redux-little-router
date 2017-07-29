@@ -10,8 +10,8 @@ import routes from '../test-util/fixtures/routes';
 chai.use(sinonChai);
 
 describe('Express router', () => {
-  it('creates a server store enhancer using Express request object', () => {
-    const { enhancer, middleware, reducer } = routerForExpress({
+  it('creates a server store connector using Express request object', () => {
+    const { connect, middleware, reducer } = routerForExpress({
       routes,
       request: {
         path: '/home',
@@ -23,7 +23,7 @@ describe('Express router', () => {
       {},
       applyMiddleware(middleware)
     );
-    enhancer(store);
+    connect(store);
     const state = store.getState();
     expect(state).to.have.nested.property('router.pathname', '/home');
     expect(state).to.have.nested.property('router.search', '?get=schwifty');
@@ -33,7 +33,7 @@ describe('Express router', () => {
   });
 
   it('supports basenames', () => {
-    const { enhancer, middleware, reducer } = routerForExpress({
+    const { connect, middleware, reducer } = routerForExpress({
       routes,
       request: {
         baseUrl: '/cob-planet',
@@ -46,7 +46,7 @@ describe('Express router', () => {
       {},
       applyMiddleware(middleware)
     );
-    enhancer(store);
+    connect(store);
     const state = store.getState();
     expect(state).to.have.nested.property('router.basename', '/cob-planet');
     expect(state).to.have.nested.property('router.pathname', '/home');

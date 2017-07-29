@@ -11,7 +11,7 @@ import defaultRoutes from './test-util/fixtures/routes';
 
 chai.use(sinonChai);
 
-describe('Router store enhancer', () => {
+describe('Router store connector', () => {
   let store;
   let historyStub;
   let listenStub;
@@ -24,7 +24,7 @@ describe('Router store enhancer', () => {
     const replace = sandbox.spy(() => listen(listenStub));
     historyStub = { push, replace, listen };
 
-    const { reducer, middleware, enhancer } = install({
+    const { reducer, middleware, connect } = install({
       routes: defaultRoutes,
       history: historyStub,
       location: { pathname: '/' }
@@ -35,7 +35,7 @@ describe('Router store enhancer', () => {
       {},
       applyMiddleware(middleware)
     );
-    enhancer(store);
+    connect(store);
     sandbox.spy(store, 'dispatch');
   });
 
