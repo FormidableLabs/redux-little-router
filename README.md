@@ -263,7 +263,7 @@ You can use `withConditions` in conjunction with `forRoute` to set strict condit
 
 To show a `Fragment` when other `Fragment`s match a route, use `<Fragment forNoMatch />`.
 
-`<Fragment>` lets you nest fragments to match your UI hierarchy to your route hierarchy, much like the `<Route>` component does in `react-router@v3`. Given a URL of `/about/bio/dat-boi`, and the following elements:
+`<Fragment>` lets you nest fragments to match your UI hierarchy to your route hierarchy, much like the `<Route>` component does in `react-router@v3`. Given the following elements:
 
 ```jsx
 <Fragment forRoute='/about'>
@@ -284,7 +284,7 @@ To show a `Fragment` when other `Fragment`s match a route, use `<Fragment forNoM
 </Fragment>
 ```
 
-...React will render:
+...with the URL `/about/bio/dat-boi`, React will render:
 
 ```html
 <div>
@@ -308,6 +308,24 @@ To show a `Fragment` when other `Fragment`s match a route, use `<Fragment forNoM
     <Fragment forRoute='/about'><About /></Fragment>
     <Fragment forRoute='/messages'><Messages /></Fragment>
     <Fragment forRoute='/feed'><Feed /></Fragment>
+  </div>
+</Fragment>
+```
+
+The order in which `<Fragment/>`s are declared matters, as redux-little-router will render the the first matching Fragment and ignore the rest.
+
+```jsx
+<Fragment forRoute='/'>
+  <div>
+    <Fragment forRoute='/'>
+      <div>Home</div>
+    </Fragment>
+    <Fragment forRoute='/foo'>
+      <div>Foo</div>
+    </Fragment>
+    <Fragment forRoute='/foo/bar'>
+      <div>Foo Bar -- will not show for a url of /foo/bar, because the /foo Fragment matched</div>
+    </Fragment>
   </div>
 </Fragment>
 ```
