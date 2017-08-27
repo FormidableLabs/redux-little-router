@@ -3,11 +3,7 @@
 
 import type { History } from 'history';
 import type { Dispatch, Store } from 'redux';
-import type {
-  Location, LocationAction, Query, RouterAction
-} from './types';
-
-import qs from 'query-string';
+import type { Location, RouterAction } from './types';
 
 import {
   PUSH,
@@ -17,6 +13,8 @@ import {
   GO_FORWARD,
   isNavigationAction
 } from './types';
+
+import mergeQueries from './util/merge-queries';
 
 const navigate = (history, action) => {
   switch (action.type) {
@@ -40,22 +38,6 @@ const navigate = (history, action) => {
   }
 };
 
-const mergeQueries = (query: Query = {}, action: LocationAction): LocationAction => {
-  const mergedQuery = {
-    ...query,
-    ...action.payload.query || {}
-  };
-
-  return {
-    type: action.type,
-    payload: {
-      ...action.payload,
-      query: mergedQuery,
-      search: `?${qs.stringify(mergedQuery)}`
-    }
-  };
-};
-
 type MiddlewareArgs = { history: History };
 type S = { router: Location };
 export default ({ history }: MiddlewareArgs) =>
@@ -73,7 +55,13 @@ export default ({ history }: MiddlewareArgs) =>
             action.payload.options.persistQuery
           ) {
             const { router: { query } } = getState();
-            navigate(history, mergeQueries(query, action));
+            navigate(history, {
+              type: action.type,
+              payload: {
+                ...action.payload,
+                ...mergeQueries(query, action.payload.query)
+              }
+            });
           } else {
             navigate(history, action);
           }

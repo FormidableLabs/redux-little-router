@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import qs from 'query-string';
 
 import { push as pushAction, replace as replaceAction } from '../actions';
+import mergeQueries from '../util/merge-queries';
 import normalizeHref from '../util/normalize-href';
 import stringifyHref from '../util/stringify-href';
 
@@ -68,17 +69,14 @@ const contextifyHref = (href, location, persistQuery) => {
     return href;
   }
 
-  const query = {
-    ...(location.query || {}),
-    ...(href.query || {})
-  };
-
-  const search = qs.stringify(query);
+  const mergedQuery = mergeQueries(
+    location.query,
+    href.query
+  );
 
   return {
     ...href,
-    query,
-    search: (search && `?${search}`) || ''
+    ...mergedQuery
   };
 };
 
