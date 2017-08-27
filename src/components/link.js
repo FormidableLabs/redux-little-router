@@ -4,7 +4,6 @@ import type { Href, Location } from '../types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import qs from 'query-string';
 
 import { push as pushAction, replace as replaceAction } from '../actions';
 import mergeQueries from '../util/merge-queries';

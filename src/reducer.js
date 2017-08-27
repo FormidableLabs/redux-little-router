@@ -1,8 +1,6 @@
 // @flow
 import type { Location, LocationOptions, LocationAction } from './types';
 
-import qs from 'query-string';
-
 import {
   LOCATION_CHANGED,
   REPLACE_ROUTES,
