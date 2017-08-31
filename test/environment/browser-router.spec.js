@@ -63,4 +63,26 @@ describe('Browser router', () => {
       .property('router.query')
       .that.deep.equals({ get: 'schwifty' });
   });
+
+  it('matches route without replacing basename', () => {
+    const { enhancer, middleware, reducer } = routerForBrowser({
+      routes,
+      basename: '/app',
+      history: {
+        location: {
+          pathname: '/foo/app/bar',
+        },
+        listen() {}
+      }
+    });
+    const store = createStore(
+      combineReducers({ router: reducer }),
+      {},
+      compose(enhancer, applyMiddleware(middleware))
+    );
+    const state = store.getState();
+    expect(state).to.have.nested.property('router.basename', '/app');
+    expect(state).to.have.nested.property('router.pathname', '/foo/app/bar');
+  });
+
 });
