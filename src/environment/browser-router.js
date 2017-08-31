@@ -27,7 +27,7 @@ export default (
   } = history.location;
 
   // Strip the basename from the initial pathname
-  const pathname = basename ? fullPathname.replace(basename, '') : fullPathname;
+  const pathname = basename ? fullPathname.replace(new RegExp(`^${basename}`), '') : fullPathname
 
   const descriptor = basename
     ? { pathname, basename, search, hash, key, state }
