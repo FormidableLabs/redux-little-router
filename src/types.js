@@ -34,8 +34,14 @@ export const POP = 'ROUTER_POP';
 export const REPLACE_ROUTES = 'ROUTER_REPLACE_ROUTES';
 export const DID_REPLACE_ROUTES = 'ROUTER_DID_REPLACE_ROUTES';
 
+const actionsWithPayload = [PUSH, REPLACE, GO, POP];
+const actions = [...actionsWithPayload, GO_FORWARD, GO_BACK, POP];
+
 export const isNavigationAction = (action: { type: $Subtype<string> }) =>
-  [PUSH, REPLACE, GO, GO_BACK, GO_FORWARD, POP].indexOf(action.type) !== -1;
+  actions.indexOf(action.type) !== -1;
+
+export const isNavigationActionWithPayload = (action: { type: $Subtype<string> }) =>
+  actionsWithPayload.indexOf(action.type) !== -1;
 
 export type BareAction = {
   type: 'ROUTER_GO_BACK' | 'ROUTER_GO_FORWARD'

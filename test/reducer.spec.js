@@ -5,7 +5,10 @@ import {
   LOCATION_CHANGED,
   PUSH,
   REPLACE_ROUTES,
-  DID_REPLACE_ROUTES
+  DID_REPLACE_ROUTES,
+  GO_BACK,
+  GO_FORWARD,
+  REPLACE
 } from '../src/types';
 
 describe('Router reducer', () => {
@@ -349,7 +352,7 @@ describe('Router reducer', () => {
     });
   });
 
-  it('replaces routes', () => {
+it('replaces routes', () => {
     const reducerInstance = reducer({
       routes: { '/': { pied: 'piper' } },
       pathname: '/bachmanity'
@@ -382,5 +385,20 @@ describe('Router reducer', () => {
         return state;
       }
     )({});
+  });
+
+  it('should only enqueue navigation actions with payloads', () => {
+    const reducerInstance = reducer();
+    const result = flow(
+      partialRight(reducerInstance, { type: GO_BACK }),
+      partialRight(reducerInstance, { type: GO_FORWARD }),
+      partialRight(reducerInstance, { type: REPLACE, payload: { pathname: '/lolk' } }),
+      partialRight(reducerInstance, { type: GO_FORWARD }),
+      partialRight(reducerInstance, { type: GO_BACK }),
+    )(undefined);
+    expect(result).to.deep.equal({
+      routes: {},
+      queue: [{ pathname: '/lolk' }]
+    });
   });
 });
