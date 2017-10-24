@@ -28,7 +28,7 @@ While React Router is a great, well-supported library, it hoards URL state withi
 
 ## Redux usage
 
-To hook into Redux applications, `redux-little-router` uses a store enhancer that wraps the `history` module and adds current and previous router state to your store. The enhancer listens for location changes and dispatches rich actions containing the URL, parameters, and any custom data assigned to the route. `redux-little-router` also adds a middleware that intercepts navigation actions and calls their equivalent method in `history`.
+To connect into Redux applications, `redux-little-router` uses a store connector that wraps the `history` module and adds current and previous router state to your store. The connector listens for location changes and dispatches rich actions containing the URL, parameters, and any custom data assigned to the route. `redux-little-router` also adds a middleware that intercepts navigation actions and calls their equivalent method in `history`.
 
 ### Wiring up the boilerplate
 
@@ -72,11 +72,11 @@ const routes = {
 
 // Install the router into the store for a browser-only environment.
 // routerForBrowser is a factory method that returns a store
-// enhancer and a middleware.
+// connect and a middleware.
 const {
   reducer,
   middleware,
-  enhancer
+  connect
 } = routerForBrowser({
   // The configured routes. Required.
   routes,
@@ -87,11 +87,13 @@ const {
 const clientOnlyStore = createStore(
   combineReducers({ router: reducer, yourReducer }),
   initialState,
-  compose(enhancer, applyMiddleware(middleware))
+  applyMiddleware(middleware)
 );
+
+connect(clientOnlyStore);
 ```
 
-Often, you'll want to update state or trigger side effects after loading the initial URL. To maintain compatibility with other store enhancers (particularly ones that handle side effects, like `redux-loop` or `redux-saga`), we require this optional initial dispatch to happen in client code by doing the following:
+Often, you'll want to update state or trigger side effects after loading the initial URL. To maintain compatibility with store enhancers (particularly ones that handle side effects, like `redux-loop` or `redux-saga`), we require this optional initial dispatch to happen in client code by doing the following:
 
 ```js
 import { initializeCurrentLocation } from 'redux-little-router';
@@ -164,7 +166,7 @@ export const redirect = href => dispatch => {
 };
 ```
 
-On location changes, the store enhancer dispatches a `LOCATION_CHANGED` action that contains at least the following properties:
+On location changes, the router connector dispatches a `LOCATION_CHANGED` action that contains at least the following properties:
 
 ```js
 // For a URL matching /messages/:user

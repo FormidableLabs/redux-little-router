@@ -1,9 +1,7 @@
 // @flow
 
-import type { StoreCreator, Reducer, StoreEnhancer } from 'redux';
+import type { Store } from 'redux';
 import type { History } from 'history';
-
-import type { Location } from './types';
 
 import qs from 'query-string';
 
@@ -12,25 +10,16 @@ import { locationDidChange, didReplaceRoutes, replace } from './actions';
 
 import matchCache from './util/match-cache';
 
-type InitialState = {
-  router: Location
-};
-
-type EnhancerArgs = {|
+type ConnectorArgs = {|
   history: History,
   matchRoute: Function,
   createMatcher: Function
 |};
-export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
-  createStore: StoreCreator<*, *>
-) => (
-  userReducer: Reducer<*, *>,
-  initialState: InitialState,
-  enhancer: StoreEnhancer<*, *>
+
+export default ({ history, matchRoute, createMatcher }: ConnectorArgs) => (
+  store: Store<*, *>
 ) => {
   let currentMatcher = matchRoute;
-
-  const store = createStore(userReducer, initialState, enhancer);
 
   // Replace the matcher when replacing routes
   store.subscribe(() => {
@@ -75,9 +64,4 @@ export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
       })
     );
   });
-
-  return {
-    ...store,
-    matchRoute
-  };
 };

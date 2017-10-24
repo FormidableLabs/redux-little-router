@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
-import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
+import { applyMiddleware, combineReducers, createStore } from 'redux';
 
 import routerForExpress from '../../src/environment/express-router';
 
@@ -10,8 +10,8 @@ import routes from '../test-util/fixtures/routes';
 chai.use(sinonChai);
 
 describe('Express router', () => {
-  it('creates a server store enhancer using Express request object', () => {
-    const { enhancer, middleware, reducer } = routerForExpress({
+  it('creates a server store connector using Express request object', () => {
+    const { connect, middleware, reducer } = routerForExpress({
       routes,
       request: {
         path: '/home',
@@ -21,8 +21,9 @@ describe('Express router', () => {
     const store = createStore(
       combineReducers({ router: reducer }),
       {},
-      compose(enhancer, applyMiddleware(middleware))
+      applyMiddleware(middleware)
     );
+    connect(store);
     const state = store.getState();
     expect(state).to.have.nested.property('router.pathname', '/home');
     expect(state).to.have.nested.property('router.search', '?get=schwifty');
@@ -32,7 +33,7 @@ describe('Express router', () => {
   });
 
   it('supports basenames', () => {
-    const { enhancer, middleware, reducer } = routerForExpress({
+    const { connect, middleware, reducer } = routerForExpress({
       routes,
       request: {
         baseUrl: '/cob-planet',
@@ -43,8 +44,9 @@ describe('Express router', () => {
     const store = createStore(
       combineReducers({ router: reducer }),
       {},
-      compose(enhancer, applyMiddleware(middleware))
+      applyMiddleware(middleware)
     );
+    connect(store);
     const state = store.getState();
     expect(state).to.have.nested.property('router.basename', '/cob-planet');
     expect(state).to.have.nested.property('router.pathname', '/home');

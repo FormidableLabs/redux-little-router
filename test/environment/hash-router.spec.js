@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
-import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
+import { applyMiddleware, combineReducers, createStore } from 'redux';
 
 import routerForHash from '../../src/environment/hash-router';
 
@@ -10,7 +10,7 @@ import routes from '../test-util/fixtures/routes';
 chai.use(sinonChai);
 
 describe('Hash router', () => {
-  it('creates a browser store enhancer using window.location', () => {
+  it('creates a browser store connector using window.location', () => {
     const history = {
       listen() {},
       location: {
@@ -18,15 +18,16 @@ describe('Hash router', () => {
         search: '?get=schwifty'
       }
     };
-    const { enhancer, middleware, reducer } = routerForHash({
+    const { connect, middleware, reducer } = routerForHash({
       routes,
       history
     });
     const store = createStore(
       combineReducers({ router: reducer }),
       {},
-      compose(enhancer, applyMiddleware(middleware))
+      applyMiddleware(middleware)
     );
+    connect(store);
     const state = store.getState();
     expect(state).to.have.nested.property('router.pathname', '/home');
     expect(state).to.have.nested.property('router.search', '?get=schwifty');
@@ -44,7 +45,7 @@ describe('Hash router', () => {
       }
     };
 
-    const { enhancer, middleware, reducer } = routerForHash({
+    const { connect, middleware, reducer } = routerForHash({
       routes,
       history,
       basename: '/cob-planet'
@@ -52,8 +53,9 @@ describe('Hash router', () => {
     const store = createStore(
       combineReducers({ router: reducer }),
       {},
-      compose(enhancer, applyMiddleware(middleware))
+      applyMiddleware(middleware)
     );
+    connect(store);
     const state = store.getState();
     expect(state).to.have.nested.property('router.basename', '/cob-planet');
     expect(state).to.have.nested.property('router.pathname', '/home');

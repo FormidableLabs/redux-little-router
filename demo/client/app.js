@@ -10,7 +10,7 @@ import routes from './routes';
 import wrap from './wrap';
 import Demo from './demo';
 
-const { reducer, enhancer, middleware } = routerForBrowser({ routes });
+const { reducer, connect, middleware } = routerForBrowser({ routes });
 
 const store = createStore(
   combineReducers({ router: reducer }),
@@ -18,12 +18,11 @@ const store = createStore(
   // initial state the hbs template inserted
   window.__INITIAL_STATE || {},
   compose(
-    enhancer,
     applyMiddleware(middleware),
     window.devToolsExtension ? window.devToolsExtension() : f => f
   )
 );
-
+connect(store);
 const initialLocation = store.getState().router;
 if (initialLocation) {
   store.dispatch(initializeCurrentLocation(initialLocation));
