@@ -5,7 +5,7 @@ import {
   LOCATION_CHANGED,
   REPLACE_ROUTES,
   DID_REPLACE_ROUTES,
-  isNavigationAction
+  isNavigationActionWithPayload
 } from './types';
 
 import mergeQueries from './util/merge-queries';
@@ -119,7 +119,7 @@ export default ({ routes = {}, initialLocation }: ReducerArgs = {}) => (
   state: Location = { ...initialLocation, routes, queue: [] },
   action: LocationAction
 ) => {
-  if (isNavigationAction(action)) {
+  if (isNavigationActionWithPayload(action)) {
     return {
       ...state,
       queue: state.queue && state.queue.concat([action.payload])
