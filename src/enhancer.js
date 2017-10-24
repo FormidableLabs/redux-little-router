@@ -71,7 +71,8 @@ export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
     store.dispatch(
       locationDidChange({
         ...location,
-        ...match
+        ...match,
+        query: qs.parse(location.search)
       })
     );
   });
