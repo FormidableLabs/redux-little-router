@@ -52,28 +52,20 @@ export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
     matchCache.clear();
 
     const match = currentMatcher(location.pathname);
-
+    const payload = {
+      ...location,
+      ...match,
+      query: qs.parse(location.search)
+    };
     // Other actions come from the user, so they already have a
     // corresponding queued navigation action.
     if (action === 'POP') {
       store.dispatch({
         type: POP,
-        payload: {
-          // We need to parse the query here because there's no user-facing
-          // action creator for POP (where we usually parse query strings).
-          ...location,
-          ...match,
-          query: qs.parse(location.search)
-        }
+        payload
       });
     }
-
-    store.dispatch(
-      locationDidChange({
-        ...location,
-        ...match
-      })
-    );
+    store.dispatch(locationDidChange(payload));
   });
 
   return {
