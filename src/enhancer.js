@@ -45,7 +45,7 @@ export const createStoreSubscriber = (
 
 
 export const createHistoryListener = (store: Store<*, *>) => (
-  currentMatcher,
+  currentMatcher: Function,
   location: HistoryLocation,
   action?: Action
 ) => {
