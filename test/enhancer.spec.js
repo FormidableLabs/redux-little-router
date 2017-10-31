@@ -3,9 +3,11 @@ import sinonChai from 'sinon-chai';
 
 import { combineReducers, compose, createStore, applyMiddleware } from 'redux';
 
-import { PUSH, REPLACE_ROUTES } from '../src/types';
+import { PUSH, REPLACE_ROUTES, POP } from '../src/types';
+import {locationDidChange, didReplaceRoutes, replace} from '../src/actions';
 import install from '../src/install';
 import createMatcher from '../src/util/create-matcher';
+import {createHistoryListener, createStoreSubscriber} from '../src/enhancer';
 
 import defaultRoutes from './test-util/fixtures/routes';
 
@@ -21,8 +23,8 @@ describe('Router store enhancer', () => {
 
     const listen = sandbox.spy(cb => cb({ pathname: '/' }));
     const push = sandbox.spy(() => listen(listenStub));
-    const replace = sandbox.spy(() => listen(listenStub));
-    historyStub = { push, replace, listen };
+    const replaceStub = sandbox.spy(() => listen(listenStub));
+    historyStub = { push, replace: replaceStub, listen };
 
     const { reducer, middleware, enhancer } = install({
       routes: defaultRoutes,
@@ -74,6 +76,67 @@ describe('Router store enhancer', () => {
     const matcher = createMatcher(routes);
     expect(matcher('/')).to.have.deep.property('result', {
       could: 'you not'
+    });
+  });
+
+  describe('createHistoryListener', () => {
+    let historyListener;
+    let currentMatcher;
+    let storeStub;
+
+    beforeEach(() => {
+      storeStub = {
+        dispatch: sandbox.spy()
+      };
+      // Mock the matcher by just returning a object with a single
+      // `route` field populated with the pathname.
+      // eslint-disable-next-line max-nested-callbacks
+      currentMatcher = sandbox.spy((pathname) => ({ route: pathname }));
+      historyListener = createHistoryListener(storeStub);
+    });
+
+    it('should call currentMatcher with the pathname', () => {
+      historyListener(
+        currentMatcher,
+        { pathname: '/lol/k' },
+        PUSH
+      );
+      expect(currentMatcher).to.have.been.calledOnce;
+      expect(currentMatcher).to.have.been.calledWith('/lol/k');
+    });
+
+    it('should dispatch a LOCATION_CHANGED action', () => {
+      historyListener(
+        currentMatcher,
+        { pathname: '/lol/k', search: '?foo=bar' },
+        PUSH
+      );
+      expect(storeStub.dispatch).to.have.been.calledOnce;
+      expect(storeStub.dispatch).to.have.been.calledWith(locationDidChange({
+        pathname: '/lol/k',
+        route: '/lol/k',
+        query: { foo: 'bar' },
+        search: '?foo=bar'
+      }));
+    });
+
+    it('should dispatch a POP action for POP events', () => {
+      historyListener(
+        currentMatcher,
+        { pathname: '/lol/k', search: '?foo=bar' },
+        "POP"
+      );
+      // eslint-disable-next-line no-magic-numbers
+      expect(storeStub.dispatch).to.have.been.calledTwice;
+      expect(storeStub.dispatch.getCall(0).args[0]).to.deep.equal({
+        type: POP,
+        payload: {
+          pathname: '/lol/k',
+          route: '/lol/k',
+          query: { foo: 'bar' },
+          search: '?foo=bar'
+        }
+      });
     });
   });
 });
