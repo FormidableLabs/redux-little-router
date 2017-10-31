@@ -139,4 +139,48 @@ describe('Router store enhancer', () => {
       });
     });
   });
+
+  describe('createStoreSubscriber', () => {
+    let routerState;
+    let storeStub;
+    let currentMatcher;
+    let storeSubscriber;
+    /* eslint-disable max-nested-callbacks */
+    beforeEach(() => {
+      routerState = {};
+      storeStub = {
+        dispatch: sandbox.spy(),
+        getState: sandbox.spy(() => ({ router: routerState }))
+      };
+      const createMatcherStub = sandbox.spy(routes => routes);
+      // The matcher stub is just an empty object that acts as a sigil
+      currentMatcher = {};
+      storeSubscriber = createStoreSubscriber(storeStub, createMatcherStub);
+    });
+    /* eslint-enable max-nested-callbacks */
+    it('should not update routes if updateRoutes is not true', () => {
+      const newRoutes = {};
+      routerState = {
+        routes: newRoutes
+      };
+      expect(storeSubscriber(currentMatcher)).to.equal(currentMatcher);
+      expect(storeStub.dispatch).not.to.have.been.called;
+    })
+
+    it('should update routes if updateRoutes is true', () => {
+      const newRoutes = {};
+      const routeInfo = { pathname: '/lol/k', search: '?what=yeah', hash: '#' };
+      routerState = {
+        ...routeInfo,
+        routes: newRoutes,
+        options: { updateRoutes: true }
+      };
+      expect(storeSubscriber(currentMatcher)).to.equal(newRoutes);
+      expect(storeStub.dispatch).to.have.been.calledTwice;
+      expect(storeStub.dispatch.getCall(0).args[0]).to.deep.equal(didReplaceRoutes());
+      expect(storeStub.dispatch.getCall(1).args[0]).to.deep.equal(replace(routeInfo));
+    })
+
+
+  });
 });
