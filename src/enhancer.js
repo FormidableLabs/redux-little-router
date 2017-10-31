@@ -30,10 +30,11 @@ export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
 ) => {
   let currentMatcher = matchRoute;
 
-  const store = createStore(userReducer, initialState, enhancer);
-
-  // Replace the matcher when replacing routes
-  store.subscribe(() => {
+export const createStoreSubscriber = (
+  store: Store<*, *>,
+  createMatcher: Function
+) => {
+  return (currentMatcher: Function) => {
     const {
       routes,
       pathname,
@@ -46,7 +47,9 @@ export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
       store.dispatch(didReplaceRoutes());
       store.dispatch(replace({ pathname, search, hash }));
     }
-  });
+    return currentMatcher;
+  };
+};
 
   history.listen((location, action) => {
     matchCache.clear();
@@ -66,6 +69,17 @@ export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
       });
     }
     store.dispatch(locationDidChange(payload));
+export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
+  createStore: StoreCreator<*, *>
+) => (
+  userReducer: Reducer<*, *>,
+  initialState: InitialState,
+  enhancer: StoreEnhancer<*, *>
+) => {
+  let currentMatcher = matchRoute;
+
+  const store = createStore(userReducer, initialState, enhancer);
+  const storeSubscriber = createStoreSubscriber(store, createMatcher);
   });
 
   return {
