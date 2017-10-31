@@ -1,7 +1,7 @@
 // @flow
 
 import type { StoreCreator, Reducer, StoreEnhancer } from 'redux';
-import type { History } from 'history';
+import type { History, Action, Location as HistoryLocation } from 'history';
 
 import type { Location } from './types';
 
@@ -21,14 +21,6 @@ type EnhancerArgs = {|
   matchRoute: Function,
   createMatcher: Function
 |};
-export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
-  createStore: StoreCreator<*, *>
-) => (
-  userReducer: Reducer<*, *>,
-  initialState: InitialState,
-  enhancer: StoreEnhancer<*, *>
-) => {
-  let currentMatcher = matchRoute;
 
 export const createStoreSubscriber = (
   store: Store<*, *>,
@@ -51,24 +43,31 @@ export const createStoreSubscriber = (
   };
 };
 
-  history.listen((location, action) => {
-    matchCache.clear();
 
-    const match = currentMatcher(location.pathname);
-    const payload = {
-      ...location,
-      ...match,
-      query: qs.parse(location.search)
-    };
-    // Other actions come from the user, so they already have a
-    // corresponding queued navigation action.
-    if (action === 'POP') {
-      store.dispatch({
-        type: POP,
-        payload
-      });
-    }
-    store.dispatch(locationDidChange(payload));
+export const createHistoryListener = (store: Store<*, *>) => (
+  currentMatcher,
+  location: HistoryLocation,
+  action?: Action
+) => {
+  matchCache.clear();
+  const match = currentMatcher(location.pathname);
+  const payload = {
+    ...location,
+    ...match,
+    query: qs.parse(location.search)
+  };
+  // Other actions come from the user, so they already have a
+  // corresponding queued navigation action.
+  if (action === "POP") {
+    store.dispatch({
+      type: POP,
+      payload
+    });
+  }
+  store.dispatch(locationDidChange(payload));
+};
+
+
 export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
   createStore: StoreCreator<*, *>
 ) => (
@@ -80,7 +79,16 @@ export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
 
   const store = createStore(userReducer, initialState, enhancer);
   const storeSubscriber = createStoreSubscriber(store, createMatcher);
+  const historyListener = createHistoryListener(store);
+
+  // Replace the matcher when replacing routes
+  store.subscribe(() => {
+    currentMatcher = storeSubscriber(currentMatcher);
   });
+
+  history.listen((location, action) =>
+    historyListener(currentMatcher, location, action)
+  );
 
   return {
     ...store,
