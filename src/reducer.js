@@ -1,14 +1,14 @@
 // @flow
 import type { Location, LocationOptions, LocationAction } from './types';
 
-import qs from 'query-string';
-
 import {
   LOCATION_CHANGED,
   REPLACE_ROUTES,
   DID_REPLACE_ROUTES,
   isNavigationActionWithPayload
 } from './types';
+
+import mergeQueries from './util/merge-queries';
 
 const flow = (...funcs: Array<*>) =>
   funcs.reduce((prev, curr) => (...args) => curr(prev(...args)));
@@ -22,16 +22,15 @@ type ResolverArgs = {
 const resolveQuery = ({ oldLocation, newLocation, options }): ResolverArgs => {
   // Merge the old and new queries if asked to persist
   if (options.persistQuery) {
-    const mergedQuery = {
-      ...oldLocation.query,
-      ...newLocation.query
-    };
+    const mergedQuery = mergeQueries(
+      oldLocation.query,
+      newLocation.query
+    );
     return {
       oldLocation,
       newLocation: {
         ...newLocation,
-        query: mergedQuery,
-        search: `?${qs.stringify(mergedQuery)}`
+        ...mergedQuery
       },
       options
     };

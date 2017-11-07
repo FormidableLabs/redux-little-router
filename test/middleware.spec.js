@@ -50,7 +50,13 @@ describe('Router middleware', () => {
     };
 
     store = createStore(
-      state => state,
+      () => ({
+        router: {
+          query: {
+            is: 'cool'
+          }
+        }
+      }),
       {},
       applyMiddleware(middleware({ history: historyStub }), consumerMiddleware)
     );
@@ -67,6 +73,35 @@ describe('Router middleware', () => {
       });
 
       expect(historyStub[method]).to.have.been.calledOnce;
+    });
+  });
+
+  [PUSH, REPLACE].forEach(actionType => {
+    const method = actionMethodMap[actionType];
+
+    it(`calls history.${method} with merged queries when requesting persistence`, () => {
+      store.dispatch({
+        type: actionType,
+        payload: {
+          query: {
+            has: 'socks'
+          },
+          options: {
+            persistQuery: true
+          }
+        }
+      });
+
+      expect(historyStub[method]).to.have.been.calledWith({
+        query: {
+          is: 'cool',
+          has: 'socks'
+        },
+        search: '?has=socks&is=cool',
+        options: {
+          persistQuery: true
+        }
+      })
     });
   });
 
