@@ -1,7 +1,7 @@
 // @flow
 
 import type { StoreCreator, Reducer, StoreEnhancer } from 'redux';
-import type { History } from 'history';
+import type { History, Action, Location as HistoryLocation } from 'history';
 
 import type { Location } from './types';
 
@@ -21,19 +21,12 @@ type EnhancerArgs = {|
   matchRoute: Function,
   createMatcher: Function
 |};
-export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
-  createStore: StoreCreator<*, *>
-) => (
-  userReducer: Reducer<*, *>,
-  initialState: InitialState,
-  enhancer: StoreEnhancer<*, *>
+
+export const createStoreSubscriber = (
+  store: Store<*, *>,
+  createMatcher: Function
 ) => {
-  let currentMatcher = matchRoute;
-
-  const store = createStore(userReducer, initialState, enhancer);
-
-  // Replace the matcher when replacing routes
-  store.subscribe(() => {
+  return (currentMatcher: Function) => {
     const {
       routes,
       pathname,
@@ -46,35 +39,56 @@ export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
       store.dispatch(didReplaceRoutes());
       store.dispatch(replace({ pathname, search, hash }));
     }
+    return currentMatcher;
+  };
+};
+
+
+export const createHistoryListener = (store: Store<*, *>) => (
+  currentMatcher: Function,
+  location: HistoryLocation,
+  action?: Action
+) => {
+  matchCache.clear();
+  const match = currentMatcher(location.pathname);
+  const payload = {
+    ...location,
+    ...match,
+    query: qs.parse(location.search)
+  };
+  // Other actions come from the user, so they already have a
+  // corresponding queued navigation action.
+  if (action === "POP") {
+    store.dispatch({
+      type: POP,
+      payload
+    });
+  }
+  store.dispatch(locationDidChange(payload));
+};
+
+
+export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
+  createStore: StoreCreator<*, *>
+) => (
+  userReducer: Reducer<*, *>,
+  initialState: InitialState,
+  enhancer: StoreEnhancer<*, *>
+) => {
+  let currentMatcher = matchRoute;
+
+  const store = createStore(userReducer, initialState, enhancer);
+  const storeSubscriber = createStoreSubscriber(store, createMatcher);
+  const historyListener = createHistoryListener(store);
+
+  // Replace the matcher when replacing routes
+  store.subscribe(() => {
+    currentMatcher = storeSubscriber(currentMatcher);
   });
 
-  history.listen((location, action) => {
-    matchCache.clear();
-
-    const match = currentMatcher(location.pathname);
-
-    // Other actions come from the user, so they already have a
-    // corresponding queued navigation action.
-    if (action === 'POP') {
-      store.dispatch({
-        type: POP,
-        payload: {
-          // We need to parse the query here because there's no user-facing
-          // action creator for POP (where we usually parse query strings).
-          ...location,
-          ...match,
-          query: qs.parse(location.search)
-        }
-      });
-    }
-
-    store.dispatch(
-      locationDidChange({
-        ...location,
-        ...match
-      })
-    );
-  });
+  history.listen((location, action) =>
+    historyListener(currentMatcher, location, action)
+  );
 
   return {
     ...store,
