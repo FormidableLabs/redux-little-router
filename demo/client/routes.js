@@ -122,5 +122,14 @@ export default {
     '/is': {
       '/nested': {}
     }
+  },
+  '/search-param': {
+    text: 'Type in the search bar and click enter to change the param',
+    '/:term': {
+      text: 'You search term param is here:'
+    }
+  },
+  '/search-query': {
+    text: 'Type in the search bar and click enter to change the query string'
   }
 };

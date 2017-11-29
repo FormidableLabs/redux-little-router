@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import chunk from 'lodash.chunk';
-import { Link, Fragment } from '../../src';
+import { Link, Fragment, push } from '../../src';
 import styles from './demo.css';
 
 const COLUMN_COUNT = 2;
@@ -18,7 +18,7 @@ const columnize = (array, columns) => {
   );
 };
 
-const Gallery = ({ images, columns, ...rest }) =>
+const Gallery = ({ columns, images = [], ...rest }) =>
   <div className={styles.gallery} {...rest}>
     {columnize(images, columns).map((column, index) =>
       <div key={index} className={styles.column}>
@@ -34,9 +34,36 @@ Gallery.propTypes = {
   images: PropTypes.arrayOf(PropTypes.string)
 };
 
+class SearchBar extends React.Component {
+  state = { term: '' }
+
+  onTermChange = (e) => {
+    e.preventDefault();
+    this.setState({ term: e.target.value });
+  }
+
+  onSearchClick = (e) => {
+    e.preventDefault();
+    this.props.onSearch(this.state.term);
+  }
+
+  render() {
+    return (
+      <div>
+        <input value={this.state.term} onChange={this.onTermChange} />
+        <button onClick={this.onSearchClick}>Search!</button>
+      </div>
+    );
+  }
+}
+
+SearchBar.propTypes = {
+  onSearch: PropTypes.func
+};
+
 // eslint-disable-next-line react/no-multi-comp
-const Demo = ({ location }) => {
-  const demoRoutes = ['/cheese', '/cat', '/dog', '/hipster'];
+const Demo = ({ location, goToRoute }) => {
+  const demoRoutes = ['/cheese', '/cat', '/dog', '/hipster', '/search-param', '/search-query'];
   return (
     <div className={styles.container}>
       <Fragment forRoute="/" className={styles.container}>
@@ -64,6 +91,8 @@ const Demo = ({ location }) => {
             >
               My Design Skills
             </Link>
+            <Link href="/search-param">Search Param</Link>
+            <Link href="/search-query">Search Query</Link>
           </div>
 
           <div className={styles.panes}>
@@ -80,6 +109,20 @@ const Demo = ({ location }) => {
                 </div>
               </Fragment>
             )}
+
+            <Fragment forRoute="/search-param">
+              <div>
+                {location.params && location.params.term && (<p>{location.params.term}</p>)}
+                <SearchBar onSearch={(term) => goToRoute(`/search-param/${term}`)} />
+              </div>
+            </Fragment>
+
+            <Fragment forRoute="/search-query">
+              <div>
+                {location.query.term && (<p>Your query: {location.query.term}</p>)}
+                <SearchBar onSearch={(term) => goToRoute({ pathname: '/search-query', query: { term } })} />
+              </div>
+            </Fragment>
           </div>
 
           <Fragment forRoute="/">
@@ -109,4 +152,9 @@ Demo.propTypes = {
 const mapStateToProps = state => ({
   location: state.router
 });
-export default connect(mapStateToProps)(Demo);
+
+const mapDispatchToProps = dispatch => ({
+  goToRoute: (route) => dispatch(push(route))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Demo);
