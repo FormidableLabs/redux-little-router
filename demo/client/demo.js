@@ -1,4 +1,4 @@
-/* eslint-disable no-magic-numbers */
+/* eslint-disable no-magic-numbers, react/no-multi-comp */
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -35,14 +35,19 @@ Gallery.propTypes = {
 };
 
 class SearchBar extends React.Component {
-  state = { term: '' }
+  constructor(props) {
+    super(props);
+    this.state = { term: '' };
+    this.handleTermChange = this.handleTermChange.bind(this);
+    this.handleSearchClick = this.handleSearchClick.bind(this);
+  }
 
-  onTermChange = (e) => {
+  handleTermChange(e) {
     e.preventDefault();
     this.setState({ term: e.target.value });
   }
 
-  onSearchClick = (e) => {
+  handleSearchClick(e) {
     e.preventDefault();
     this.props.onSearch(this.state.term);
   }
@@ -50,8 +55,8 @@ class SearchBar extends React.Component {
   render() {
     return (
       <div>
-        <input value={this.state.term} onChange={this.onTermChange} />
-        <button onClick={this.onSearchClick}>Search!</button>
+        <input value={this.state.term} onChange={this.handleTermChange} />
+        <button onClick={this.handleSearchClick}>Search!</button>
       </div>
     );
   }
@@ -146,6 +151,7 @@ const Demo = ({ location, goToRoute }) => {
 };
 
 Demo.propTypes = {
+  goToRoute: PropTypes.func,
   location: PropTypes.object
 };
 
