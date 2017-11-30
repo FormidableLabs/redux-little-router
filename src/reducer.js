@@ -75,6 +75,8 @@ const resolvePrevious = ({
   options
 });
 
+export const resolveLocation = flow(resolveQuery, resolveBasename, resolvePrevious);
+
 const locationChangeReducer = (state, action) => {
   // No-op the initial route action
   if (
@@ -95,8 +97,6 @@ const locationChangeReducer = (state, action) => {
   // eslint-disable-next-line no-unused-vars
   const { previous, routes: currentRoutes = {}, ...oldLocation } = state;
   const { options, query } = queuedLocation;
-
-  const resolveLocation = flow(resolveQuery, resolveBasename, resolvePrevious);
 
   const { newLocation } = resolveLocation({
     oldLocation,
