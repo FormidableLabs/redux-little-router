@@ -38,36 +38,41 @@ const navigate = (history, action) => {
   }
 };
 
+export const middleware = ({ history, next, action, query }) => {
+  if (isNavigationAction(action)) {
+    // Synchronously dispatch the original action so that the
+    // reducer can add it to its location queue
+    const originalDispatch = next(action);
+
+    if (
+      (action.type === PUSH || action.type === REPLACE) &&
+      action.payload.options &&
+      action.payload.options.persistQuery
+    ) {
+      navigate(history, {
+        type: action.type,
+        payload: {
+          ...action.payload,
+          ...mergeQueries(query, action.payload.query)
+        }
+      });
+    } else {
+      navigate(history, action);
+    }
+
+    return originalDispatch;
+  }
+
+  return next(action);
+};
+
 type MiddlewareArgs = { history: History };
 type S = { router: Location };
+
 export default ({ history }: MiddlewareArgs) =>
-  ({getState}: Store<S,*>) =>
+  ({ getState }: Store<S,*>) =>
     (next: Dispatch<*>) =>
       (action: RouterAction) => {
-        if (isNavigationAction(action)) {
-          // Synchronously dispatch the original action so that the
-          // reducer can add it to its location queue
-          const originalDispatch = next(action);
-
-          if (
-            (action.type === PUSH || action.type === REPLACE) &&
-            action.payload.options &&
-            action.payload.options.persistQuery
-          ) {
-            const { router: { query } } = getState();
-            navigate(history, {
-              type: action.type,
-              payload: {
-                ...action.payload,
-                ...mergeQueries(query, action.payload.query)
-              }
-            });
-          } else {
-            navigate(history, action);
-          }
-
-          return originalDispatch;
-        }
-
-        return next(action);
+        const { router: { query } } = getState();
+        return middleware({ history, next, action, query });
       };
