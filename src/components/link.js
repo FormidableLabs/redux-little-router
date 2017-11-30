@@ -79,7 +79,7 @@ const contextifyHref = (href, location, persistQuery) => {
   };
 };
 
-const Link = (props: Props) => {
+const _Link = (props: Props) => {
   const {
     href: rawHref,
     location,
@@ -125,18 +125,18 @@ const Link = (props: Props) => {
   );
 };
 
-const PersistentQueryLink = class extends Component {
+const _PersistentQueryLink = class extends Component {
   render() {
     const { children, ...rest } = this.props;
     return (
-      <Link {...rest} persistQuery>
+      <_Link {...rest} persistQuery>
         {children}
-      </Link>
+      </_Link>
     );
   }
 };
 
-PersistentQueryLink.propTypes = {
+_PersistentQueryLink.propTypes = {
   children: PropTypes.node
 };
 
@@ -147,10 +147,12 @@ const mapDispatchToProps = {
 };
 const withLocation = connect(mapStateToProps, mapDispatchToProps);
 
-const LinkWithLocation = withLocation(Link);
-const PersistentQueryLinkWithLocation = withLocation(PersistentQueryLink);
+const LinkWithLocation = withLocation(_Link);
+const PersistentQueryLinkWithLocation = withLocation(_PersistentQueryLink);
 
 export {
+  _Link,
+  _PersistentQueryLink,
   LinkWithLocation as Link,
   PersistentQueryLinkWithLocation as PersistentQueryLink
 };
