@@ -82,9 +82,9 @@ const createLocationChangeReducer = ({ get, merge, length, shift, omit, toJS }) 
     // No-op the initial route action
     const queue = get(state, 'queue');
     if (
-      get(state, 'pathname') === action.payload.pathname &&
-      get(state, 'search') === action.payload.search &&
-      get(state, 'hash') === action.payload.hash &&
+      get(state, 'pathname') === get(action.payload, 'pathname') &&
+      get(state, 'search') === get(action.payload, 'search') &&
+      get(state, 'hash') === get(action.payload, 'hash') &&
       (!queue || !length(queue))
     ) {
       return state;
