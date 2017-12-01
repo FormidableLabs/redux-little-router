@@ -1,3 +1,4 @@
+// @flow
 import _get from 'lodash.get';
 import _assign from 'lodash.assign';
 import _omit from 'lodash.omit';

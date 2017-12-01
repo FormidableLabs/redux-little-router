@@ -1,3 +1,4 @@
+// @flow
 import { createEnhancer } from '../enhancer';
 
 import { get } from './util/data';

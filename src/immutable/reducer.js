@@ -1,3 +1,4 @@
+// @flow
 import { createReducer } from '../reducer';
 
 import { get, push, merge, length, shift, omit } from './util/data';

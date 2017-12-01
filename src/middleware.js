@@ -1,6 +1,5 @@
 /* eslint-disable consistent-return */
 // @flow
-
 import type { History } from 'history';
 import type { Dispatch, Store } from 'redux';
 import type { Location, RouterAction } from './types';

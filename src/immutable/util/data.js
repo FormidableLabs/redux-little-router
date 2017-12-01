@@ -1,3 +1,4 @@
+// @flow
 import { Iterable, fromJS } from 'immutable';
 
 const convertToImmutable = (obj) => Iterable.isIterable(obj) ? obj : fromJS(obj);
