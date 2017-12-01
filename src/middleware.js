@@ -38,7 +38,7 @@ const navigate = (history, action) => {
   }
 };
 
-export const middleware = ({ history, next, action, query }) => {
+export const executeMiddleware = ({ history, next, action, query }) => {
   if (isNavigationAction(action)) {
     // Synchronously dispatch the original action so that the
     // reducer can add it to its location queue
@@ -74,5 +74,5 @@ export default ({ history }: MiddlewareArgs) =>
     (next: Dispatch<*>) =>
       (action: RouterAction) => {
         const { router: { query } } = getState();
-        return middleware({ history, next, action, query });
+        return executeMiddleware({ history, next, action, query });
       };

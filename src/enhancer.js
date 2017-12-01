@@ -23,7 +23,8 @@ type EnhancerArgs = {|
 |};
 
 export const createStoreSubscriber = (
-  store: Store<*, *>,
+  routerState,
+  dispatch,
   createMatcher: Function
 ) => {
   return (currentMatcher: Function) => {
@@ -33,18 +34,17 @@ export const createStoreSubscriber = (
       search,
       hash,
       options: { updateRoutes } = {}
-    } = store.getState().router;
+    } = routerState;
     if (updateRoutes) {
       currentMatcher = createMatcher(routes);
-      store.dispatch(didReplaceRoutes());
-      store.dispatch(replace({ pathname, search, hash }));
+      dispatch(didReplaceRoutes());
+      dispatch(replace({ pathname, search, hash }));
     }
     return currentMatcher;
   };
 };
 
-
-export const createHistoryListener = (store: Store<*, *>) => (
+export const createHistoryListener = (dispatch: Store<*, *>) => (
   currentMatcher: Function,
   location: HistoryLocation,
   action?: Action
@@ -59,14 +59,36 @@ export const createHistoryListener = (store: Store<*, *>) => (
   // Other actions come from the user, so they already have a
   // corresponding queued navigation action.
   if (action === "POP") {
-    store.dispatch({
+    dispatch({
       type: POP,
       payload
     });
   }
-  store.dispatch(locationDidChange(payload));
+  dispatch(locationDidChange(payload));
 };
 
+export const executeEnhancer = ({
+  history,
+  matchRoute,
+  createMatcher,
+  routerState,
+  dispatch,
+  subscribe
+}) => {
+  let currentMatcher = matchRoute;
+
+  const storeSubscriber = createStoreSubscriber(routerState, dispatch, createMatcher);
+  const historyListener = createHistoryListener(dispatch);
+
+  // Replace the matcher when replacing routes
+  subscribe(() => {
+    currentMatcher = storeSubscriber(currentMatcher);
+  });
+
+  history.listen((location, action) =>
+    historyListener(currentMatcher, location, action)
+  );
+};
 
 export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
   createStore: StoreCreator<*, *>
@@ -75,20 +97,11 @@ export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
   initialState: InitialState,
   enhancer: StoreEnhancer<*, *>
 ) => {
-  let currentMatcher = matchRoute;
-
   const store = createStore(userReducer, initialState, enhancer);
-  const storeSubscriber = createStoreSubscriber(store, createMatcher);
-  const historyListener = createHistoryListener(store);
+  const { dispatch, getState, subscribe } = store;
+  const { router: routerState } = getState();
 
-  // Replace the matcher when replacing routes
-  store.subscribe(() => {
-    currentMatcher = storeSubscriber(currentMatcher);
-  });
-
-  history.listen((location, action) =>
-    historyListener(currentMatcher, location, action)
-  );
+  executeEnhancer({ history, matchRoute, createMatcher, routerState, dispatch, subscribe });
 
   return {
     ...store,
