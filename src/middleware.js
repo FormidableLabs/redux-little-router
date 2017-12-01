@@ -14,7 +14,7 @@ import {
 } from './types';
 
 import mergeQueries from './util/merge-queries';
-import { get } from './util/data';
+import { get, toJS } from './util/data';
 
 const navigate = (history, action) => {
   switch (action.type) {
@@ -41,7 +41,7 @@ const navigate = (history, action) => {
 type MiddlewareArgs = { history: History };
 type S = { router: Location };
 
-export const createMiddleware = (get) =>
+export const createMiddleware = (get, toJS) =>
   ({ history }: MiddlewareArgs) =>
     ({ getState }: Store<S, *>) =>
       (next: Dispatch<*>) =>
@@ -57,11 +57,12 @@ export const createMiddleware = (get) =>
               action.payload.options.persistQuery
             ) {
               const query = get(getState(), ['router', 'query']);
+              const mergedQueries = mergeQueries(toJS(query), toJS(action.payload.query));
               navigate(history, {
                 type: action.type,
                 payload: {
                   ...action.payload,
-                  ...mergeQueries(query, action.payload.query)
+                  ...mergedQueries
                 }
               });
             } else {
@@ -74,4 +75,4 @@ export const createMiddleware = (get) =>
           return next(action);
         };
 
-export default createMiddleware(get);
+export default createMiddleware(get, toJS);

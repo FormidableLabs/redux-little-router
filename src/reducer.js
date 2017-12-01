@@ -9,7 +9,7 @@ import {
 } from './types';
 
 import mergeQueries from './util/merge-queries';
-import { get, push, merge, length, shift, omit } from './util/data';
+import { get, push, merge, length, shift, omit, toJS } from './util/data';
 
 const flow = (...funcs: Array<*>) =>
   funcs.reduce((prev, curr) => (...args) => curr(prev(...args)));
@@ -20,15 +20,15 @@ type ResolverArgs = {
   options: LocationOptions
 };
 
-const createResolvers = (get, merge) => {
+const createResolvers = (get, merge, toJS) => {
   const resolveQuery = ({ oldLocation, newLocation, options }): ResolverArgs => {
     // Merge the old and new queries if asked to persist
     const newLocationQuery = get(newLocation, 'query');
 
     if (get(options, 'persistQuery')) {
       const mergedQuery = mergeQueries(
-        get(oldLocation, 'query'),
-        newLocationQuery
+        toJS(get(oldLocation, 'query')),
+        toJS(newLocationQuery)
       );
       return merge({
         oldLocation,
@@ -70,13 +70,13 @@ const createResolvers = (get, merge) => {
   };
 };
 
-const createResolveLocation = (get, merge) => {
-  const { resolveQuery, resolveBasename, resolvePrevious } = createResolvers(get, merge);
+const createResolveLocation = (get, merge, toJS) => {
+  const { resolveQuery, resolveBasename, resolvePrevious } = createResolvers(get, merge, toJS);
   return flow(resolveQuery, resolveBasename, resolvePrevious);
 };
 
-const createLocationChangeReducer = ({ get, merge, length, shift, omit }) => {
-  const resolveLocation = createResolveLocation(get, merge);
+const createLocationChangeReducer = ({ get, merge, length, shift, omit, toJS }) => {
+  const resolveLocation = createResolveLocation(get, merge, toJS);
 
   return (state, action) => {
     // No-op the initial route action
@@ -118,8 +118,8 @@ type ReducerArgs = {|
   initialLocation: Location
 |};
 
-export const createReducer = ({ get, merge, push, length, shift, omit }) => {
-  const locationChangeReducer = createLocationChangeReducer({ get, merge, length, shift, omit });
+export const createReducer = ({ get, merge, push, length, shift, omit, toJS }) => {
+  const locationChangeReducer = createLocationChangeReducer({ get, merge, length, shift, omit, toJS });
 
   return ({ routes = {}, initialLocation }: ReducerArgs = {}) =>
     (
@@ -150,4 +150,4 @@ export const createReducer = ({ get, merge, push, length, shift, omit }) => {
     };
 };
 
-export default createReducer({ get, merge, push, length, shift, omit });
+export default createReducer({ get, merge, push, length, shift, omit, toJS });

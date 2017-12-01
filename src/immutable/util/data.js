@@ -1,7 +1,7 @@
 // @flow
 import { Iterable, fromJS } from 'immutable';
 
-const convertToImmutable = (obj) => Iterable.isIterable(obj) ? obj : fromJS(obj);
+const convertToImmutable = obj => Iterable.isIterable(obj) ? obj : fromJS(obj);
 
 const get = (obj, key, defaultValue) => {
   const immutableObj = convertToImmutable(obj);
@@ -13,8 +13,8 @@ const get = (obj, key, defaultValue) => {
 
 const merge = (obj1, obj2 = {}) => convertToImmutable(obj1).merge(convertToImmutable(obj2));
 const push = (arr, value) => convertToImmutable(arr).push(convertToImmutable(value));
-const length = (arr) => convertToImmutable(arr).size;
-const shift = (arr) => convertToImmutable(arr).shift();
+const length = arr => convertToImmutable(arr).size;
+const shift = arr => convertToImmutable(arr).shift();
 
 const omit = (obj, key) => convertToImmutable(obj).withMutations(obj => {
   if (Array.isArray(key)) {
@@ -24,11 +24,14 @@ const omit = (obj, key) => convertToImmutable(obj).withMutations(obj => {
   }
 });
 
+const toJS = obj => Iterable.isIterable(obj) ? obj.toJS() : obj;
+
 export {
   get,
   merge,
   push,
   length,
   shift,
-  omit
+  omit,
+  toJS
 };
