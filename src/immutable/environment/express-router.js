@@ -1,5 +1,5 @@
 // @flow
-import createExpressRouter from '../util/create-express-router';
+import createExpressRouter from '../../util/create-express-router';
 
 import install from '../install';
 
