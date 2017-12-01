@@ -50,6 +50,7 @@
     "history": "^4.6.1",
     "lodash.assign": "^4.2.0",
     "lodash.get": "^4.4.2",
+    "lodash.omit": "^4.5.0",
     "prop-types": "^15.5.8",
     "query-string": "^5.0.1",
     "recompose": "^0.26.0",

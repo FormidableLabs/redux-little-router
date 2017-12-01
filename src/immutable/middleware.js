@@ -1,5 +1,5 @@
 import { createMiddleware } from '../middleware';
 
-import get from './util/get';
+import { get } from './util/data';
 
 export default createMiddleware(get);

@@ -10,7 +10,7 @@ import { POP } from './types';
 import { locationDidChange, didReplaceRoutes, replace } from './actions';
 
 import matchCache from './util/match-cache';
-import get from './util/get';
+import { get } from './util/data';
 
 type InitialState = {
   router: Location

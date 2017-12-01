@@ -15,7 +15,7 @@ import {
 } from './types';
 
 import mergeQueries from './util/merge-queries';
-import get from './util/get';
+import { get } from './util/data';
 
 const navigate = (history, action) => {
   switch (action.type) {
