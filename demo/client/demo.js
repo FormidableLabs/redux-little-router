@@ -3,7 +3,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import chunk from 'lodash.chunk';
-import { Link, Fragment } from '../../src';
+// import { Link, Fragment } from '../../src';
+import { Link, Fragment } from '../../src/immutable';
 import styles from './demo.css';
 
 const COLUMN_COUNT = 2;
@@ -71,10 +72,12 @@ const Demo = ({ location }) => {
               <Fragment key={route} forRoute={route}>
                 <div>
                   <p>
-                    {location.result && location.result.text}
+                    {location.getIn(['result', 'text'])}
+                    {/*location.result && location.result.text*/}
                   </p>
                   <Gallery
-                    images={location.result && location.result.images}
+                    images={location.getIn(['result', 'images'])}
+                    // images={location.result && location.result.images}
                     columns={COLUMN_COUNT}
                   />
                 </div>
@@ -107,6 +110,7 @@ Demo.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  location: state.router
+  // location: state.router
+  location: state.get('router')
 });
 export default connect(mapStateToProps)(Demo);

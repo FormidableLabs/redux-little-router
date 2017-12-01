@@ -32,17 +32,19 @@ const locationChangeReducer = (state, action) => {
   // state tree doesn't keep growing indefinitely
   // eslint-disable-next-line no-unused-vars
   // const { previous, routes: currentRoutes = {}, ...oldLocation } = state;
-  const oldLocation = state.deleteAll(['previous', 'routes']);
-  const options = queuedLocation.get('options', Map());
-  const query = queuedLocation.get('query');
+  const oldLocation = state.withMutations(state => {
+    state.delete('previous').delete('routes');
+  }).toJS();
+  const options = queuedLocation.get('options', Map()).toJS();
+  const query = queuedLocation.get('query', Map()).toJS();
 
   const { newLocation } = resolveLocation({
-    oldLocation.toJS(),
+    oldLocation,
     newLocation: {
       ...action.payload,
-      query.toJS()
+      query
     },
-    options.toJS()
+    options
   });
 
   return fromJS(newLocation).merge(Map({ routes: state.get('routes'), queue: newQueue }));

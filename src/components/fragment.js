@@ -73,14 +73,16 @@ const shouldShowFragment = (
     location
   }
 ) => {
+  const locationJS = location.toJS ? location.toJS() : location;
+
   if (!forRoute) {
-    return withConditions && withConditions(location);
+    return withConditions && withConditions(locationJS);
   }
 
-  const matchesRoute = matcher && matcher.match(location.pathname);
+  const matchesRoute = matcher && matcher.match(locationJS.pathname);
 
   return withConditions
-    ? matchesRoute && withConditions(location)
+    ? matchesRoute && withConditions(locationJS)
     : matchesRoute;
 };
 

@@ -1,3 +1,5 @@
+import { connect } from 'react-redux';
+
 import { push as pushAction, replace as replaceAction } from '../../actions';
 import { _Link, _PersistentQueryLink } from '../../components/link';
 
