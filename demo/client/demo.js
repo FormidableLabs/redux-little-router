@@ -3,7 +3,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import chunk from 'lodash.chunk';
+
+/* For immutable, invert following commented code. */
 import { Link, Fragment } from '../../src';
+// import { Link, Fragment } from '../../src/immutable';
+
 import styles from './demo.css';
 
 const COLUMN_COUNT = 2;
@@ -107,6 +111,8 @@ Demo.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  /* For immutable, invert following commented code. */
   location: state.router
+  // location: state.get('router').toJS()
 });
 export default connect(mapStateToProps)(Demo);
