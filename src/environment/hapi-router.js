@@ -13,18 +13,16 @@ type ServerRouterArgs = {
   }
 };
 
-export default (
-  {
-    routes,
-    request
-  }: ServerRouterArgs
-) => {
-  const history = createMemoryHistory();
+export const createHapiRouter = (install) =>
+  ({ routes, request }: ServerRouterArgs) => {
+    const history = createMemoryHistory();
 
-  const location = normalizeHref({
-    pathname: request.path,
-    query: request.query
-  });
+    const location = normalizeHref({
+      pathname: request.path,
+      query: request.query
+    });
 
-  return install({ routes, history, location });
-};
+    return install({ routes, history, location });
+  };
+
+export default createHapiRouter(install);
