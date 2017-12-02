@@ -13,13 +13,11 @@ type BrowserRouterArgs = {
 };
 
 export const createBrowserRouter = (install) =>
-  (
-    {
-      routes,
-      basename,
-      history = createBrowserHistory({ basename })
-    }: BrowserRouterArgs
-  ) => {
+  ({
+    routes,
+    basename,
+    history = createBrowserHistory({ basename })
+  }: BrowserRouterArgs) => {
     const {
       pathname: fullPathname,
       search,
