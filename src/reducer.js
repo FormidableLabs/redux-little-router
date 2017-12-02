@@ -30,34 +30,33 @@ const createResolvers = (get, merge, toJS) => {
         toJS(get(oldLocation, 'query')),
         toJS(newLocationQuery)
       );
-      return merge({
+      return {
         oldLocation,
         newLocation: merge(newLocation, mergedQuery),
         options
-      });
+      };
     }
 
-    return merge({
+    return {
       oldLocation,
       newLocation: merge(newLocation, { query: newLocationQuery || {} }),
       options
-    });
+    };
   };
 
   const resolveBasename = ({ oldLocation, newLocation, options }): ResolverArgs => {
     const basename = get(oldLocation, 'basename');
     if (basename) {
-      return merge({
+      return {
         oldLocation,
         newLocation: merge({ basename }, newLocation),
         options
-      });
+      };
     }
-    return merge({ oldLocation, newLocation, options });
+    return { oldLocation, newLocation, options };
   };
 
-
-  const resolvePrevious = ({ oldLocation, newLocation, options }): ResolverArgs => merge({
+  const resolvePrevious = ({ oldLocation, newLocation, options }): ResolverArgs => ({
     oldLocation,
     newLocation: merge(newLocation, { previous: oldLocation }),
     options
@@ -102,12 +101,11 @@ const createLocationChangeReducer = ({ get, merge, length, shift, omit, toJS }) 
     const options = get(queuedLocation, 'options', {});
     const query = get(queuedLocation, 'query');
 
-    const location = resolveLocation({
+    const { newLocation } = resolveLocation({
       oldLocation,
       newLocation: merge(action.payload, { query }),
-      options: options
+      options
     });
-    const newLocation = get(location, 'newLocation');
 
     return merge(newLocation, { routes: currentRoutes, queue: newQueue })
   };

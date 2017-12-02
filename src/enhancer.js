@@ -83,9 +83,7 @@ export const createEnhancer = (get) =>
           currentMatcher = storeSubscriber(currentMatcher);
         });
 
-        history.listen((location, action) =>
-          historyListener(currentMatcher, location, action)
-        );
+        history.listen((location, action) => historyListener(currentMatcher, location, action));
 
         return {
           ...store,
