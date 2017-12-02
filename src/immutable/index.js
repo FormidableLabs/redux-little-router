@@ -25,8 +25,8 @@ import routerForExpress from './environment/express-router';
 import routerForHapi from './environment/hapi-router';
 import routerForHash from './environment/hash-router';
 
-import { Link, PersistentQueryLink } from '../components/link';
-import Fragment from '../components/fragment';
+import { Link, PersistentQueryLink } from './components/link';
+import Fragment from './components/fragment';
 
 export {
   // High-level Redux API
