@@ -1,10 +1,14 @@
 {
-  "presets": ["env", "react", "stage-2"],
+  "presets": [["env", { "modules": false }], "react", "stage-2"],
   "plugins": [
     ["lodash", { "id": ["lodash", "recompose"] }]
   ],
   "env": {
+    "commonjs": {
+      "presets": ["env", "react", "stage-2"]
+    },
     "coverage": {
+      "presets": ["env", "react", "stage-2"],
       "plugins": [ [ "istanbul", { "ignore": "test" } ] ]
     }
   }
