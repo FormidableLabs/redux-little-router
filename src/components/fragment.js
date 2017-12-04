@@ -96,7 +96,7 @@ type Props = {
   children: React.Element<*>
 };
 
-class Fragment extends Component {
+export class FragmentComponent extends Component {
   matcher: ?Object;
 
   constructor(props: Props) {
@@ -157,10 +157,7 @@ class Fragment extends Component {
   }
 }
 
-export default compose(
-  connect(state => ({
-    location: state.router
-  })),
+export const withIdAndContext = compose(
   getContext({
     parentRoute: PropTypes.string,
     parentId: PropTypes.string
@@ -176,4 +173,11 @@ export default compose(
       parentId: props.id
     })
   )
-)(Fragment);
+);
+
+export default compose(
+  connect(state => ({
+    location: state.router
+  })),
+  withIdAndContext
+)(FragmentComponent);

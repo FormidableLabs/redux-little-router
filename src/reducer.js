@@ -9,6 +9,7 @@ import {
 } from './types';
 
 import mergeQueries from './util/merge-queries';
+import { get, push, merge, length, shift, omit, toJS } from './util/data';
 
 const flow = (...funcs: Array<*>) =>
   funcs.reduce((prev, curr) => (...args) => curr(prev(...args)));
@@ -19,95 +20,95 @@ type ResolverArgs = {
   options: LocationOptions
 };
 
-const resolveQuery = ({ oldLocation, newLocation, options }): ResolverArgs => {
-  // Merge the old and new queries if asked to persist
-  if (options.persistQuery) {
-    const mergedQuery = mergeQueries(
-      oldLocation.query,
-      newLocation.query
-    );
+const createResolvers = (get, merge, toJS) => {
+  const resolveQuery = ({ oldLocation, newLocation, options }): ResolverArgs => {
+    // Merge the old and new queries if asked to persist
+    const newLocationQuery = get(newLocation, 'query');
+
+    if (get(options, 'persistQuery')) {
+      const mergedQuery = mergeQueries(
+        toJS(get(oldLocation, 'query')),
+        toJS(newLocationQuery)
+      );
+      return {
+        oldLocation,
+        newLocation: merge(newLocation, mergedQuery),
+        options
+      };
+    }
+
     return {
       oldLocation,
-      newLocation: {
-        ...newLocation,
-        ...mergedQuery
-      },
+      newLocation: merge(newLocation, { query: newLocationQuery || {} }),
       options
     };
-  }
+  };
+
+  const resolveBasename = ({ oldLocation, newLocation, options }): ResolverArgs => {
+    const basename = get(oldLocation, 'basename');
+    if (basename) {
+      return {
+        oldLocation,
+        newLocation: merge({ basename }, newLocation),
+        options
+      };
+    }
+    return { oldLocation, newLocation, options };
+  };
+
+  const resolvePrevious = ({ oldLocation, newLocation, options }): ResolverArgs => ({
+    oldLocation,
+    newLocation: merge(newLocation, { previous: oldLocation }),
+    options
+  });
 
   return {
-    oldLocation,
-    newLocation: {
-      ...newLocation,
-      query: newLocation.query || {}
-    },
-    options
+    resolveQuery,
+    resolveBasename,
+    resolvePrevious
   };
 };
 
-const resolveBasename = ({
-  oldLocation,
-  newLocation,
-  options
-}): ResolverArgs => {
-  const { basename } = oldLocation;
-  if (basename) {
-    return {
-      oldLocation,
-      newLocation: { basename, ...newLocation },
-      options
-    };
-  }
-  return { oldLocation, newLocation, options };
+const createResolveLocation = (get, merge, toJS) => {
+  const { resolveQuery, resolveBasename, resolvePrevious } = createResolvers(get, merge, toJS);
+  return flow(resolveQuery, resolveBasename, resolvePrevious);
 };
 
-const resolvePrevious = ({
-  oldLocation,
-  newLocation,
-  options
-}): ResolverArgs => ({
-  oldLocation,
-  newLocation: {
-    ...newLocation,
-    previous: oldLocation
-  },
-  options
-});
+const createLocationChangeReducer = ({ get, merge, length, shift, omit, toJS }) => {
+  const resolveLocation = createResolveLocation(get, merge, toJS);
 
-const locationChangeReducer = (state, action) => {
-  // No-op the initial route action
-  if (
-    state.pathname === action.payload.pathname &&
-    state.search === action.payload.search &&
-    state.hash === action.payload.hash &&
-    (!state.queue || !state.queue.length)
-  ) {
-    return state;
-  }
+  return (state, action) => {
+    // No-op the initial route action
+    const queue = get(state, 'queue');
+    if (
+      get(state, 'pathname') === get(action.payload, 'pathname') &&
+      get(state, 'search') === get(action.payload, 'search') &&
+      get(state, 'hash') === get(action.payload, 'hash') &&
+      (!queue || !length(queue))
+    ) {
+      return state;
+    }
 
-  const queuedLocation = (state.queue && state.queue[0]) || {};
-  const queue = (state.queue && state.queue.slice(1)) || [];
+    const queuedLocation = (queue && get(queue, 0)) || {};
+    const newQueue = (queue && shift(queue)) || [];
 
-  // Extract the previous state, but dump the
-  // previous state's previous state so that the
-  // state tree doesn't keep growing indefinitely
-  // eslint-disable-next-line no-unused-vars
-  const { previous, routes: currentRoutes = {}, ...oldLocation } = state;
-  const { options, query } = queuedLocation;
+    // Extract the previous state, but dump the
+    // previous state's previous state so that the
+    // state tree doesn't keep growing indefinitely
+    // eslint-disable-next-line no-unused-vars
+    const oldLocation = omit(state, ['previous', 'routes']);
+    const currentRoutes = get(state, 'routes', {});
+    const options = get(queuedLocation, 'options', {});
+    const query = get(queuedLocation, 'query');
 
-  const resolveLocation = flow(resolveQuery, resolveBasename, resolvePrevious);
+    const { newLocation } = resolveLocation({
+      oldLocation,
+      newLocation: merge(action.payload, { query }),
+      options
+    });
 
-  const { newLocation } = resolveLocation({
-    oldLocation,
-    newLocation: {
-      ...action.payload,
-      query
-    },
-    options: options || {}
-  });
-
-  return { ...newLocation, routes: currentRoutes, queue };
+    return merge(newLocation, { routes: currentRoutes, queue: newQueue })
+  };
 };
 
 type ReducerArgs = {|
@@ -115,32 +116,36 @@ type ReducerArgs = {|
   initialLocation: Location
 |};
 
-export default ({ routes = {}, initialLocation }: ReducerArgs = {}) => (
-  state: Location = { ...initialLocation, routes, queue: [] },
-  action: LocationAction
-) => {
-  if (isNavigationActionWithPayload(action)) {
-    return {
-      ...state,
-      queue: state.queue && state.queue.concat([action.payload])
+export const createReducer = ({ get, merge, push, length, shift, omit, toJS }) => {
+  const locationChangeReducer = createLocationChangeReducer({ get, merge, length, shift, omit, toJS });
+
+  return ({ routes = {}, initialLocation }: ReducerArgs = {}) =>
+    (
+      state: Location = merge(initialLocation, { routes, queue: [] }),
+      action: LocationAction
+    ) => {
+      if (isNavigationActionWithPayload(action)) {
+        const queue = get(state, 'queue');
+        return merge(state, {
+          queue: queue && push(queue, action.payload)
+        });
+      }
+
+      if (action.type === REPLACE_ROUTES) {
+        const { routes, options } = action.payload;
+        return merge(state, { routes, options });
+      }
+
+      if (action.type === DID_REPLACE_ROUTES) {
+        return merge(state, { options: {} });
+      }
+
+      if (action.type === LOCATION_CHANGED) {
+        return locationChangeReducer(state, action);
+      }
+
+      return state;
     };
-  }
-
-  if (action.type === REPLACE_ROUTES) {
-    return {
-      ...state,
-      routes: action.payload.routes,
-      options: action.payload.options
-    };
-  }
-
-  if (action.type === DID_REPLACE_ROUTES) {
-    return { ...state, options: {} };
-  }
-
-  if (action.type === LOCATION_CHANGED) {
-    return locationChangeReducer(state, action);
-  }
-
-  return state;
 };
+
+export default createReducer({ get, merge, push, length, shift, omit, toJS });
