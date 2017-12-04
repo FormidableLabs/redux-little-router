@@ -3,13 +3,17 @@ import { connect } from 'react-redux';
 
 import propsToJS from './props-to-js';
 
-import { _Link, _PersistentQueryLink, mapDispatchToProps } from '../../components/link';
+import {
+  LinkComponent,
+  PersistentQueryLinkComponent,
+  mapDispatchToProps
+} from '../../components/link';
 
 const mapStateToProps = state => ({ location: state.get('router') });
 const withLocation = connect(mapStateToProps, mapDispatchToProps);
 
-const Link = withLocation(propsToJS(_Link));
-const PersistentQueryLink = withLocation(propsToJS(_PersistentQueryLink));
+const Link = withLocation(propsToJS(LinkComponent));
+const PersistentQueryLink = withLocation(propsToJS(PersistentQueryLinkComponent));
 
 export {
   Link,

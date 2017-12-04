@@ -4,7 +4,7 @@ import { compose } from 'recompose';
 
 import propsToJS from './props-to-js';
 
-import { _Fragment, withIdAndContext } from '../../components/fragment';
+import { FragmentComponent, withIdAndContext } from '../../components/fragment';
 
 export default compose(
   connect(state => ({
@@ -12,4 +12,4 @@ export default compose(
   })),
   withIdAndContext,
   propsToJS
-)(_Fragment);
+)(FragmentComponent);

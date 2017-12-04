@@ -96,7 +96,7 @@ type Props = {
   children: React.Element<*>
 };
 
-export class _Fragment extends Component {
+export class FragmentComponent extends Component {
   matcher: ?Object;
 
   constructor(props: Props) {
@@ -180,4 +180,4 @@ export default compose(
     location: state.router
   })),
   withIdAndContext
-)(_Fragment);
+)(FragmentComponent);
