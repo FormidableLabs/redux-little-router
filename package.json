@@ -7,7 +7,7 @@
   "jsnext:main": "es/index.js",
   "scripts": {
     "preversion": "npm run check",
-    "version": "npm run clean && npm run build && git add -A dist",
+    "version": "npm run clean && npm run build",
     "demo": "webpack-dev-server --port 3000 --config config/webpack/demo/webpack.config.demo.dev.js --colors",
     "build-demo": "webpack --bail --config config/webpack/demo/webpack.config.demo.js",
     "start-ssr-demo": "nodemon --watch demo demo/server/index.js",
