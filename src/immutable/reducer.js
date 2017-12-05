@@ -1,6 +1,13 @@
 // @flow
 import { List, Map, fromJS } from 'immutable';
 
+import {
+  LOCATION_CHANGED,
+  REPLACE_ROUTES,
+  DID_REPLACE_ROUTES,
+  isNavigationActionWithPayload
+} from '../types';
+
 import { resolveLocation } from '../reducer';
 
 const locationChangeReducer = (state, action) => {
