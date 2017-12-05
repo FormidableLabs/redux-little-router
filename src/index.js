@@ -25,6 +25,11 @@ import routerForHash from './environment/hash-router';
 import routerForExpress from './environment/express-router';
 import routerForHapi from './environment/hapi-router';
 
+import immutableRouterForBrowser from './immutable/environment/browser-router';
+import immutableRouterForHash from './immutable/environment/hash-router';
+import immutableRouterForExpress from './immutable/environment/express-router';
+import immutableRouterForHapi from './immutable/environment/hapi-router';
+
 import { Link, PersistentQueryLink } from './components/link';
 import Fragment from './components/fragment';
 
@@ -34,11 +39,19 @@ export {
   routerForExpress,
   routerForHapi,
   routerForHash,
+
+  immutableRouterForBrowser,
+  immutableRouterForExpress,
+  immutableRouterForHapi,
+  immutableRouterForHash,
+
   initializeCurrentLocation,
+
   // React API
   Link,
   PersistentQueryLink,
   Fragment,
+
   // Public action creators
   push,
   replace,
@@ -46,6 +59,7 @@ export {
   goBack,
   goForward,
   replaceRoutes,
+
   // Public action types
   LOCATION_CHANGED,
   PUSH,
