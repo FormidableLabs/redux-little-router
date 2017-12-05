@@ -23,9 +23,12 @@ const locationForRequest = request => {
   return normalizeHref(descriptor);
 };
 
-export default ({ routes, request }: ServerRouterArgs) => {
-  const history = createMemoryHistory();
-  const location = locationForRequest(request);
+export const createExpressRouter = (installer) =>
+  ({ routes, request }: ServerRouterArgs) => {
+    const history = createMemoryHistory();
+    const location = locationForRequest(request);
 
-  return install({ routes, history, location });
-};
+    return installer({ routes, history, location });
+  };
+
+export default createExpressRouter(install);
