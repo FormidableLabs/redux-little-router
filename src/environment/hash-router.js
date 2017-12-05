@@ -12,19 +12,20 @@ type HashRouterArgs = {
   history: History
 };
 
-export default (
-  {
+export const createHashRouter = (installer) =>
+  ({
     routes,
     basename,
     hashType = 'slash',
     history = createHashHistory({ basename, hashType })
-  }: HashRouterArgs
-) => {
-  const descriptor = basename
-    ? { basename, ...history.location }
-    : history.location;
+  }: HashRouterArgs) => {
+    const descriptor = basename
+      ? { basename, ...history.location }
+      : history.location;
 
-  const location = normalizeHref(descriptor);
+    const location = normalizeHref(descriptor);
 
-  return install({ routes, history, location });
-};
+    return installer({ routes, history, location });
+  };
+
+export default createHashRouter(install);
