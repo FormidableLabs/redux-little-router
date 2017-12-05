@@ -1,6 +1,6 @@
 // @flow
-import type { StoreCreator, Reducer, StoreEnhancer, Dispatch, Subscribe } from 'redux';
-import type { History, Action, Location as HistoryLocation, Listen } from 'history';
+import type { StoreCreator, Reducer, StoreEnhancer, Dispatch, Store } from 'redux';
+import type { History, Action, Location as HistoryLocation } from 'history';
 
 import type { Location } from './types';
 
@@ -20,8 +20,8 @@ type SubscribeArgs = {
   dispatch: Dispatch,
   createMatcher: Function,
   matchRoute: Function,
-  subscribeToStore: Subscribe,
-  subscribeToHistory: Listen
+  subscribeToStore: $PropertyType<Store, 'subscribe'>,
+  subscribeToHistory: $PropertyType<History, 'listen'>
 };
 
 type EnhancerArgs = {|
