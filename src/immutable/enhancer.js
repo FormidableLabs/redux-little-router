@@ -1,3 +1,4 @@
+// @flow
 import { subscribeToStoreAndHistory } from '../enhancer';
 
 export default ({ history, matchRoute, createMatcher }: EnhancerArgs) =>
