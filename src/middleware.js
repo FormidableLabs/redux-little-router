@@ -52,7 +52,7 @@ const navigate = (history, action) => {
   }
 };
 
-export const handleNavigationAction = ({ next, action, history, query }) => {
+export const handleNavigationAction = ({ next, action, history, query }: HandleNavArgs) => {
   // Synchronously dispatch the original action so that the
   // reducer can add it to its location queue
   const originalDispatch = next(action);

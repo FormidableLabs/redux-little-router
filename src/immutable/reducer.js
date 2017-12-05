@@ -43,7 +43,7 @@ const locationChangeReducer = (state, action) => {
 
 export default ({ routes = {}, initialLocation }: ReducerArgs = {}) =>
   (
-    state: Location = fromJS({ ...initialLocation, routes, queue: [] })
+    state: Location = fromJS({ ...initialLocation, routes, queue: [] }),
     action: LocationAction
   ) => {
     if (isNavigationActionWithPayload(action)) {
