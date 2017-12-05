@@ -1,7 +1,6 @@
 // @flow
-
-import type { StoreCreator, Reducer, StoreEnhancer } from 'redux';
-import type { History, Action, Location as HistoryLocation } from 'history';
+import type { StoreCreator, Reducer, StoreEnhancer, Dispatch, Subscribe } from 'redux';
+import type { History, Action, Location as HistoryLocation, Listen } from 'history';
 
 import type { Location } from './types';
 
@@ -16,6 +15,15 @@ type InitialState = {
   router: Location
 };
 
+type SubscribeArgs = {
+  routerState: Location,
+  dispatch: Dispatch,
+  createMatcher: Function,
+  matchRoute: Function,
+  subscribeToStore: Subscribe,
+  subscribeToHistory: Listen
+};
+
 type EnhancerArgs = {|
   history: History,
   matchRoute: Function,
@@ -23,75 +31,88 @@ type EnhancerArgs = {|
 |};
 
 export const createStoreSubscriber = (
-  store: Store<*, *>,
+  routerState: Location,
+  dispatch: Dispatch,
   createMatcher: Function
-) => {
-  return (currentMatcher: Function) => {
+) =>
+  (currentMatcher: Function) => {
     const {
       routes,
       pathname,
       search,
       hash,
       options: { updateRoutes } = {}
-    } = store.getState().router;
+    } = routerState;
     if (updateRoutes) {
       currentMatcher = createMatcher(routes);
-      store.dispatch(didReplaceRoutes());
-      store.dispatch(replace({ pathname, search, hash }));
+      dispatch(didReplaceRoutes());
+      dispatch(replace({ pathname, search, hash }));
     }
     return currentMatcher;
   };
-};
 
-
-export const createHistoryListener = (store: Store<*, *>) => (
-  currentMatcher: Function,
-  location: HistoryLocation,
-  action?: Action
-) => {
-  matchCache.clear();
-  const match = currentMatcher(location.pathname);
-  const payload = {
-    ...location,
-    ...match,
-    query: qs.parse(location.search)
+export const createHistoryListener = (dispatch: Dispatch) =>
+  (currentMatcher: Function, location: HistoryLocation, action?: Action) => {
+    matchCache.clear();
+    const match = currentMatcher(location.pathname);
+    const payload = {
+      ...location,
+      ...match,
+      query: qs.parse(location.search)
+    };
+    // Other actions come from the user, so they already have a
+    // corresponding queued navigation action.
+    if (action === "POP") {
+      dispatch({
+        type: POP,
+        payload
+      });
+    }
+    dispatch(locationDidChange(payload));
   };
-  // Other actions come from the user, so they already have a
-  // corresponding queued navigation action.
-  if (action === "POP") {
-    store.dispatch({
-      type: POP,
-      payload
-    });
-  }
-  store.dispatch(locationDidChange(payload));
-};
 
+export const subscribeToStoreAndHistory = ({
+  routerState,
+  dispatch,
+  createMatcher,
+  matchRoute,
+  subscribeToStore,
+  subscribeToHistory
+}: SubscribeArgs) => {
+  const storeSubscriber = createStoreSubscriber(routerState, dispatch, createMatcher);
+  const historyListener = createHistoryListener(dispatch);
 
-export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
-  createStore: StoreCreator<*, *>
-) => (
-  userReducer: Reducer<*, *>,
-  initialState: InitialState,
-  enhancer: StoreEnhancer<*, *>
-) => {
   let currentMatcher = matchRoute;
 
-  const store = createStore(userReducer, initialState, enhancer);
-  const storeSubscriber = createStoreSubscriber(store, createMatcher);
-  const historyListener = createHistoryListener(store);
-
   // Replace the matcher when replacing routes
-  store.subscribe(() => {
+  subscribeToStore(() => {
     currentMatcher = storeSubscriber(currentMatcher);
   });
 
-  history.listen((location, action) =>
+  subscribeToHistory((location, action) =>
     historyListener(currentMatcher, location, action)
   );
-
-  return {
-    ...store,
-    matchRoute
-  };
 };
+
+export default ({ history, matchRoute, createMatcher }: EnhancerArgs) =>
+  (createStore: StoreCreator<*, *>) =>
+    (userReducer: Reducer<*, *>, initialState: InitialState, enhancer: StoreEnhancer<*, *>) => {
+      const store = createStore(userReducer, initialState, enhancer);
+      const { dispatch, subscribe: subscribeToStore } = store;
+      const { router: routerState } = store.getState();
+      const { listen: subscribeToHistory } = history;
+
+      subscribeToStoreAndHistory({
+        routerState,
+        dispatch,
+        createMatcher,
+        matchRoute,
+        subscribeToStore,
+        subscribeToHistory
+      });
+
+      return {
+        ...store,
+        matchRoute
+      };
+    };
