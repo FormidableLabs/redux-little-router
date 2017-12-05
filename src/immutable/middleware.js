@@ -1,4 +1,5 @@
 // @flow
+import { isNavigationAction } from '../types';
 import { handleNavigationAction } from '../middleware';
 
 export default ({ history }: MiddlewareArgs) =>

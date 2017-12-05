@@ -12,13 +12,11 @@ type BrowserRouterArgs = {
   history: History
 };
 
-export default (
-  {
-    routes,
-    basename,
-    history = createBrowserHistory({ basename })
-  }: BrowserRouterArgs
-) => {
+export default ({
+  routes,
+  basename,
+  history = createBrowserHistory({ basename })
+}: BrowserRouterArgs) => {
   const {
     pathname: fullPathname,
     search,
