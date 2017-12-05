@@ -45,7 +45,7 @@ const resolveQuery = ({ oldLocation, newLocation, options }): ResolverArgs => {
     oldLocation,
     newLocation: {
       ...newLocation,
-      query: newLocation.query || {}
+      query: newLocation.query
     },
     options
   };
@@ -102,7 +102,7 @@ const locationChangeReducer = (state, action) => {
   // state tree doesn't keep growing indefinitely
   // eslint-disable-next-line no-unused-vars
   const { previous, routes: currentRoutes = {}, ...oldLocation } = state;
-  const { options = {}, query } = queuedLocation;
+  const { options = {}, query = {} } = queuedLocation;
 
   const { newLocation } = resolveLocation({
     oldLocation,

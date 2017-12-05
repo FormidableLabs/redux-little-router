@@ -31,7 +31,7 @@ const locationChangeReducer = (state, action) => {
   // eslint-disable-next-line no-unused-vars
   const oldLocation = state.withMutations(routerState => routerState.delete('previous').delete('routes'));
   const options = queuedLocation.get('options', Map());
-  const query = queuedLocation.get('query');
+  const query = queuedLocation.get('query', Map());
 
   const { newLocation } = resolveLocation({
     oldLocation: oldLocation.toJS(),
@@ -54,11 +54,8 @@ export default ({ routes = {}, initialLocation }: ReducerArgs = {}) =>
     action: LocationAction
   ) => {
     if (isNavigationActionWithPayload(action)) {
-      const queue = state.withMutations(routerState => {
-        const payload = fromJS(action.payload);
-        routerState.get('queue', List()).push(payload);
-      });
-      return state.set('queue', queue);
+      const payload = fromJS(action.payload);
+      return state.update('queue', List(), queue => queue.push(payload));
     }
 
     if (action.type === REPLACE_ROUTES) {
