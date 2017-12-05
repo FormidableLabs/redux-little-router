@@ -12,28 +12,31 @@ type BrowserRouterArgs = {
   history: History
 };
 
-export default ({
-  routes,
-  basename,
-  history = createBrowserHistory({ basename })
-}: BrowserRouterArgs) => {
-  const {
-    pathname: fullPathname,
-    search,
-    hash,
-    state: { key, state } = {}
-  } = history.location;
+export const createBrowserRouter = (installer) =>
+  ({
+    routes,
+    basename,
+    history = createBrowserHistory({ basename })
+  }: BrowserRouterArgs) => {
+    const {
+      pathname: fullPathname,
+      search,
+      hash,
+      state: { key, state } = {}
+    } = history.location;
 
-  // Strip the basename from the initial pathname
-  const pathname = basename && fullPathname.indexOf(basename) === 0
-    ? fullPathname.slice(basename.length)
-    : fullPathname;
+    // Strip the basename from the initial pathname
+    const pathname = basename && fullPathname.indexOf(basename) === 0
+      ? fullPathname.slice(basename.length)
+      : fullPathname;
 
-  const descriptor = basename
-    ? { pathname, basename, search, hash, key, state }
-    : { pathname, search, hash, key, state };
+    const descriptor = basename
+      ? { pathname, basename, search, hash, key, state }
+      : { pathname, search, hash, key, state };
 
-  const location = normalizeHref(descriptor);
+    const location = normalizeHref(descriptor);
 
-  return install({ routes, history, location });
-};
+    return installer({ routes, history, location });
+  };
+
+export default createBrowserRouter(install);
