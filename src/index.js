@@ -33,6 +33,9 @@ import immutableRouterForHapi from './immutable/environment/hapi-router';
 import { Link, PersistentQueryLink } from './components/link';
 import Fragment from './components/fragment';
 
+import { ImmutableLink, ImmutablePersistentQueryLink } from './immutable/components/link';
+import ImmutableFragment from './immutable/components/fragment';
+
 export {
   // High-level Redux API
   routerForBrowser,
@@ -51,6 +54,10 @@ export {
   Link,
   PersistentQueryLink,
   Fragment,
+
+  ImmutableLink,
+  ImmutablePersistentQueryLink,
+  ImmutableFragment,
 
   // Public action creators
   push,
