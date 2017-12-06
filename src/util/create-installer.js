@@ -6,6 +6,12 @@ import { default as matcherFactory } from '../util/create-matcher';
 import validateRoutes from '../util/validate-routes';
 import flattenRoutes from '../util/flatten-routes';
 
+type CreateInstallArgs = {|
+  reducer: Function,
+  middleware: Function,
+  enhancer: Function
+|};
+
 type InstallArgs = {|
   routes: Object,
   history: History,
@@ -13,7 +19,7 @@ type InstallArgs = {|
   createMatcher?: Function
 |};
 
-export default ({ reducer, middleware, enhancer }) =>
+export default ({ reducer, middleware, enhancer }: CreateInstallArgs) =>
   ({
     routes: nestedRoutes,
     history,

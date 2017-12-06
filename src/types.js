@@ -22,6 +22,10 @@ export type Location = $Shape<
   }
 >;
 
+export type State = {
+  router: Location
+};
+
 export type Href = string | Location;
 
 export const LOCATION_CHANGED = 'ROUTER_LOCATION_CHANGED';

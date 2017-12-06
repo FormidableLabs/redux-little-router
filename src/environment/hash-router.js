@@ -12,7 +12,7 @@ type HashRouterArgs = {
   history: History
 };
 
-export const createHashRouter = (installer) =>
+export const createHashRouter = (installer: Function) =>
   ({
     routes,
     basename,

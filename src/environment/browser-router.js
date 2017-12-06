@@ -12,7 +12,7 @@ type BrowserRouterArgs = {
   history: History
 };
 
-export const createBrowserRouter = (installer) =>
+export const createBrowserRouter = (installer: Function) =>
   ({
     routes,
     basename,
