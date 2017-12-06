@@ -1,3 +1,4 @@
+// @flow
 import reducer from './reducer';
 import middleware from './middleware';
 import enhancer from './enhancer';

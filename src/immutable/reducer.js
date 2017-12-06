@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable new-cap */
 import { List, Map, fromJS } from 'immutable';
 
 import {
@@ -59,9 +60,11 @@ export default ({ routes = {}, initialLocation }: ReducerArgs = {}) =>
     }
 
     if (action.type === REPLACE_ROUTES) {
-      const { routes, options } = action.payload;
+      const { routes: currentRoutes, options } = action.payload;
       return state.withMutations(routerState => {
-        routerState.set('routes', fromJS(routes)).set('options', fromJS(options));
+        routerState
+          .set('routes', fromJS(currentRoutes))
+          .set('options', fromJS(options));
       });
     }
 
