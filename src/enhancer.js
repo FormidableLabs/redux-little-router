@@ -2,7 +2,7 @@
 import type { StoreCreator, Reducer, StoreEnhancer, Dispatch, Store } from 'redux';
 import type { History, Action, Location as HistoryLocation } from 'history';
 
-import type { Location } from './types';
+import type { Location, State } from './types';
 
 import qs from 'query-string';
 
@@ -11,20 +11,16 @@ import { locationDidChange, didReplaceRoutes, replace } from './actions';
 
 import matchCache from './util/match-cache';
 
-type InitialState = {
-  router: Location
-};
-
 type SubscribeArgs = {
   routerState: Location,
-  dispatch: Dispatch,
+  dispatch: Dispatch<*>,
   createMatcher: Function,
   matchRoute: Function,
-  subscribeToStore: $PropertyType<Store, 'subscribe'>,
+  subscribeToStore: $PropertyType<Store<*, *>, 'subscribe'>,
   subscribeToHistory: $PropertyType<History, 'listen'>
 };
 
-type EnhancerArgs = {|
+export type EnhancerArgs = {|
   history: History,
   matchRoute: Function,
   createMatcher: Function
@@ -32,7 +28,7 @@ type EnhancerArgs = {|
 
 export const createStoreSubscriber = (
   routerState: Location,
-  dispatch: Dispatch,
+  dispatch: Dispatch<*>,
   createMatcher: Function
 ) =>
   (currentMatcher: Function) => {
@@ -51,7 +47,7 @@ export const createStoreSubscriber = (
     return currentMatcher;
   };
 
-export const createHistoryListener = (dispatch: Dispatch) =>
+export const createHistoryListener = (dispatch: Dispatch<*>) =>
   (currentMatcher: Function, location: HistoryLocation, action?: Action) => {
     matchCache.clear();
     const match = currentMatcher(location.pathname);
@@ -96,7 +92,7 @@ export const subscribeToStoreAndHistory = ({
 
 export default ({ history, matchRoute, createMatcher }: EnhancerArgs) =>
   (createStore: StoreCreator<*, *>) =>
-    (userReducer: Reducer<*, *>, initialState: InitialState, enhancer: StoreEnhancer<*, *>) => {
+    (userReducer: Reducer<*, *>, initialState: State, enhancer: StoreEnhancer<*, *>) => {
       const store = createStore(userReducer, initialState, enhancer);
       const { dispatch, subscribe: subscribeToStore } = store;
       const { router: routerState } = store.getState();

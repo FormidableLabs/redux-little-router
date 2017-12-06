@@ -1,5 +1,10 @@
 // @flow
 /* eslint-disable new-cap */
+import type { Map as MapType } from 'immutable';
+
+import type { ReducerArgs } from '../reducer';
+import type { Location, LocationAction } from '../types';
+
 import { List, Map, fromJS } from 'immutable';
 
 import {
@@ -8,8 +13,9 @@ import {
   DID_REPLACE_ROUTES,
   isNavigationActionWithPayload
 } from '../types';
-
 import { resolveLocation } from '../reducer';
+
+type ImmutableLocation = $Shape<Location & MapType<*, *>>;
 
 const locationChangeReducer = (state, action) => {
   // No-op the initial route action
@@ -30,20 +36,20 @@ const locationChangeReducer = (state, action) => {
   // previous state's previous state so that the
   // state tree doesn't keep growing indefinitely
   // eslint-disable-next-line no-unused-vars
-  const oldLocation = state.withMutations(routerState => routerState.delete('previous').delete('routes'));
-  const options = queuedLocation.get('options', Map());
-  const query = queuedLocation.get('query', Map());
+  const oldLocation: Location = state.withMutations(routerState => {
+    routerState.delete('previous').delete('routes');
+  }).toJS();
+  const options = queuedLocation.get('options', Map()).toJS();
+  const query = queuedLocation.get('query', Map()).toJS();
+  const newLocation: Location = { ...action.payload, query };
 
-  const { newLocation } = resolveLocation({
-    oldLocation: oldLocation.toJS(),
-    newLocation: {
-      ...action.payload,
-      query: query.toJS()
-    },
-    options: options.toJS()
+  const { newLocation: resolvedNewLocation } = resolveLocation({
+    oldLocation,
+    newLocation,
+    options
   });
 
-  return fromJS(newLocation).merge({
+  return fromJS(resolvedNewLocation).merge({
     routes: state.get('routes', Map()),
     queue: newQueue
   });
@@ -51,7 +57,7 @@ const locationChangeReducer = (state, action) => {
 
 export default ({ routes = {}, initialLocation }: ReducerArgs = {}) =>
   (
-    state: Location = fromJS({ ...initialLocation, routes, queue: [] }),
+    state: ImmutableLocation = fromJS({ ...initialLocation, routes, queue: [] }),
     action: LocationAction
   ) => {
     if (isNavigationActionWithPayload(action)) {

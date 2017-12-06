@@ -1,5 +1,6 @@
 // @flow
 import { connect } from 'react-redux';
+
 import { LinkComponent, PersistentQueryLinkComponent, mapDispatchToProps } from '../../components/link';
 import propsToJS from './props-to-js';
 

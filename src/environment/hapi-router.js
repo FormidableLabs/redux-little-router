@@ -13,7 +13,7 @@ type ServerRouterArgs = {
   }
 };
 
-export const createHapiRouter = (installer) =>
+export const createHapiRouter = (installer: Function) =>
   ({ routes, request }: ServerRouterArgs) => {
     const history = createMemoryHistory();
 

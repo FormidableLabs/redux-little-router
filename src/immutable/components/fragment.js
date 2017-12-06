@@ -1,6 +1,7 @@
 // @flow
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
+
 import { FragmentComponent, withIdAndContext } from '../../components/fragment';
 import propsToJS from './props-to-js';
 

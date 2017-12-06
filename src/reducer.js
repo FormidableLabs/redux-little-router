@@ -16,13 +16,13 @@ type ResolverArgs = {
   options: LocationOptions
 };
 
-type ReducerArgs = {|
+export type ReducerArgs = {|
   routes: Object,
   initialLocation: Location
 |};
 
 const flow = (...funcs: Array<*>) =>
-  funcs.reduce((prev, curr) => (...args) => curr(prev(...args)));
+  funcs.reduce((prev, curr) => (...args: Array<*>) => curr(prev(...args)));
 
 const resolveQuery = ({ oldLocation, newLocation, options }): ResolverArgs => {
   // Merge the old and new queries if asked to persist
@@ -103,17 +103,15 @@ const locationChangeReducer = (state, action) => {
   // eslint-disable-next-line no-unused-vars
   const { previous, routes: currentRoutes = {}, ...oldLocation } = state;
   const { options = {}, query = {} } = queuedLocation;
+  const newLocation = { ...action.payload, query };
 
-  const { newLocation } = resolveLocation({
+  const { newLocation: resolvedNewLocation } = resolveLocation({
     oldLocation,
-    newLocation: {
-      ...action.payload,
-      query
-    },
+    newLocation,
     options
   });
 
-  return { ...newLocation, routes: currentRoutes, queue: newQueue };
+  return { ...resolvedNewLocation, routes: currentRoutes, queue: newQueue };
 };
 
 export default ({ routes = {}, initialLocation }: ReducerArgs = {}) =>

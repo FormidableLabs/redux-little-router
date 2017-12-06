@@ -79,51 +79,59 @@ const contextifyHref = (href, location, persistQuery) => {
   };
 };
 
-const LinkComponent = (props: Props) => {
-  const {
-    href: rawHref,
-    location,
-    children,
-    onClick,
-    target,
-    activeProps,
-    replaceState,
-    persistQuery,
-    push,
-    replace,
-    ...rest
-  } = props;
 
-  // Ensure the href has both a search and a query when needed
-  const normalizedHref = normalizeHref(rawHref);
-  const href = contextifyHref(normalizedHref, location, persistQuery);
-  const isActive = href.pathname === location.pathname;
-  const activeRest = (isActive && activeProps) || {};
+// const LinkComponent = (props: Props) => {
+class LinkComponent extends Component {
+  constructor(props: Props) {
+    super(props);
+  }
 
-  const clickHandler = e =>
-    handleClick({
-      e,
-      target,
-      href,
+  render() {
+    const {
+      href: rawHref,
+      location,
+      children,
       onClick,
+      target,
+      activeProps,
       replaceState,
       persistQuery,
       push,
-      replace
-    });
+      replace,
+      ...rest
+    } = this.props;
 
-  return (
-    <a
-      href={stringifyHref(href, location.basename)}
-      onClick={clickHandler}
-      target={target}
-      {...rest}
-      {...activeRest}
-    >
-      {children}
-    </a>
-  );
-};
+    // Ensure the href has both a search and a query when needed
+    const normalizedHref = normalizeHref(rawHref);
+    const href = contextifyHref(normalizedHref, location, persistQuery);
+    const isActive = href.pathname === location.pathname;
+    const activeRest = (isActive && activeProps) || {};
+
+    const clickHandler = e =>
+      handleClick({
+        e,
+        target,
+        href,
+        onClick,
+        replaceState,
+        persistQuery,
+        push,
+        replace
+      });
+
+    return (
+      <a
+        href={stringifyHref(href, location.basename)}
+        onClick={clickHandler}
+        target={target}
+        {...rest}
+        {...activeRest}
+      >
+        {children}
+      </a>
+    );
+  }
+}
 
 const PersistentQueryLinkComponent = class extends Component {
   render() {

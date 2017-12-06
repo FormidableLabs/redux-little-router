@@ -2,7 +2,7 @@
 /* eslint-disable consistent-return */
 import type { History } from 'history';
 import type { Dispatch, Store } from 'redux';
-import type { Location, RouterAction, Query } from './types';
+import type { RouterAction, Query, State } from './types';
 
 import {
   PUSH,
@@ -15,19 +15,15 @@ import {
 
 import mergeQueries from './util/merge-queries';
 
-type MiddlewareArgs = {
+export type MiddlewareArgs = {
   history: History
 };
 
 type HandleNavArgs = {
-  next: Dispatch,
+  next: Dispatch<*>,
   action: RouterAction,
   history: History,
-  query: Query
-};
-
-type S = {
-  router: Location
+  query?: Query
 };
 
 const navigate = (history, action) => {
@@ -77,10 +73,10 @@ export const handleNavigationAction = ({ next, action, history, query }: HandleN
 };
 
 export default ({ history }: MiddlewareArgs) =>
-  ({ getState }: Store<S, *>) =>
+  ({ getState }: Store<State, *>) =>
     (next: Dispatch<*>) =>
       (action: RouterAction) => {
-        const { router: { query } } = getState();
+        const { query } = getState().router;
         return isNavigationAction(action) ?
           handleNavigationAction({ next, action, history, query }) :
           next(action);
