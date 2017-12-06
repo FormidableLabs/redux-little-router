@@ -1,5 +1,4 @@
 // @flow
-
 const ROUTE_FALLBACK = '@ROUTE_FALLBACK';
 
 export class MatchCache {

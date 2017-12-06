@@ -1,3 +1,4 @@
+// @flow
 /**
  * Returns a psuedo-unique identifier used by fragments
  * to track match status within MatchCache.
