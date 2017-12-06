@@ -25,14 +25,19 @@ const encode = require('ent/encode');
 const renderToString = require('react-dom/server').renderToString;
 
 const redux = require('redux');
+
+/* Invert comments for immutable */
 const routerForExpress = require('../../src').routerForExpress;
+const combineReducers = redux.combineReducers;
+// const routerForExpress = require('../../src').immutableRouterForExpress;
+// const Map = require('immutable').Map;
+// const combineReducers = require('redux-immutable').combineReducers;
 
 const routes = require('../client/routes').default;
 const wrap = require('../client/wrap').default;
 const Root = require('../client/demo').default;
 
 const createStore = redux.createStore;
-const combineReducers = redux.combineReducers;
 const compose = redux.compose;
 const applyMiddleware = redux.applyMiddleware;
 
@@ -75,11 +80,13 @@ app.get('/*', (req, res) => {
     return res.send(template({ css, js }));
   }
 
+  /* Invert comments for immutable */
   const initialState = {};
-  const router = routerForExpress({
-    routes,
-    request: req
-  });
+  const initialStateJSON = encode(JSON.stringify(initialState));
+  // const initialState = Map();
+  // const initialStateJSON = JSON.stringify(initialState.toJSON()),
+
+  const router = routerForExpress({ routes, request: req });
   const store = createStore(
     combineReducers({ router: router.reducer }),
     initialState,
@@ -90,7 +97,7 @@ app.get('/*', (req, res) => {
 
   return res.send(
     template({
-      initialState: encode(JSON.stringify(initialState)),
+      initialState: initialStateJSON,
       css,
       js,
       content
