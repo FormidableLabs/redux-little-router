@@ -51,8 +51,7 @@ describe('Router store enhancer', () => {
   });
 
   it('dispatches a LOCATION_CHANGED action on location change', () => {
-    [testObj, immutableTestObj].forEach(obj => {
-      const { store, historyStub, listenStub } = obj;
+    [testObj, immutableTestObj].forEach(({ store, historyStub, listenStub }) => {
       store.dispatch({
         type: PUSH,
         payload: { pathname: '/' }
@@ -64,15 +63,13 @@ describe('Router store enhancer', () => {
   });
 
   it('attaches the matcher to the store', () => {
-    [testObj, immutableTestObj].forEach(obj => {
-      expect(obj.store).to.have.property('matchRoute');
+    [testObj, immutableTestObj].forEach(({ store }) => {
+      expect(store).to.have.property('matchRoute');
     });
   });
 
   it('replaces routes', () => {
-    [testObj, immutableTestObj].forEach(obj => {
-      const { store, historyStub, listenStub } = obj;
-
+    [testObj, immutableTestObj].forEach(({ store, historyStub, listenStub }) => {
       store.dispatch({
         type: REPLACE_ROUTES,
         payload: {
