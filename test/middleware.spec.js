@@ -6,7 +6,6 @@ import { Map, fromJS } from 'immutable';
 import { createStore, applyMiddleware } from 'redux';
 
 import { PUSH, REPLACE, GO, GO_BACK, GO_FORWARD } from '../src/types';
-
 import middleware from '../src/middleware';
 import immutableMiddleware from '../src/immutable/middleware';
 
