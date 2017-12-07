@@ -1,3 +1,4 @@
+/* eslint-disable new-cap */
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
@@ -20,21 +21,21 @@ describe('Router store enhancer', () => {
   let testObj;
   let immutableTestObj;
 
-  const setupTest = (install, combineReducers, initialState) => {
+  const setupTest = (installRouter, combineReduxReducers, initialState) => {
     const listenStub = sandbox.stub();
     const listen = sandbox.spy(cb => cb({ pathname: '/' }));
     const push = sandbox.spy(() => listen(listenStub));
     const replaceStub = sandbox.spy(() => listen(listenStub));
     const historyStub = { push, replace: replaceStub, listen };
 
-    const { reducer, middleware, enhancer } = install({
+    const { reducer, middleware, enhancer } = installRouter({
       routes: defaultRoutes,
       history: historyStub,
       location: { pathname: '/' }
     });
 
     const store = createStore(
-      combineReducers({ router: reducer }),
+      combineReduxReducers({ router: reducer }),
       initialState,
       compose(enhancer, applyMiddleware(middleware))
     );
