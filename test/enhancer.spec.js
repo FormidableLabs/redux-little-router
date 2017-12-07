@@ -4,10 +4,10 @@ import sinonChai from 'sinon-chai';
 import { combineReducers, compose, createStore, applyMiddleware } from 'redux';
 
 import { PUSH, REPLACE_ROUTES, POP } from '../src/types';
-import {locationDidChange, didReplaceRoutes, replace} from '../src/actions';
+import { locationDidChange, didReplaceRoutes, replace } from '../src/actions';
 import install from '../src/install';
 import createMatcher from '../src/util/create-matcher';
-import {createHistoryListener, createStoreSubscriber} from '../src/enhancer';
+import { createHistoryListener, createStoreSubscriber } from '../src/enhancer';
 
 import defaultRoutes from './test-util/fixtures/routes';
 
@@ -82,17 +82,15 @@ describe('Router store enhancer', () => {
   describe('createHistoryListener', () => {
     let historyListener;
     let currentMatcher;
-    let storeStub;
+    let dispatch;
 
     beforeEach(() => {
-      storeStub = {
-        dispatch: sandbox.spy()
-      };
+      dispatch = sandbox.spy();
       // Mock the matcher by just returning a object with a single
       // `route` field populated with the pathname.
       // eslint-disable-next-line max-nested-callbacks
       currentMatcher = sandbox.spy((pathname) => ({ route: pathname }));
-      historyListener = createHistoryListener(storeStub);
+      historyListener = createHistoryListener(dispatch);
     });
 
     it('should call currentMatcher with the pathname', () => {
@@ -111,8 +109,8 @@ describe('Router store enhancer', () => {
         { pathname: '/lol/k', search: '?foo=bar' },
         PUSH
       );
-      expect(storeStub.dispatch).to.have.been.calledOnce;
-      expect(storeStub.dispatch).to.have.been.calledWith(locationDidChange({
+      expect(dispatch).to.have.been.calledOnce;
+      expect(dispatch).to.have.been.calledWith(locationDidChange({
         pathname: '/lol/k',
         route: '/lol/k',
         query: { foo: 'bar' },
@@ -127,8 +125,8 @@ describe('Router store enhancer', () => {
         "POP"
       );
       // eslint-disable-next-line no-magic-numbers
-      expect(storeStub.dispatch).to.have.been.calledTwice;
-      expect(storeStub.dispatch.getCall(0).args[0]).to.deep.equal({
+      expect(dispatch).to.have.been.calledTwice;
+      expect(dispatch.getCall(0).args[0]).to.deep.equal({
         type: POP,
         payload: {
           pathname: '/lol/k',
@@ -142,21 +140,19 @@ describe('Router store enhancer', () => {
 
   describe('createStoreSubscriber', () => {
     let routerState;
-    let storeStub;
+    let dispatch;
     let currentMatcher;
     let storeSubscriber;
     /* eslint-disable max-nested-callbacks */
     beforeEach(() => {
       routerState = {};
-      storeStub = {
-        dispatch: sandbox.spy(),
-        getState: sandbox.spy(() => ({ router: routerState }))
-      };
+      dispatch = sandbox.spy();
       const createMatcherStub = sandbox.spy(routes => routes);
       // The matcher stub is just an empty object that acts as a sigil
       currentMatcher = {};
-      storeSubscriber = createStoreSubscriber(storeStub, createMatcherStub);
+      storeSubscriber = createStoreSubscriber(routerState, dispatch, createMatcherStub);
     });
+
     /* eslint-enable max-nested-callbacks */
     it('should not update routes if updateRoutes is not true', () => {
       const newRoutes = {};
@@ -164,8 +160,8 @@ describe('Router store enhancer', () => {
         routes: newRoutes
       };
       expect(storeSubscriber(currentMatcher)).to.equal(currentMatcher);
-      expect(storeStub.dispatch).not.to.have.been.called;
-    })
+      expect(dispatch).not.to.have.been.called;
+    });
 
     it('should update routes if updateRoutes is true', () => {
       const newRoutes = {};
@@ -176,11 +172,9 @@ describe('Router store enhancer', () => {
         options: { updateRoutes: true }
       };
       expect(storeSubscriber(currentMatcher)).to.equal(newRoutes);
-      expect(storeStub.dispatch).to.have.been.calledTwice;
-      expect(storeStub.dispatch.getCall(0).args[0]).to.deep.equal(didReplaceRoutes());
-      expect(storeStub.dispatch.getCall(1).args[0]).to.deep.equal(replace(routeInfo));
-    })
-
-
+      expect(dispatch).to.have.been.calledTwice;
+      expect(dispatch.getCall(0).args[0]).to.deep.equal(didReplaceRoutes());
+      expect(dispatch.getCall(1).args[0]).to.deep.equal(replace(routeInfo));
+    });
   });
 });

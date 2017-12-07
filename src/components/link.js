@@ -79,7 +79,6 @@ const contextifyHref = (href, location, persistQuery) => {
   };
 };
 
-
 class LinkComponent extends Component {
   constructor(props: Props) {
     super(props);
