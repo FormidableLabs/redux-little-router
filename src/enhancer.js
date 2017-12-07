@@ -2,7 +2,7 @@
 import type { StoreCreator, Reducer, StoreEnhancer, Dispatch, Store } from 'redux';
 import type { History, Action, Location as HistoryLocation } from 'history';
 
-import type { Location, State } from './types';
+import type { State } from './types';
 
 import qs from 'query-string';
 
