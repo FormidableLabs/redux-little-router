@@ -1,30 +1,31 @@
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
+import { Map } from 'immutable';
 import { combineReducers, compose, createStore, applyMiddleware } from 'redux';
+import { combineReducers as immutableCombineReducers } from 'redux-immutable';
 
 import { PUSH, REPLACE_ROUTES, POP } from '../src/types';
 import { locationDidChange, didReplaceRoutes, replace } from '../src/actions';
-import install from '../src/install';
-import createMatcher from '../src/util/create-matcher';
 import { createHistoryListener, createStoreSubscriber } from '../src/enhancer';
+import install from '../src/install';
+import immutableInstall from '../src/immutable/install';
 
+import createMatcher from '../src/util/create-matcher';
 import defaultRoutes from './test-util/fixtures/routes';
 
 chai.use(sinonChai);
 
 describe('Router store enhancer', () => {
-  let store;
-  let historyStub;
-  let listenStub;
+  let testObj;
+  let immutableTestObj;
 
-  beforeEach(() => {
-    listenStub = sandbox.stub();
-
+  const setupTest = (install, combineReducers, initialState) => {
+    const listenStub = sandbox.stub();
     const listen = sandbox.spy(cb => cb({ pathname: '/' }));
     const push = sandbox.spy(() => listen(listenStub));
     const replaceStub = sandbox.spy(() => listen(listenStub));
-    historyStub = { push, replace: replaceStub, listen };
+    const historyStub = { push, replace: replaceStub, listen };
 
     const { reducer, middleware, enhancer } = install({
       routes: defaultRoutes,
@@ -32,50 +33,70 @@ describe('Router store enhancer', () => {
       location: { pathname: '/' }
     });
 
-    store = createStore(
+    const store = createStore(
       combineReducers({ router: reducer }),
-      {},
+      initialState,
       compose(enhancer, applyMiddleware(middleware))
     );
+
     sandbox.spy(store, 'dispatch');
+
+    return { store, historyStub, listenStub };
+  };
+
+  beforeEach(() => {
+    testObj = setupTest(install, combineReducers, {});
+    immutableTestObj = setupTest(immutableInstall, immutableCombineReducers, Map());
   });
 
   it('dispatches a LOCATION_CHANGED action on location change', () => {
-    store.dispatch({
-      type: PUSH,
-      payload: { pathname: '/' }
+    [testObj, immutableTestObj].forEach(obj => {
+      const { store, historyStub, listenStub } = obj;
+      store.dispatch({
+        type: PUSH,
+        payload: { pathname: '/' }
+      });
+      expect(historyStub.push).to.be.calledOnce;
+      expect(listenStub).to.be.calledOnce;
+      expect(store.dispatch).to.be.calledOnce;
     });
-
-    expect(historyStub.push).to.be.calledOnce;
-    expect(listenStub).to.be.calledOnce;
-    expect(store.dispatch).to.be.calledOnce;
   });
 
   it('attaches the matcher to the store', () => {
-    expect(store).to.have.property('matchRoute');
+    [testObj, immutableTestObj].forEach(obj => {
+      expect(obj.store).to.have.property('matchRoute');
+    });
   });
 
   it('replaces routes', () => {
-    store.dispatch({
-      type: REPLACE_ROUTES,
-      payload: {
-        routes: { '/': { could: 'you not' } },
-        options: {
-          updateRoutes: true
+    [testObj, immutableTestObj].forEach(obj => {
+      const { store, historyStub, listenStub } = obj;
+
+      store.dispatch({
+        type: REPLACE_ROUTES,
+        payload: {
+          routes: { '/': { could: 'you not' } },
+          options: {
+            updateRoutes: true
+          }
         }
-      }
-    });
+      });
 
-    // This dispatch isn't the dispatch used in the enhancer
-    // (each enhancer has its own copy of dispatch)
-    expect(store.dispatch).to.be.calledOnce;
-    expect(historyStub.replace).to.be.calledOnce;
-    expect(listenStub).to.be.calledOnce;
+      // This dispatch isn't the dispatch used in the enhancer
+      // (each enhancer has its own copy of dispatch)
+      expect(store.dispatch).to.be.calledOnce;
+      expect(historyStub.replace).to.be.calledOnce;
+      expect(listenStub).to.be.calledOnce;
 
-    const { routes } = store.getState().router;
-    const matcher = createMatcher(routes);
-    expect(matcher('/')).to.have.deep.property('result', {
-      could: 'you not'
+      const state = store.getState();
+      const routes = state.getIn
+        ? state.getIn(['router', 'routes']).toJS()
+        : state.router.routes;
+
+      const matcher = createMatcher(routes);
+      expect(matcher('/')).to.have.deep.property('result', {
+        could: 'you not'
+      });
     });
   });
 
