@@ -15,5 +15,8 @@ config/local*
 
 # Build
 lib
+dist
+demo/stats
+es
 coverage
 .nyc_output

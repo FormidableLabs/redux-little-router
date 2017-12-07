@@ -5,7 +5,7 @@ const hook = require('css-modules-require-hook');
 
 hook({
   generateScopedName: '[local]___[hash:base64:5]',
-  rootDir: path.resolve(process.cwd(), 'src')
+  rootDir: path.resolve('src')
 });
 
 require('babel-register')();
@@ -39,7 +39,7 @@ const applyMiddleware = redux.applyMiddleware;
 const PORT = 4567;
 const DISABLE_SSR = process.env.DISABLE_SSR;
 
-const templateFile = fs.readFileSync(path.join(__dirname, './index.hbs'));
+const templateFile = fs.readFileSync(path.join(__dirname, 'index.hbs'));
 const template = Handlebars.compile(templateFile.toString());
 
 const compiler = webpack(config);
