@@ -310,7 +310,7 @@ describe('Link', () => {
       // Need mount() here since PQL is an HOC
       const wrapper = mount(<PersistentQueryLink href="/" />, fakeContext());
 
-      const link = wrapper.findWhere(node => node.name() === 'Link');
+      const link = wrapper.findWhere(node => node.name() === 'LinkComponent');
       expect(link.props()).to.have.property('persistQuery', true);
     });
   });
