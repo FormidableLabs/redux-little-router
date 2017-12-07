@@ -1,3 +1,4 @@
+/* eslint-disable new-cap, no-shadow */
 import { expect } from 'chai';
 
 import { flow, partialRight } from 'lodash';
