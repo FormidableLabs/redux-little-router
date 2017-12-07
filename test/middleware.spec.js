@@ -1,11 +1,14 @@
+/* eslint-disable new-cap */
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
+import { Map, fromJS } from 'immutable';
 import { createStore, applyMiddleware } from 'redux';
 
-import middleware from '../src/middleware';
-
 import { PUSH, REPLACE, GO, GO_BACK, GO_FORWARD } from '../src/types';
+
+import middleware from '../src/middleware';
+import immutableMiddleware from '../src/immutable/middleware';
 
 chai.use(sinonChai);
 
@@ -36,11 +39,11 @@ const actionMethodMap = {
 };
 
 describe('Router middleware', () => {
-  let store;
-  let historyStub;
+  let testObj;
+  let immutableTestObj;
 
-  beforeEach(() => {
-    historyStub = {
+  const setupTest = (routerMiddleware, reducer, initialState) => {
+    const historyStub = {
       push: sandbox.stub(),
       replace: sandbox.stub(),
       go: sandbox.stub(),
@@ -48,31 +51,39 @@ describe('Router middleware', () => {
       goForward: sandbox.stub(),
       listen: sandbox.stub()
     };
-
-    store = createStore(
-      () => ({
-        router: {
-          query: {
-            is: 'cool'
-          }
-        }
-      }),
-      {},
-      applyMiddleware(middleware({ history: historyStub }), consumerMiddleware)
+    const store = createStore(
+      reducer,
+      initialState,
+      applyMiddleware(routerMiddleware({ history: historyStub }), consumerMiddleware)
     );
     sandbox.spy(store, 'dispatch');
+    return { historyStub, store };
+  };
+
+  beforeEach(() => {
+    const routerInitialState = {
+      router: {
+        query: {
+          is: 'cool'
+        }
+      }
+    };
+    testObj = setupTest(middleware, () => routerInitialState, {});
+    immutableTestObj = setupTest(immutableMiddleware, () => fromJS(routerInitialState), Map());
   });
 
   Object.keys(actionMethodMap).forEach(actionType => {
     const method = actionMethodMap[actionType];
 
     it(`calls history.${method} when intercepting ${actionType}`, () => {
-      store.dispatch({
-        type: actionType,
-        payload: {}
-      });
+      [testObj, immutableTestObj].forEach(({ store, historyStub }) => {
+        store.dispatch({
+          type: actionType,
+          payload: {}
+        });
 
-      expect(historyStub[method]).to.have.been.calledOnce;
+        expect(historyStub[method]).to.have.been.calledOnce;
+      });
     });
   });
 
@@ -80,49 +91,55 @@ describe('Router middleware', () => {
     const method = actionMethodMap[actionType];
 
     it(`calls history.${method} with merged queries when requesting persistence`, () => {
-      store.dispatch({
-        type: actionType,
-        payload: {
+      [testObj, immutableTestObj].forEach(({ store, historyStub }) => {
+        store.dispatch({
+          type: actionType,
+          payload: {
+            query: {
+              has: 'socks'
+            },
+            options: {
+              persistQuery: true
+            }
+          }
+        });
+
+        expect(historyStub[method]).to.have.been.calledWith({
           query: {
+            is: 'cool',
             has: 'socks'
           },
+          search: '?has=socks&is=cool',
           options: {
             persistQuery: true
           }
-        }
+        });
       });
-
-      expect(historyStub[method]).to.have.been.calledWith({
-        query: {
-          is: 'cool',
-          has: 'socks'
-        },
-        search: '?has=socks&is=cool',
-        options: {
-          persistQuery: true
-        }
-      })
     });
   });
 
   it('passes normal actions through the dispatch chain', () => {
-    store.dispatch({
-      type: 'NOT_MY_ACTION_NOT_MY_PROBLEM',
-      payload: {}
-    });
+    [testObj, immutableTestObj].forEach(({ store, historyStub }) => {
+      store.dispatch({
+        type: 'NOT_MY_ACTION_NOT_MY_PROBLEM',
+        payload: {}
+      });
 
-    Object.keys(actionMethodMap).forEach(actionType => {
-      const method = actionMethodMap[actionType];
-      expect(historyStub[method]).to.not.have.been.called;
+      Object.keys(actionMethodMap).forEach(actionType => {
+        const method = actionMethodMap[actionType];
+        expect(historyStub[method]).to.not.have.been.called;
+      });
     });
   });
 
   it('allows for dispatching router actions in consumer middleware', () => {
-    store.dispatch({
-      type: REFRAGULATE,
-      payload: {}
-    });
+    [testObj, immutableTestObj].forEach(({ store, historyStub }) => {
+      store.dispatch({
+        type: REFRAGULATE,
+        payload: {}
+      });
 
-    expect(historyStub.push).to.have.been.calledOnce;
+      expect(historyStub.push).to.have.been.calledOnce;
+    });
   });
 });

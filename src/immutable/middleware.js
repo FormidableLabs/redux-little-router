@@ -16,6 +16,6 @@ export default ({ history }: MiddlewareArgs) =>
       (action: RouterAction) => {
         const query = getState().getIn(['router', 'query']);
         return isNavigationAction(action)
-          ? handleNavigationAction({ next, action, history, query })
+          ? handleNavigationAction({ next, action, history, query: query && query.toJS() })
           : next(action);
       };
