@@ -1,44 +1,19 @@
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
-import { Map } from 'immutable';
-import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
-import { combineReducers as immutableCombineReducers } from 'redux-immutable';
-
 import routerForBrowser from '../../src/environment/browser-router';
 import immutableRouterForBrowser from '../../src/immutable/environment/browser-router';
 
+import { setupStores, getJSState } from '../test-util';
 import routes from '../test-util/fixtures/routes';
 
 chai.use(sinonChai);
 
 describe('Browser router', () => {
-  const setupStore = (routerArg) => {
-    const router = routerForBrowser(routerArg);
-    const immutableRouter = immutableRouterForBrowser(routerArg);
-    const store = createStore(
-      combineReducers({ router: router.reducer }),
-      {},
-      compose(router.enhancer, applyMiddleware(router.middleware))
-    );
-    const immutableStore = createStore(
-      immutableCombineReducers({ router: immutableRouter.reducer }),
-      Map(),
-      compose(immutableRouter.enhancer, applyMiddleware(immutableRouter.middleware))
-    );
-    return {
-      store,
-      immutableStore
-    };
-  };
-
-  const getJSState = (store) => {
-    const state = store.getState();
-    return state.toJS ? state.toJS() : state;
-  };
+  const setupBrowserStores = setupStores.bind(null, routerForBrowser, immutableRouterForBrowser);
 
   it('creates a browser store enhancer using history location', () => {
-    const { store, immutableStore } = setupStore({
+    const { store, immutableStore } = setupBrowserStores({
       routes,
       history: {
         location: {
@@ -62,7 +37,7 @@ describe('Browser router', () => {
   });
 
   it('supports basenames', () => {
-    const { store, immutableStore } = setupStore({
+    const { store, immutableStore } = setupBrowserStores({
       routes,
       basename: '/cob-planet',
       history: {
@@ -88,7 +63,7 @@ describe('Browser router', () => {
   });
 
   it('matches route without replacing basename', () => {
-    const { store, immutableStore } = setupStore({
+    const { store, immutableStore } = setupBrowserStores({
       routes,
       basename: '/app',
       history: {
