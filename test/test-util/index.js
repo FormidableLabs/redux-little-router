@@ -1,4 +1,7 @@
 import createMemoryHistory from 'history/createMemoryHistory';
+import { Map } from 'immutable';
+import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
+import { combineReducers as immutableCombineReducers } from 'redux-immutable';
 
 import createMatcher from '../../src/util/create-matcher';
 
@@ -79,4 +82,28 @@ export const standardClickEvent = {
   metaKey: false,
   ctrlKey: false,
   preventDefault() {}
+};
+
+export const setupStores = (routerForEnv, immutableRouterForEnv, routerArg) => {
+  const router = routerForEnv(routerArg);
+  const immutableRouter = immutableRouterForEnv(routerArg);
+  const store = createStore(
+    combineReducers({ router: router.reducer }),
+    {},
+    compose(router.enhancer, applyMiddleware(router.middleware))
+  );
+  const immutableStore = createStore(
+    immutableCombineReducers({ router: immutableRouter.reducer }),
+    Map(),
+    compose(immutableRouter.enhancer, applyMiddleware(immutableRouter.middleware))
+  );
+  return {
+    store,
+    immutableStore
+  };
+};
+
+export const getJSState = (store) => {
+  const state = store.getState();
+  return state.toJS ? state.toJS() : state;
 };
