@@ -10,10 +10,10 @@ import routes from '../test-util/fixtures/routes';
 chai.use(sinonChai);
 
 describe('Hash router', () => {
-  const setupExpressStores = setupStores.bind(null, routerForHash, immutableRouterForHash);
+  const setupHashStores = setupStores.bind(null, routerForHash, immutableRouterForHash);
 
   it('creates a browser store enhancer using window.location', () => {
-    const { store, immutableStore } = setupExpressStores({
+    const { store, immutableStore } = setupHashStores({
       routes,
       history: {
         listen() {},
@@ -35,7 +35,7 @@ describe('Hash router', () => {
   });
 
   it('supports basenames', () => {
-    const { store, immutableStore } = setupExpressStores({
+    const { store, immutableStore } = setupHashStores({
       routes,
       history: {
         listen() {},
