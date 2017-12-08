@@ -2,7 +2,7 @@ import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
 import routerForHash from '../../src/environment/hash-router';
-import immutableRouterForHash from '../../src/environment/hash-router';
+import immutableRouterForHash from '../../src/immutable/environment/hash-router';
 
 import { setupStores, getJSState } from '../test-util';
 import routes from '../test-util/fixtures/routes';

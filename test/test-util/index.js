@@ -1,3 +1,4 @@
+/* eslint-disable new-cap */
 import createMemoryHistory from 'history/createMemoryHistory';
 import { Map } from 'immutable';
 import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
