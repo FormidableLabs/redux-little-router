@@ -9,18 +9,19 @@ import ImmutableFragment from '../../src/immutable/components/fragment';
 
 import { fakeContext, fakeImmutableContext } from '../test-util';
 
-describe('Fragment', () => {
-  const fragmentTest = {
-    Fragment,
-    fakeContext
-  };
-  const immutableFragmentTest = {
-    Fragment: ImmutableFragment,
-    fakeContext: fakeImmutableContext
-  };
+const fragmentTest = {
+  Fragment,
+  fakeContext,
+  testLabel: 'Fragment'
+};
+const immutableFragmentTest = {
+  Fragment: ImmutableFragment,
+  fakeContext: fakeImmutableContext,
+  testLabel: 'ImmutableFragment'
+};
 
-
-  [fragmentTest, immutableFragmentTest].forEach(({ Fragment, fakeContext }) => {
+[fragmentTest, immutableFragmentTest].forEach(({ Fragment, fakeContext, testLabel }) => {
+  describe(`${testLabel}`, () => {
     it('renders if the current URL matches the given route', () => {
       const wrapper = mount(
         <Fragment forRoute="/home/messages/:team">
