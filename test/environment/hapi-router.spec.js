@@ -1,33 +1,33 @@
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
-import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
-
 import routerForHapi from '../../src/environment/hapi-router';
+import immutableRouterForHapi from '../../src/immutable/environment/hapi-router';
 
+import { setupStores, getJSState } from '../test-util';
 import routes from '../test-util/fixtures/routes';
 
 chai.use(sinonChai);
 
 describe('Hapi router', () => {
+  const setupHapiStores = setupStores.bind(null, routerForHapi, immutableRouterForHapi);
+
   it('creates a server store enhancer using Hapi request object', () => {
-    const { enhancer, middleware, reducer } = routerForHapi({
+    const { store, immutableStore } = setupHapiStores({
       routes,
       request: {
         path: '/home',
         query: { get: 'schwifty' }
       }
     });
-    const store = createStore(
-      combineReducers({ router: reducer }),
-      {},
-      compose(enhancer, applyMiddleware(middleware))
-    );
-    const state = store.getState();
-    expect(state).to.have.nested.property('router.pathname', '/home');
-    expect(state).to.have.nested.property('router.search', '?get=schwifty');
-    expect(state).to.have.nested
-      .property('router.query')
-      .that.deep.equals({ get: 'schwifty' });
+
+    [store, immutableStore].forEach(s => {
+      const state = getJSState(s);
+      expect(state).to.have.nested.property('router.pathname', '/home');
+      expect(state).to.have.nested.property('router.search', '?get=schwifty');
+      expect(state).to.have.nested
+        .property('router.query')
+        .that.deep.equals({ get: 'schwifty' });
+    });
   });
 });
