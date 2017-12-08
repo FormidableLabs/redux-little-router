@@ -1,6 +1,6 @@
 /* eslint-disable new-cap */
 import createMemoryHistory from 'history/createMemoryHistory';
-import { Map } from 'immutable';
+import { Map, fromJS } from 'immutable';
 import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
 import { combineReducers as immutableCombineReducers } from 'redux-immutable';
 
@@ -17,38 +17,35 @@ export const captureErrors = (done, assertions) => {
   }
 };
 
-export const fakeStore = (
-  {
-    assertion,
-    basename,
-    pathname = '/home/messages/b-team',
-    query = { test: 'ing' },
-    route = '/home/messages/:team',
-    routes = defaultRoutes
-  } = {}
-) => {
+export const fakeStore = ({
+  assertion,
+  basename,
+  pathname = '/home/messages/b-team',
+  query = { test: 'ing' },
+  route = '/home/messages/:team',
+  routes = defaultRoutes,
+  immutable = false
+} = {}) => {
   const history = createMemoryHistory();
+  const state = {
+    router: {
+      basename,
+      pathname,
+      query,
+      search: '?test=ing',
+      action: 'POP',
+      route
+    }
+  };
 
   return {
     subscribe() {},
-
     getState() {
-      return {
-        router: {
-          basename,
-          pathname,
-          query,
-          search: '?test=ing',
-          action: 'POP',
-          route
-        }
-      };
+      return immutable ? fromJS(state) : state;
     },
-
     dispatch(action) {
       assertion && assertion(action);
     },
-
     routes,
     history,
     matchRoute: createMatcher(routes),
@@ -56,15 +53,13 @@ export const fakeStore = (
   };
 };
 
-export const fakeContext = (
-  {
-    assertion,
-    basename,
-    pathname = '/home/messages/b-team',
-    route = '/home/messages/:team',
-    query = { test: 'ing' }
-  } = {}
-) => ({
+export const fakeContext = ({
+  assertion,
+  basename,
+  pathname = '/home/messages/b-team',
+  route = '/home/messages/:team',
+  query = { test: 'ing' }
+} = {}) => ({
   context: {
     store: fakeStore({
       assertion,
@@ -72,6 +67,25 @@ export const fakeContext = (
       pathname,
       query,
       route
+    })
+  }
+});
+
+export const fakeImmutableContext = ({
+  assertion,
+  basename,
+  pathname = '/home/messages/b-team',
+  route = '/home/messages/:team',
+  query = { test: 'ing' }
+} = {}) => ({
+  context: {
+    store: fakeStore({
+      assertion,
+      basename,
+      pathname,
+      query,
+      route,
+      immutable: true
     })
   }
 });
