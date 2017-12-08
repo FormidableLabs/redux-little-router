@@ -17,7 +17,7 @@ import reducer from '../src/reducer';
 import immutableReducer from '../src/immutable/reducer';
 
 describe('Router reducer', () => {
-  const createReducers = (initialState) => ({
+  const setupReducers = (initialState) => ({
     reducer: reducer(initialState),
     immutableReducer: immutableReducer(initialState)
   });
@@ -52,7 +52,7 @@ describe('Router reducer', () => {
       }]
     };
 
-    const reducers = createReducers();
+    const reducers = setupReducers();
     const { result, immutableResult } = reduce(reducers, state, action);
 
     [result, immutableResult].forEach(r => {
@@ -92,7 +92,7 @@ describe('Router reducer', () => {
       queue: [{ pathname: '/rofl' }]
     };
 
-    const reducers = createReducers();
+    const reducers = setupReducers();
     const { result, immutableResult } = reduce(reducers, state, action);
 
     [result, immutableResult].forEach(r => {
@@ -135,7 +135,7 @@ describe('Router reducer', () => {
       ]
     };
 
-    const reducers = createReducers();
+    const reducers = setupReducers();
     const { result, immutableResult } = reduce(reducers, state, action);
 
     [result, immutableResult].forEach(r => {
@@ -168,7 +168,7 @@ describe('Router reducer', () => {
   });
 
   it('persists the previous query if requested', () => {
-    const { reducer, immutableReducer } = createReducers();
+    const { reducer, immutableReducer } = setupReducers();
     const navigationAction = {
       type: PUSH,
       payload: {
@@ -228,7 +228,7 @@ describe('Router reducer', () => {
   });
 
   it('merges old and new queries when requesting persistence', () => {
-    const { reducer, immutableReducer } = createReducers();
+    const { reducer, immutableReducer } = setupReducers();
 
     const navigationAction = {
       type: PUSH,
@@ -311,7 +311,7 @@ describe('Router reducer', () => {
       other: 'things'
     };
 
-    const reducers = createReducers();
+    const reducers = setupReducers();
     const { result, immutableResult } = reduce(reducers, state, action);
 
     [result, immutableResult].forEach(r => {
@@ -330,7 +330,7 @@ describe('Router reducer', () => {
       }
     };
 
-    const reducers = createReducers();
+    const reducers = setupReducers();
     const { result, immutableResult } = reduce(reducers, {}, action);
 
     [result, immutableResult].forEach(r => {
@@ -346,7 +346,7 @@ describe('Router reducer', () => {
       }
     };
 
-    const reducers = createReducers();
+    const reducers = setupReducers();
     const { result, immutableResult } = reduce(reducers, undefined, action);
 
     [result, immutableResult].forEach(r => {
@@ -371,7 +371,7 @@ describe('Router reducer', () => {
       }
     };
 
-    const reducers = createReducers(initialState);
+    const reducers = setupReducers(initialState);
     const { result, immutableResult } = reduce(reducers, undefined, action);
 
     [result, immutableResult].forEach(r => {
@@ -388,7 +388,7 @@ describe('Router reducer', () => {
   });
 
   it('replaces routes', () => {
-    const { reducer, immutableReducer } = createReducers({
+    const { reducer, immutableReducer } = setupReducers({
       routes: { '/': { pied: 'piper' } },
       pathname: '/bachmanity'
     });
@@ -424,7 +424,7 @@ describe('Router reducer', () => {
   });
 
   it('should only enqueue navigation actions with payloads', () => {
-    const { reducer, immutableReducer } = createReducers();
+    const { reducer, immutableReducer } = setupReducers();
 
     [reducer, immutableReducer].forEach(r => {
       const result = flow(
