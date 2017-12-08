@@ -1,38 +1,38 @@
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
-import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
-
 import routerForExpress from '../../src/environment/express-router';
+import immutableRouterForExpress from '../../src/immutable/environment/express-router';
 
+import { setupStores, getJSState } from '../test-util';
 import routes from '../test-util/fixtures/routes';
 
 chai.use(sinonChai);
 
 describe('Express router', () => {
+  const setupExpressStores = setupStores.bind(null, routerForExpress, immutableRouterForExpress);
+
   it('creates a server store enhancer using Express request object', () => {
-    const { enhancer, middleware, reducer } = routerForExpress({
+    const { store, immutableStore } = setupExpressStores({
       routes,
       request: {
         path: '/home',
         query: { get: 'schwifty' }
       }
     });
-    const store = createStore(
-      combineReducers({ router: reducer }),
-      {},
-      compose(enhancer, applyMiddleware(middleware))
-    );
-    const state = store.getState();
-    expect(state).to.have.nested.property('router.pathname', '/home');
-    expect(state).to.have.nested.property('router.search', '?get=schwifty');
-    expect(state).to.have.nested
-      .property('router.query')
-      .that.deep.equals({ get: 'schwifty' });
+
+    [store, immutableStore].forEach(s => {
+      const state = getJSState(s);
+      expect(state).to.have.nested.property('router.pathname', '/home');
+      expect(state).to.have.nested.property('router.search', '?get=schwifty');
+      expect(state).to.have.nested
+        .property('router.query')
+        .that.deep.equals({ get: 'schwifty' });
+    });
   });
 
   it('supports basenames', () => {
-    const { enhancer, middleware, reducer } = routerForExpress({
+    const { store, immutableStore } = setupExpressStores({
       routes,
       request: {
         baseUrl: '/cob-planet',
@@ -40,17 +40,15 @@ describe('Express router', () => {
         query: { get: 'schwifty' }
       }
     });
-    const store = createStore(
-      combineReducers({ router: reducer }),
-      {},
-      compose(enhancer, applyMiddleware(middleware))
-    );
-    const state = store.getState();
-    expect(state).to.have.nested.property('router.basename', '/cob-planet');
-    expect(state).to.have.nested.property('router.pathname', '/home');
-    expect(state).to.have.nested.property('router.search', '?get=schwifty');
-    expect(state).to.have.nested
-      .property('router.query')
-      .that.deep.equals({ get: 'schwifty' });
+
+    [store, immutableStore].forEach(s => {
+      const state = getJSState(s);
+      expect(state).to.have.nested.property('router.basename', '/cob-planet');
+      expect(state).to.have.nested.property('router.pathname', '/home');
+      expect(state).to.have.nested.property('router.search', '?get=schwifty');
+      expect(state).to.have.nested
+        .property('router.query')
+        .that.deep.equals({ get: 'schwifty' });
+    });
   });
 });
