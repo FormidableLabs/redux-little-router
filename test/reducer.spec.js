@@ -19,20 +19,20 @@ import immutableReducer from '../src/immutable/reducer';
 const reducerTest = {
   reducer,
   toState: state => state,
-  fromState: state => state,
+  readState: state => state,
   testLabel: 'router reducer'
 };
 const immutableReducerTest = {
   reducer: immutableReducer,
   toState: state => fromJS(state),
-  fromState: state => state.toJS(),
+  readState: state => state.toJS(),
   testLabel: 'immutable router reducer'
 };
 
 [reducerTest, immutableReducerTest].forEach(({
   reducer,
   toState,
-  fromState,
+  readState,
   testLabel
 }) => {
   describe(`${testLabel}`, () => {
@@ -58,7 +58,7 @@ const immutableReducerTest = {
           }
         }]
       });
-      const result = fromState(reducer()(state, action));
+      const result = readState(reducer()(state, action));
 
       expect(result).to.deep.equal({
         params: {},
@@ -96,7 +96,7 @@ const immutableReducerTest = {
         pathname: '/waffle',
         queue: [{ pathname: '/rofl' }]
       });
-      const result = fromState(reducer()(state, action));
+      const result = readState(reducer()(state, action));
 
       expect(result).to.deep.equal({
         pathname: '/rofl',
@@ -134,7 +134,7 @@ const immutableReducerTest = {
         }]
       });
 
-      const result = fromState(reducer()(state, action));
+      const result = readState(reducer()(state, action));
 
       expect(result).to.deep.equal({
         basename: '/base',
@@ -195,7 +195,7 @@ const immutableReducerTest = {
       const result = flow(
         partialRight(reducerInstance, navigationAction),
         partialRight(reducerInstance, listenerAction),
-        fromState
+        readState
       )(state);
 
       expect(result).to.deep.equal({
@@ -261,7 +261,7 @@ const immutableReducerTest = {
       const result = flow(
         partialRight(reducerInstance, navigationAction),
         partialRight(reducerInstance, listenerAction),
-        fromState
+        readState
       )(state);
 
       expect(result).to.deep.equal({
@@ -307,7 +307,7 @@ const immutableReducerTest = {
         pathname: '/rofl',
         other: 'things'
       });
-      const result = fromState(reducer()(state, action));
+      const result = readState(reducer()(state, action));
 
       expect(result).to.deep.equal({
         pathname: '/rofl',
@@ -323,7 +323,7 @@ const immutableReducerTest = {
         }
       };
       const state = toState({});
-      const result = fromState(reducer()(state, action));
+      const result = readState(reducer()(state, action));
       expect(result).to.deep.equal({});
     });
 
@@ -334,7 +334,7 @@ const immutableReducerTest = {
           crazy: 'nonsense'
         }
       };
-      const result = fromState(reducer()(undefined, action));
+      const result = readState(reducer()(undefined, action));
       expect(result).to.deep.equal({ routes: {}, queue: [] });
     });
 
@@ -355,7 +355,7 @@ const immutableReducerTest = {
           }
         }
       };
-      const result = fromState(reducer(initialState)(undefined, action));
+      const result = readState(reducer(initialState)(undefined, action));
 
       expect(result).to.deep.equal({
         pathname: '/lol',
@@ -392,7 +392,7 @@ const immutableReducerTest = {
       flow(
         partialRight(reducerInstance, replaceRoutesAction),
         state => {
-          const result = fromState(state);
+          const result = readState(state);
           expect(result).to.have.deep.nested.property('routes', { '/hoo': 'li' });
           expect(result).to.have.deep.nested.property(
             'options.updateRoutes',
@@ -402,7 +402,7 @@ const immutableReducerTest = {
         },
         partialRight(reducerInstance, didReplaceRoutesAction),
         state => {
-          const result = fromState(state);
+          const result = readState(state);
           expect(result).to.have.deep.nested.property('routes', { '/hoo': 'li' });
           expect(result).to.not.have.deep.nested.property('options.updateRoutes');
           return state;
@@ -418,7 +418,7 @@ const immutableReducerTest = {
         partialRight(reducerInstance, { type: REPLACE, payload: { pathname: '/lolk' } }),
         partialRight(reducerInstance, { type: GO_FORWARD }),
         partialRight(reducerInstance, { type: GO_BACK }),
-        fromState
+        readState
       )(undefined);
 
       expect(result).to.deep.equal({

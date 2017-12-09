@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
-import { Map } from 'immutable';
+import { fromJS } from 'immutable';
 import { combineReducers } from 'redux';
 import { combineReducers as combineImmutableReducers } from 'redux-immutable';
 
@@ -16,27 +16,27 @@ chai.use(sinonChai);
 const expressRouterTest = {
   router: routerForExpress,
   combineReducers,
-  initialState: {},
-  getState: store => store.getState(),
+  toState: state => state,
+  readState: state => state,
   testLabel: 'express router'
 };
 const immutableExpressRouterTest = {
   router: immutableRouterForExpress,
   combineReducers: combineImmutableReducers,
-  initialState: Map(),
-  getState: store => store.getState().toJS(),
+  toState: state => fromJS(state),
+  readState: state => state.toJS(),
   testLabel: 'immutable express router'
 };
 
 [expressRouterTest, immutableExpressRouterTest].forEach(({
   router,
   combineReducers,
-  initialState,
-  getState,
+  toState,
+  readState,
   testLabel
 }) => {
   describe(`${testLabel}`, () => {
-    const setupExpressStore = setupStoreForEnv(router, combineReducers, initialState);
+    const setupExpressStore = setupStoreForEnv(router, combineReducers, toState({}));
 
     it('creates a server store enhancer using Express request object', () => {
       const store = setupExpressStore({
@@ -47,7 +47,7 @@ const immutableExpressRouterTest = {
         }
       });
 
-      const state = getState(store);
+      const state = readState(store.getState());
       expect(state).to.have.nested.property('router.pathname', '/home');
       expect(state).to.have.nested.property('router.search', '?get=schwifty');
       expect(state).to.have.nested
@@ -65,7 +65,7 @@ const immutableExpressRouterTest = {
         }
       });
 
-      const state = getState(store);
+      const state = readState(store.getState());
       expect(state).to.have.nested.property('router.basename', '/cob-planet');
       expect(state).to.have.nested.property('router.pathname', '/home');
       expect(state).to.have.nested.property('router.search', '?get=schwifty');

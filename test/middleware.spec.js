@@ -2,7 +2,7 @@
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
-import { Map, fromJS } from 'immutable';
+import { fromJS } from 'immutable';
 import { createStore, applyMiddleware } from 'redux';
 
 import { PUSH, REPLACE, GO, GO_BACK, GO_FORWARD } from '../src/types';
