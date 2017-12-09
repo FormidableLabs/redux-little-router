@@ -37,45 +37,57 @@ const actionMethodMap = {
   [GO_FORWARD]: 'goForward'
 };
 
-describe('Router middleware', () => {
-  let testObj;
-  let immutableTestObj;
+const middlewareTest = {
+  middleware,
+  toState: (state) => state,
+  testLabel: 'router middleware'
+};
+const immutableMiddlewareTest = {
+  middleware: immutableMiddleware,
+  toState: (state) => fromJS(state),
+  testLabel: 'immutable router middleware'
+};
 
-  const setupTest = (routerMiddleware, reducer, initialState) => {
-    const historyStub = {
-      push: sandbox.stub(),
-      replace: sandbox.stub(),
-      go: sandbox.stub(),
-      goBack: sandbox.stub(),
-      goForward: sandbox.stub(),
-      listen: sandbox.stub()
-    };
-    const store = createStore(
-      reducer,
-      initialState,
-      applyMiddleware(routerMiddleware({ history: historyStub }), consumerMiddleware)
-    );
-    sandbox.spy(store, 'dispatch');
-    return { historyStub, store };
-  };
+[middlewareTest, immutableMiddlewareTest].forEach(({
+  middleware,
+  toState,
+  testLabel
+}) => {
+  describe(`${testLabel}`, () => {
+    let store;
+    let historyStub;
 
-  beforeEach(() => {
-    const routerInitialState = {
-      router: {
-        query: {
-          is: 'cool'
+    beforeEach(() => {
+      historyStub = {
+        push: sandbox.stub(),
+        replace: sandbox.stub(),
+        go: sandbox.stub(),
+        goBack: sandbox.stub(),
+        goForward: sandbox.stub(),
+        listen: sandbox.stub()
+      };
+      const reducer = () => toState({
+        router: {
+          query: {
+            is: 'cool'
+          }
         }
-      }
-    };
-    testObj = setupTest(middleware, () => routerInitialState, {});
-    immutableTestObj = setupTest(immutableMiddleware, () => fromJS(routerInitialState), Map());
-  });
+      });
+      const initialState = toState({});
 
-  Object.keys(actionMethodMap).forEach(actionType => {
-    const method = actionMethodMap[actionType];
+      store = createStore(
+        reducer,
+        initialState,
+        applyMiddleware(middleware({ history: historyStub }), consumerMiddleware)
+      );
 
-    it(`calls history.${method} when intercepting ${actionType}`, () => {
-      [testObj, immutableTestObj].forEach(({ store, historyStub }) => {
+      sandbox.spy(store, 'dispatch');
+    });
+
+    Object.keys(actionMethodMap).forEach(actionType => {
+      const method = actionMethodMap[actionType];
+
+      it(`calls history.${method} when intercepting ${actionType}`, () => {
         store.dispatch({
           type: actionType,
           payload: {}
@@ -84,13 +96,11 @@ describe('Router middleware', () => {
         expect(historyStub[method]).to.have.been.calledOnce;
       });
     });
-  });
 
-  [PUSH, REPLACE].forEach(actionType => {
-    const method = actionMethodMap[actionType];
+    [PUSH, REPLACE].forEach(actionType => {
+      const method = actionMethodMap[actionType];
 
-    it(`calls history.${method} with merged queries when requesting persistence`, () => {
-      [testObj, immutableTestObj].forEach(({ store, historyStub }) => {
+      it(`calls history.${method} with merged queries when requesting persistence`, () => {
         store.dispatch({
           type: actionType,
           payload: {
@@ -112,13 +122,11 @@ describe('Router middleware', () => {
           options: {
             persistQuery: true
           }
-        });
+        })
       });
     });
-  });
 
-  it('passes normal actions through the dispatch chain', () => {
-    [testObj, immutableTestObj].forEach(({ store, historyStub }) => {
+    it('passes normal actions through the dispatch chain', () => {
       store.dispatch({
         type: 'NOT_MY_ACTION_NOT_MY_PROBLEM',
         payload: {}
@@ -129,10 +137,8 @@ describe('Router middleware', () => {
         expect(historyStub[method]).to.not.have.been.called;
       });
     });
-  });
 
-  it('allows for dispatching router actions in consumer middleware', () => {
-    [testObj, immutableTestObj].forEach(({ store, historyStub }) => {
+    it('allows for dispatching router actions in consumer middleware', () => {
       store.dispatch({
         type: REFRAGULATE,
         payload: {}
