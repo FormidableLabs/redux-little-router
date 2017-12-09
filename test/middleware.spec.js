@@ -39,12 +39,12 @@ const actionMethodMap = {
 
 const middlewareTest = {
   middleware,
-  toState: (state) => state,
+  toState: state => state,
   testLabel: 'router middleware'
 };
 const immutableMiddlewareTest = {
   middleware: immutableMiddleware,
-  toState: (state) => fromJS(state),
+  toState: state => fromJS(state),
   testLabel: 'immutable router middleware'
 };
 

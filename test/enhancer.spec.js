@@ -2,7 +2,7 @@
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
-import { Map } from 'immutable';
+import { fromJS } from 'immutable';
 import { combineReducers, compose, createStore, applyMiddleware } from 'redux';
 import { combineReducers as combineImmutableReducers } from 'redux-immutable';
 
@@ -20,23 +20,23 @@ chai.use(sinonChai);
 const enhancerTest = {
   install,
   combineReducers,
-  initialState: {},
-  getState: store => store.getState(),
+  toState: state => state,
+  fromState: state => state,
   testLabel: 'store enhancer'
 };
 const immutableEnhancerTest = {
   install: immutableInstall,
   combineReducers: combineImmutableReducers,
-  initialState: Map(),
-  getState: store => store.getState().toJS(),
+  toState: state => fromJS(state),
+  fromState: state => state.toJS(),
   testLabel: 'immutable store enhancer'
 };
 
 [enhancerTest, immutableEnhancerTest].forEach(({
   install,
   combineReducers,
-  initialState,
-  getState,
+  toState,
+  fromState,
   testLabel
 }) => {
   describe(`${testLabel}`, () => {
@@ -60,7 +60,7 @@ const immutableEnhancerTest = {
 
       store = createStore(
         combineReducers({ router: reducer }),
-        initialState,
+        toState({}),
         compose(enhancer, applyMiddleware(middleware))
       );
       sandbox.spy(store, 'dispatch');
@@ -98,7 +98,7 @@ const immutableEnhancerTest = {
       expect(historyStub.replace).to.be.calledOnce;
       expect(listenStub).to.be.calledOnce;
 
-      const { routes } = getState(store).router;
+      const { routes } = fromState(store.getState()).router;
       const matcher = createMatcher(routes);
       expect(matcher('/')).to.have.deep.property('result', {
         could: 'you not'
