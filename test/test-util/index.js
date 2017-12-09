@@ -1,6 +1,6 @@
 /* eslint-disable new-cap */
 import createMemoryHistory from 'history/createMemoryHistory';
-import { Map, fromJS } from 'immutable';
+import { fromJS } from 'immutable';
 import { applyMiddleware, createStore, compose } from 'redux';
 
 import createMatcher from '../../src/util/create-matcher';

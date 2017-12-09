@@ -2,7 +2,7 @@ import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
 import { fromJS } from 'immutable';
-import { combineReducers } from 'redux';
+import { combineReducers as combineReduxReducers } from 'redux';
 import { combineReducers as combineImmutableReducers } from 'redux-immutable';
 
 import routerForHapi from '../../src/environment/hapi-router';
@@ -15,7 +15,7 @@ chai.use(sinonChai);
 
 const hapiRouterTest = {
   router: routerForHapi,
-  combineReducers,
+  combineReducers: combineReduxReducers,
   toState: state => state,
   readState: state => state,
   testLabel: 'hapi router'

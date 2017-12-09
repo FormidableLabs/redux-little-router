@@ -1,4 +1,4 @@
-/* eslint-disable new-cap, no-shadow */
+/* eslint-disable new-cap, max-nested-callbacks */
 import { expect } from 'chai';
 
 import { flow, partialRight } from 'lodash';
@@ -13,11 +13,11 @@ import {
   GO_FORWARD,
   REPLACE
 } from '../src/types';
-import reducer from '../src/reducer';
+import routerReducer from '../src/reducer';
 import immutableReducer from '../src/immutable/reducer';
 
 const reducerTest = {
-  reducer,
+  reducer: routerReducer,
   toState: state => state,
   readState: state => state,
   testLabel: 'router reducer'
