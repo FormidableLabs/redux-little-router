@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 
 import { flow, partialRight } from 'lodash';
-import { Map, fromJS } from 'immutable';
+import { fromJS } from 'immutable';
 
 import {
   LOCATION_CHANGED,
@@ -16,47 +16,51 @@ import {
 import reducer from '../src/reducer';
 import immutableReducer from '../src/immutable/reducer';
 
-describe('Router reducer', () => {
-  const setupReducers = (initialState) => ({
-    reducer: reducer(initialState),
-    immutableReducer: immutableReducer(initialState)
-  });
+const reducerTest = {
+  reducer,
+  toState: state => state,
+  fromState: state => state,
+  testLabel: 'router reducer'
+};
+const immutableReducerTest = {
+  reducer: immutableReducer,
+  toState: state => fromJS(state),
+  fromState: state => state.toJS(),
+  testLabel: 'immutable router reducer'
+};
 
-  const reduce = ({ reducer, immutableReducer }, state, action) => ({
-    result: reducer(state, action),
-    immutableResult: immutableReducer(fromJS(state), action)
-  });
-
-  const toJS = (obj) => obj.toJS ? obj.toJS() : obj;
-
-  it('adds the pathname to the store', () => {
-    const action = {
-      type: LOCATION_CHANGED,
-      payload: {
-        params: {},
-        result: 'rofl',
-        pathname: '/rofl',
-        state: {
-          bork: 'bork'
+[reducerTest, immutableReducerTest].forEach(({
+  reducer,
+  toState,
+  fromState,
+  testLabel
+}) => {
+  describe(`${testLabel}`, () => {
+    it('adds the pathname to the store', () => {
+      const action = {
+        type: LOCATION_CHANGED,
+        payload: {
+          params: {},
+          result: 'rofl',
+          pathname: '/rofl',
+          state: {
+            bork: 'bork'
+          }
         }
-      }
-    };
-    const state = {
-      queue: [{
-        params: {},
-        result: 'rofl',
-        pathname: '/rofl',
-        state: {
-          bork: 'bork'
-        }
-      }]
-    };
+      };
+      const state = toState({
+        queue: [{
+          params: {},
+          result: 'rofl',
+          pathname: '/rofl',
+          state: {
+            bork: 'bork'
+          }
+        }]
+      });
+      const result = fromState(reducer()(state, action));
 
-    const reducers = setupReducers();
-    const { result, immutableResult } = reduce(reducers, state, action);
-
-    [result, immutableResult].forEach(r => {
-      expect(toJS(r)).to.deep.equal({
+      expect(result).to.deep.equal({
         params: {},
         result: 'rofl',
         pathname: '/rofl',
@@ -67,36 +71,34 @@ describe('Router reducer', () => {
         queue: [],
         routes: {},
         previous: {
-          queue: [{
-            params: {},
-            result: 'rofl',
-            pathname: '/rofl',
-            state: {
-              bork: 'bork'
+          queue: [
+            {
+              params: {},
+              result: 'rofl',
+              pathname: '/rofl',
+              state: {
+                bork: 'bork'
+              }
             }
-          }]
+          ]
         }
       });
-    })
-  });
+    });
 
-  it('includes the previous location', () => {
-    const action = {
-      type: LOCATION_CHANGED,
-      payload: {
-        pathname: '/rofl'
-      }
-    };
-    const state = {
-      pathname: '/waffle',
-      queue: [{ pathname: '/rofl' }]
-    };
+    it('includes the previous location', () => {
+      const action = {
+        type: LOCATION_CHANGED,
+        payload: {
+          pathname: '/rofl'
+        }
+      };
+      const state = toState({
+        pathname: '/waffle',
+        queue: [{ pathname: '/rofl' }]
+      });
+      const result = fromState(reducer()(state, action));
 
-    const reducers = setupReducers();
-    const { result, immutableResult } = reduce(reducers, state, action);
-
-    [result, immutableResult].forEach(r => {
-      expect(toJS(r)).to.deep.equal({
+      expect(result).to.deep.equal({
         pathname: '/rofl',
         query: {},
         queue: [],
@@ -107,24 +109,11 @@ describe('Router reducer', () => {
         }
       });
     });
-  });
 
-  it('persists the initial basename after subsequent navigations', () => {
-    const action = {
-      type: LOCATION_CHANGED,
-      payload: {
-        params: {},
-        result: 'rofl',
-        pathname: '/rofl',
-        state: {
-          bork: 'bork'
-        }
-      }
-    };
-    const state = {
-      basename: '/base',
-      queue: [
-        {
+    it('persists the initial basename after subsequent navigations', () => {
+      const action = {
+        type: LOCATION_CHANGED,
+        payload: {
           params: {},
           result: 'rofl',
           pathname: '/rofl',
@@ -132,14 +121,22 @@ describe('Router reducer', () => {
             bork: 'bork'
           }
         }
-      ]
-    };
+      };
+      const state = toState({
+        basename: '/base',
+        queue: [{
+          params: {},
+          result: 'rofl',
+          pathname: '/rofl',
+          state: {
+            bork: 'bork'
+          }
+        }]
+      });
 
-    const reducers = setupReducers();
-    const { result, immutableResult } = reduce(reducers, state, action);
+      const result = fromState(reducer()(state, action));
 
-    [result, immutableResult].forEach(r => {
-      expect(toJS(r)).to.deep.equal({
+      expect(result).to.deep.equal({
         basename: '/base',
         params: {},
         result: 'rofl',
@@ -165,42 +162,43 @@ describe('Router reducer', () => {
         routes: {}
       });
     });
-  });
 
-  it('persists the previous query if requested', () => {
-    const { reducer, immutableReducer } = setupReducers();
-    const navigationAction = {
-      type: PUSH,
-      payload: {
-        pathname: '/rofl',
-        options: {
-          persistQuery: true
+    it('persists the previous query if requested', () => {
+      const reducerInstance = reducer();
+
+      const navigationAction = {
+        type: PUSH,
+        payload: {
+          pathname: '/rofl',
+          options: {
+            persistQuery: true
+          }
         }
-      }
-    };
-    const listenerAction = {
-      type: LOCATION_CHANGED,
-      payload: {
-        pathname: '/rofl'
-      }
-    };
-    const state = {
-      pathname: '/waffle',
-      query: {
-        please: 'clap'
-      },
-      search: '?please=clap',
-      queue: []
-    };
+      };
 
-    [{ reducer, state }, { reducer: immutableReducer, state: fromJS(state) }].forEach(testObj => {
-      const { reducer, state } = testObj;
+      const listenerAction = {
+        type: LOCATION_CHANGED,
+        payload: {
+          pathname: '/rofl'
+        }
+      };
+
+      const state = toState({
+        pathname: '/waffle',
+        query: {
+          please: 'clap'
+        },
+        search: '?please=clap',
+        queue: []
+      });
+
       const result = flow(
-        partialRight(reducer, navigationAction),
-        partialRight(reducer, listenerAction)
+        partialRight(reducerInstance, navigationAction),
+        partialRight(reducerInstance, listenerAction),
+        fromState
       )(state);
 
-      expect(toJS(result)).to.deep.equal({
+      expect(result).to.deep.equal({
         pathname: '/rofl',
         query: {
           please: 'clap'
@@ -225,48 +223,48 @@ describe('Router reducer', () => {
         routes: {}
       });
     });
-  });
 
-  it('merges old and new queries when requesting persistence', () => {
-    const { reducer, immutableReducer } = setupReducers();
+    it('merges old and new queries when requesting persistence', () => {
+      const reducerInstance = reducer();
 
-    const navigationAction = {
-      type: PUSH,
-      payload: {
-        pathname: '/rofl',
-        search: '?clap=please',
-        query: {
-          clap: 'please'
-        },
-        options: {
-          persistQuery: true
+      const navigationAction = {
+        type: PUSH,
+        payload: {
+          pathname: '/rofl',
+          search: '?clap=please',
+          query: {
+            clap: 'please'
+          },
+          options: {
+            persistQuery: true
+          }
         }
-      }
-    };
-    const listenerAction = {
-      type: LOCATION_CHANGED,
-      payload: {
-        pathname: '/rofl',
-        search: '?clap=please'
-      }
-    };
-    const state = {
-      pathname: '/waffle',
-      query: {
-        please: 'clap'
-      },
-      search: '?please=clap',
-      queue: []
-    };
+      };
 
-    [{ reducer, state }, { reducer: immutableReducer, state: fromJS(state) }].forEach(testObj => {
-      const { reducer, state } = testObj;
+      const listenerAction = {
+        type: LOCATION_CHANGED,
+        payload: {
+          pathname: '/rofl',
+          search: '?clap=please'
+        }
+      };
+
+      const state = toState({
+        pathname: '/waffle',
+        query: {
+          please: 'clap'
+        },
+        search: '?please=clap',
+        queue: []
+      });
+
       const result = flow(
-        partialRight(reducer, navigationAction),
-        partialRight(reducer, listenerAction)
+        partialRight(reducerInstance, navigationAction),
+        partialRight(reducerInstance, listenerAction),
+        fromState
       )(state);
 
-      expect(toJS(result)).to.deep.equal({
+      expect(result).to.deep.equal({
         pathname: '/rofl',
         query: {
           clap: 'please',
@@ -296,86 +294,70 @@ describe('Router reducer', () => {
         routes: {}
       });
     });
-  });
 
-  it('does nothing if the action pathname is the same as the existing', () => {
-    const action = {
-      type: LOCATION_CHANGED,
-      payload: {
+    it('does nothing if the action pathname is the same as the existing', () => {
+      const action = {
+        type: LOCATION_CHANGED,
+        payload: {
+          pathname: '/rofl',
+          other: 'stuff'
+        }
+      };
+      const state = toState({
         pathname: '/rofl',
-        other: 'stuff'
-      }
-    };
-    const state = {
-      pathname: '/rofl',
-      other: 'things'
-    };
+        other: 'things'
+      });
+      const result = fromState(reducer()(state, action));
 
-    const reducers = setupReducers();
-    const { result, immutableResult } = reduce(reducers, state, action);
-
-    [result, immutableResult].forEach(r => {
-      expect(toJS(r)).to.deep.equal({
+      expect(result).to.deep.equal({
         pathname: '/rofl',
         other: 'things'
       });
     });
-  });
 
-  it('is not affected by other action types', () => {
-    const action = {
-      type: 'NOT_MY_ACTION_NOT_MY_PROBLEM',
-      payload: {
-        crazy: 'nonsense'
-      }
-    };
-
-    const reducers = setupReducers();
-    const { result, immutableResult } = reduce(reducers, {}, action);
-
-    [result, immutableResult].forEach(r => {
-      expect(toJS(r)).to.deep.equal({});
-    });
-  });
-
-  it('does not throw on undefined locations', () => {
-    const action = {
-      type: 'NOT_MY_ACTION_NOT_MY_PROBLEM',
-      payload: {
-        crazy: 'nonsense'
-      }
-    };
-
-    const reducers = setupReducers();
-    const { result, immutableResult } = reduce(reducers, undefined, action);
-
-    [result, immutableResult].forEach(r => {
-      expect(toJS(r)).to.deep.equal({ routes: {}, queue: [] });
-    });
-  });
-
-  it('uses given location as initial state when no initial router state provided', () => {
-    const action = {
-      type: 'NOT_MY_ACTION_NOT_MY_PROBLEM',
-      payload: {
-        crazy: 'nonsense'
-      }
-    };
-    const initialState = {
-      initialLocation: {
-        pathname: '/lol',
-        search: '?as=af',
-        query: {
-          as: 'af'
+    it('is not affected by other action types', () => {
+      const action = {
+        type: 'NOT_MY_ACTION_NOT_MY_PROBLEM',
+        payload: {
+          crazy: 'nonsense'
         }
-      }
-    };
+      };
+      const state = toState({});
+      const result = fromState(reducer()(state, action));
+      expect(result).to.deep.equal({});
+    });
 
-    const reducers = setupReducers(initialState);
-    const { result, immutableResult } = reduce(reducers, undefined, action);
+    it('does not throw on undefined locations', () => {
+      const action = {
+        type: 'NOT_MY_ACTION_NOT_MY_PROBLEM',
+        payload: {
+          crazy: 'nonsense'
+        }
+      };
+      const result = fromState(reducer()(undefined, action));
+      expect(result).to.deep.equal({ routes: {}, queue: [] });
+    });
 
-    [result, immutableResult].forEach(r => {
-      expect(toJS(r)).to.deep.equal({
+    it('uses given location as initial state when no initial router state provided', () => {
+      const action = {
+        type: 'NOT_MY_ACTION_NOT_MY_PROBLEM',
+        payload: {
+          crazy: 'nonsense'
+        }
+      };
+      // `initialState` is always fed in as pure js, even in the immutable case
+      const initialState = {
+        initialLocation: {
+          pathname: '/lol',
+          search: '?as=af',
+          query: {
+            as: 'af'
+          }
+        }
+      };
+      const result = fromState(reducer(initialState)(undefined, action));
+
+      expect(result).to.deep.equal({
         pathname: '/lol',
         search: '?as=af',
         query: {
@@ -385,59 +367,65 @@ describe('Router reducer', () => {
         routes: {}
       });
     });
-  });
 
-  it('replaces routes', () => {
-    const { reducer, immutableReducer } = setupReducers({
-      routes: { '/': { pied: 'piper' } },
-      pathname: '/bachmanity'
-    });
-    const replaceRoutesAction = {
-      type: REPLACE_ROUTES,
-      payload: {
-        routes: { '/hoo': 'li' },
-        options: { updateRoutes: true }
-      }
-    };
-    const didReplaceRoutesAction = { type: DID_REPLACE_ROUTES };
+    it('replaces routes', () => {
+      const initialState = toState({
+        routes: {
+          '/': {
+            pied: 'piper'
+          }
+        },
+        pathname: '/bachmanity'
+      });
+      const reducerInstance = reducer(initialState);
 
-    [{ reducer, state: {} }, { reducer: immutableReducer, state: Map() }].forEach(testObj => {
-      const { reducer, state } = testObj;
+      const replaceRoutesAction = {
+        type: REPLACE_ROUTES,
+        payload: {
+          routes: { '/hoo': 'li' },
+          options: { updateRoutes: true }
+        }
+      };
+
+      const didReplaceRoutesAction = { type: DID_REPLACE_ROUTES };
+
       flow(
-        partialRight(reducer, replaceRoutesAction),
+        partialRight(reducerInstance, replaceRoutesAction),
         state => {
-          expect(toJS(state)).to.have.deep.nested.property('routes', { '/hoo': 'li' });
-          expect(toJS(state)).to.have.deep.nested.property(
+          const result = fromState(state);
+          expect(result).to.have.deep.nested.property('routes', { '/hoo': 'li' });
+          expect(result).to.have.deep.nested.property(
             'options.updateRoutes',
             true
           );
           return state;
         },
-        partialRight(reducer, didReplaceRoutesAction),
+        partialRight(reducerInstance, didReplaceRoutesAction),
         state => {
-          expect(toJS(state)).to.have.deep.nested.property('routes', { '/hoo': 'li' });
-          expect(toJS(state)).to.not.have.deep.nested.property('options.updateRoutes');
+          const result = fromState(state);
+          expect(result).to.have.deep.nested.property('routes', { '/hoo': 'li' });
+          expect(result).to.not.have.deep.nested.property('options.updateRoutes');
           return state;
         }
-      )(state);
+      )(toState({}));
     });
-  });
 
-  it('should only enqueue navigation actions with payloads', () => {
-    const { reducer, immutableReducer } = setupReducers();
-
-    [reducer, immutableReducer].forEach(r => {
+    it('should only enqueue navigation actions with payloads', () => {
+      const reducerInstance = reducer();
       const result = flow(
-        partialRight(r, { type: GO_BACK }),
-        partialRight(r, { type: GO_FORWARD }),
-        partialRight(r, { type: REPLACE, payload: { pathname: '/lolk' } }),
-        partialRight(r, { type: GO_FORWARD }),
-        partialRight(r, { type: GO_BACK }),
+        partialRight(reducerInstance, { type: GO_BACK }),
+        partialRight(reducerInstance, { type: GO_FORWARD }),
+        partialRight(reducerInstance, { type: REPLACE, payload: { pathname: '/lolk' } }),
+        partialRight(reducerInstance, { type: GO_FORWARD }),
+        partialRight(reducerInstance, { type: GO_BACK }),
+        fromState
       )(undefined);
 
-      expect(toJS(result)).to.deep.equal({
+      expect(result).to.deep.equal({
         routes: {},
-        queue: [{ pathname: '/lolk' }]
+        queue: [{
+          pathname: '/lolk'
+        }]
       });
     });
   });

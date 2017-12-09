@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
-import { Map } from 'immutable';
+import { fromJS } from 'immutable';
 import { combineReducers } from 'redux';
 import { combineReducers as combineImmutableReducers } from 'redux-immutable';
 
@@ -16,27 +16,27 @@ chai.use(sinonChai);
 const browserRouterTest = {
   router: routerForBrowser,
   combineReducers,
-  initialState: {},
-  getState: store => store.getState(),
+  toState: state => state,
+  fromState: state => state,
   testLabel: 'browser router'
 };
 const immutableBrowserRouterTest = {
   router: immutableRouterForBrowser,
   combineReducers: combineImmutableReducers,
-  initialState: Map(),
-  getState: store => store.getState().toJS(),
+  toState: state => fromJS(state),
+  fromState: state => state.toJS(),
   testLabel: 'immutable browser router'
 };
 
 [browserRouterTest, immutableBrowserRouterTest].forEach(({
   router,
   combineReducers,
-  initialState,
-  getState,
+  toState,
+  fromState,
   testLabel
 }) => {
   describe(`${testLabel}`, () => {
-    const setupBrowserStore = setupStoreForEnv(router, combineReducers, initialState);
+    const setupBrowserStore = setupStoreForEnv(router, combineReducers, toState({}));
 
     it('creates a browser store enhancer using history location', () => {
       const store = setupBrowserStore({
@@ -50,7 +50,7 @@ const immutableBrowserRouterTest = {
           listen() {}
         }
       });
-      const state = getState(store);
+      const state = fromState(store.getState());
 
       expect(state).to.have.nested.property('router.pathname', '/home');
       expect(state).to.have.nested.property('router.search', '?get=schwifty');
@@ -73,7 +73,7 @@ const immutableBrowserRouterTest = {
           listen() {}
         }
       });
-      const state = getState(store);
+      const state = fromState(store.getState());
 
       expect(state).to.have.nested.property('router.basename', '/cob-planet');
       expect(state).to.have.nested.property('router.pathname', '/home');
@@ -96,7 +96,7 @@ const immutableBrowserRouterTest = {
         }
       });
 
-      const state = getState(store);
+      const state = fromState(store.getState());
       expect(state).to.have.nested.property('router.basename', '/app');
       expect(state).to.have.nested.property('router.pathname', '/foo/app/bar');
     });
