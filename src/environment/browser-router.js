@@ -26,7 +26,7 @@ export const createBrowserRouter = (installer: Function) =>
     } = history.location;
 
     // Strip the basename from the initial pathname
-    const pathname = basename && fullPathname.indexOf(basename) === 0
+    const pathname = fullPathname.indexOf(basename) === 0
       ? fullPathname.slice(basename.length)
       : fullPathname;
 
