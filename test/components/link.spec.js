@@ -6,7 +6,10 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 import { PUSH, REPLACE } from '../../src/types';
-import { Link, PersistentQueryLink } from '../../src/components/link';
+import {
+  Link as LinkComponent,
+  PersistentQueryLink as PersistentQueryLinkComponent
+} from '../../src/components/link';
 import { ImmutableLink, ImmutablePersistentQueryLink } from '../../src/immutable/components/link';
 
 import { captureErrors, fakeContext, fakeImmutableContext, standardClickEvent } from '../test-util';
@@ -14,17 +17,21 @@ import { captureErrors, fakeContext, fakeImmutableContext, standardClickEvent } 
 chai.use(sinonChai);
 
 const linkTest = {
-  Link,
-  fakeContext,
+  Link: LinkComponent,
+  context: fakeContext,
   testLabel: 'Link'
 };
 const immutableLinkTest = {
   Link: ImmutableLink,
-  fakeContext: fakeImmutableContext,
+  context: fakeImmutableContext,
   testLabel: 'ImmutableLink'
 };
 
-[linkTest, immutableLinkTest].forEach(({ Link, fakeContext, testLabel }) => {
+[linkTest, immutableLinkTest].forEach(({
+  Link,
+  context,
+  testLabel
+}) => {
   describe(`${testLabel}`, () => {
     describe('PUSH', () => {
       const hrefs = [
@@ -62,7 +69,7 @@ const immutableLinkTest = {
 
           const wrapper = mount(
             <Link href={href} />,
-            fakeContext({ assertion })
+            context({ assertion })
           );
 
           wrapper.find('a').simulate('click', standardClickEvent);
@@ -83,7 +90,7 @@ const immutableLinkTest = {
 
           const wrapper = mount(
             <Link href={href} persistQuery />,
-            fakeContext({ assertion })
+            context({ assertion })
           );
 
           wrapper.find('a').simulate('click', standardClickEvent);
@@ -127,7 +134,7 @@ const immutableLinkTest = {
 
           const wrapper = mount(
             <Link replaceState href={href} />,
-            fakeContext({ assertion })
+            context({ assertion })
           );
 
           wrapper.find('a').simulate('click', standardClickEvent);
@@ -138,7 +145,7 @@ const immutableLinkTest = {
     describe('Accessibility', () => {
       ['shiftKey', 'altKey', 'metaKey', 'ctrlKey'].forEach(modifierKey =>
         it(`uses default browser behavior when the user holds the ${modifierKey}`, () => {
-          const wrapper = mount(<Link href="/home/things" />, fakeContext());
+          const wrapper = mount(<Link href="/home/things" />, context());
 
           const spy = sandbox.spy();
           wrapper.find('a').simulate('click', {
@@ -152,7 +159,7 @@ const immutableLinkTest = {
       );
 
       it('uses default browser behavior when the user clicks a non-left mouse button', () => {
-        const wrapper = mount(<Link href="/home/things" />, fakeContext());
+        const wrapper = mount(<Link href="/home/things" />, context());
 
         const spy = sandbox.spy();
         wrapper.find('a').simulate('click', {
@@ -165,7 +172,7 @@ const immutableLinkTest = {
       });
 
       it('prevents default when the user left-clicks', () => {
-        const wrapper = mount(<Link href="/home/things" />, fakeContext());
+        const wrapper = mount(<Link href="/home/things" />, context());
 
         const spy = sandbox.spy();
         wrapper.find('a').simulate('click', {
@@ -187,7 +194,7 @@ const immutableLinkTest = {
               fontFamily: 'Comic Sans'
             }}
           />,
-          fakeContext()
+          context()
         );
 
         const props = wrapper.props();
@@ -202,7 +209,7 @@ const immutableLinkTest = {
         const onClick = sandbox.stub();
         const wrapper = mount(
           <Link href="/home/things" onClick={onClick} />,
-          fakeContext()
+          context()
         );
 
         wrapper.find('a').simulate('click', standardClickEvent);
@@ -215,7 +222,7 @@ const immutableLinkTest = {
       it('renders an <a /> with the correct href attribute', () => {
         const hrefs = ['/path', '/path?key=value', 'path/with/nested/routes'];
         hrefs.forEach(href => {
-          const wrapper = mount(<Link href={href} />, fakeContext());
+          const wrapper = mount(<Link href={href} />, context());
           expect(wrapper.find('a').prop('href')).to.equal(href);
         });
       });
@@ -225,7 +232,7 @@ const immutableLinkTest = {
         hrefs.forEach(href => {
           const wrapper = mount(
             <Link href={href} />,
-            fakeContext({ basename: '/base' })
+            context({ basename: '/base' })
           );
           expect(wrapper.find('a').prop('href')).to.equal(`/base${href}`);
         });
@@ -245,7 +252,7 @@ const immutableLinkTest = {
           { pathname: 'path/with/nested/routes' }
         ];
         locations.forEach((location, index) => {
-          const wrapper = mount(<Link href={location} />, fakeContext());
+          const wrapper = mount(<Link href={location} />, context());
           expect(wrapper.find('a').prop('href')).to.equal(expected[index]);
         });
       });
@@ -266,7 +273,7 @@ const immutableLinkTest = {
         locations.forEach((location, index) => {
           const wrapper = mount(
             <Link href={location} />,
-            fakeContext({ basename: '/base' })
+            context({ basename: '/base' })
           );
           expect(wrapper.find('a').prop('href')).to.equal(
             `/base${expected[index]}`
@@ -278,7 +285,7 @@ const immutableLinkTest = {
         const onClick = sandbox.stub();
         const wrapper = mount(
           <Link persistQuery href="/home?what=do" onClick={onClick} />,
-          fakeContext({
+          context({
             query: { persist: 'pls' }
           })
         );
@@ -296,7 +303,7 @@ const immutableLinkTest = {
               style: { color: 'red' }
             }}
           />,
-          fakeContext({
+          context({
             pathname: '/mr-jackpots'
           })
         );
@@ -312,7 +319,7 @@ const immutableLinkTest = {
               style: { color: 'red' }
             }}
           />,
-          fakeContext({
+          context({
             pathname: '/mr-jackpots'
           })
         );
@@ -324,24 +331,24 @@ const immutableLinkTest = {
 });
 
 const persistentQueryLinkTest = {
-  PersistentQueryLink,
-  fakeContext,
+  PersistentQueryLink: PersistentQueryLinkComponent,
+  context: fakeContext,
   testLabel: 'PersistentQueryLink'
 };
 const immutablePersistentQueryLinkTest = {
   PersistentQueryLink: ImmutablePersistentQueryLink,
-  fakeContext: fakeImmutableContext,
+  context: fakeImmutableContext,
   testLabel: 'ImmutablePersistentQueryLink'
 };
 
 [persistentQueryLinkTest, immutablePersistentQueryLinkTest].forEach(({
   PersistentQueryLink,
-  fakeContext,
+  context,
   testLabel
 }) => {
   describe(`${testLabel}`, () => {
     it('appends persistQuery to the props', () => {
-      const wrapper = mount(<PersistentQueryLink href="/" />, fakeContext());
+      const wrapper = mount(<PersistentQueryLink href="/" />, context());
       const link = wrapper.findWhere(node => node.name() === 'LinkComponent');
 
       expect(link.props()).to.have.property('persistQuery', true);

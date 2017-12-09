@@ -2,7 +2,7 @@ import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
 import { fromJS } from 'immutable';
-import { combineReducers } from 'redux';
+import { combineReducers as combineReduxReducers } from 'redux';
 import { combineReducers as combineImmutableReducers } from 'redux-immutable';
 
 import routerForHash from '../../src/environment/hash-router';
@@ -15,7 +15,7 @@ chai.use(sinonChai);
 
 const hashRouterTest = {
   router: routerForHash,
-  combineReducers,
+  combineReducers: combineReduxReducers,
   toState: state => state,
   readState: state => state,
   testLabel: 'hash router'

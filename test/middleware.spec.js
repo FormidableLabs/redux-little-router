@@ -1,4 +1,3 @@
-/* eslint-disable new-cap */
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
@@ -6,7 +5,7 @@ import { fromJS } from 'immutable';
 import { createStore, applyMiddleware } from 'redux';
 
 import { PUSH, REPLACE, GO, GO_BACK, GO_FORWARD } from '../src/types';
-import middleware from '../src/middleware';
+import routerMiddleware from '../src/middleware';
 import immutableMiddleware from '../src/immutable/middleware';
 
 chai.use(sinonChai);
@@ -38,7 +37,7 @@ const actionMethodMap = {
 };
 
 const middlewareTest = {
-  middleware,
+  middleware: routerMiddleware,
   toState: state => state,
   testLabel: 'router middleware'
 };

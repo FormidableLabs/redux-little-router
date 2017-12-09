@@ -1,15 +1,20 @@
-/* eslint-disable new-cap */
+/* eslint-disable max-nested-callbacks */
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
 import { fromJS } from 'immutable';
-import { combineReducers, compose, createStore, applyMiddleware } from 'redux';
+import {
+  combineReducers as combineReduxReducers,
+  compose,
+  createStore,
+  applyMiddleware
+} from 'redux';
 import { combineReducers as combineImmutableReducers } from 'redux-immutable';
 
 import { PUSH, REPLACE_ROUTES, POP } from '../src/types';
 import { locationDidChange, didReplaceRoutes, replace } from '../src/actions';
 import { createHistoryListener, createStoreSubscriber } from '../src/enhancer';
-import install from '../src/install';
+import installRouter from '../src/install';
 import immutableInstall from '../src/immutable/install';
 
 import createMatcher from '../src/util/create-matcher';
@@ -18,8 +23,8 @@ import defaultRoutes from './test-util/fixtures/routes';
 chai.use(sinonChai);
 
 const enhancerTest = {
-  install,
-  combineReducers,
+  install: installRouter,
+  combineReducers: combineReduxReducers,
   toState: state => state,
   readState: state => state,
   testLabel: 'store enhancer'
@@ -116,7 +121,6 @@ describe('createHistoryListener', () => {
     dispatch = sandbox.spy();
     // Mock the matcher by just returning a object with a single
     // `route` field populated with the pathname.
-    // eslint-disable-next-line max-nested-callbacks
     currentMatcher = sandbox.spy((pathname) => ({ route: pathname }));
     historyListener = createHistoryListener(dispatch);
   });
@@ -153,7 +157,6 @@ describe('createHistoryListener', () => {
       "POP"
     );
 
-    // eslint-disable-next-line no-magic-numbers
     expect(dispatch).to.have.been.calledTwice;
     expect(dispatch.getCall(0).args[0]).to.deep.equal({
       type: POP,
@@ -173,7 +176,6 @@ describe('createStoreSubscriber', () => {
   let currentMatcher;
   let storeSubscriber;
 
-  // eslint-disable max-nested-callbacks 
   beforeEach(() => {
     getState = sandbox.stub();
     dispatch = sandbox.spy();
@@ -183,7 +185,6 @@ describe('createStoreSubscriber', () => {
     storeSubscriber = createStoreSubscriber(getState, dispatch, createMatcherStub);
   });
 
-  // eslint-enable max-nested-callbacks 
   it('should not update routes if updateRoutes is not true', () => {
     const newRoutes = {};
     getState.returns({ routes: newRoutes });

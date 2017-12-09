@@ -1,10 +1,11 @@
+/* eslint-disable max-nested-callbacks */
 import { expect } from 'chai';
 
-import install from '../src/install';
+import installRouter from '../src/install';
 import immutableInstall from '../src/immutable/install';
 
 const installTest = {
-  install,
+  install: installRouter,
   readState: state => state,
   testLabel: 'router installer'
 };
@@ -19,17 +20,7 @@ const immutableInstallTest = {
   readState,
   testLabel
 }) => {
-  describe('Router installer', () => {
-    const setupTest = (installArg) => ({
-      router: install(installArg),
-      immutableRouter: immutableInstall(installArg)
-    });
-
-    const setupAsyncTest = (installArg) => ({
-      runInstall: () => install(installArg),
-      runImmutableInstall: () => immutableInstall(installArg)
-    });
-
+  describe(`${testLabel}`, () => {
     it('appends the match result to the location passed to the reducer factory', () => {
       const { reducer } = install({
         routes: {

@@ -2,7 +2,7 @@ import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 
 import { fromJS } from 'immutable';
-import { combineReducers } from 'redux';
+import { combineReducers as combineReduxReducers } from 'redux';
 import { combineReducers as combineImmutableReducers } from 'redux-immutable';
 
 import routerForBrowser from '../../src/environment/browser-router';
@@ -15,7 +15,7 @@ chai.use(sinonChai);
 
 const browserRouterTest = {
   router: routerForBrowser,
-  combineReducers,
+  combineReducers: combineReduxReducers,
   toState: state => state,
   readState: state => state,
   testLabel: 'browser router'

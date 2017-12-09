@@ -1,33 +1,36 @@
-/* eslint-disable max-len, no-magic-numbers */
 import { expect } from 'chai';
 import { mount } from 'enzyme';
 
 import React from 'react';
 
-import Fragment from '../../src/components/fragment';
+import FragmentComponent from '../../src/components/fragment';
 import ImmutableFragment from '../../src/immutable/components/fragment';
 
 import { fakeContext, fakeImmutableContext } from '../test-util';
 
 const fragmentTest = {
-  Fragment,
-  fakeContext,
+  Fragment: FragmentComponent,
+  context: fakeContext,
   testLabel: 'Fragment'
 };
 const immutableFragmentTest = {
   Fragment: ImmutableFragment,
-  fakeContext: fakeImmutableContext,
+  context: fakeImmutableContext,
   testLabel: 'ImmutableFragment'
 };
 
-[fragmentTest, immutableFragmentTest].forEach(({ Fragment, fakeContext, testLabel }) => {
+[fragmentTest, immutableFragmentTest].forEach(({
+  Fragment,
+  context,
+  testLabel
+}) => {
   describe(`${testLabel}`, () => {
     it('renders if the current URL matches the given route', () => {
       const wrapper = mount(
         <Fragment forRoute="/home/messages/:team">
           <p>Hey, wait, I'm having one of those things...you know, a headache with pictures.</p>
         </Fragment>,
-        fakeContext({ pathname: '/home/messages/a-team' })
+        context({ pathname: '/home/messages/a-team' })
       );
 
       expect(wrapper.find('p').node.textContent).to.equal(
@@ -47,7 +50,7 @@ const immutableFragmentTest = {
             </Fragment>
           </div>
         </Fragment>,
-        fakeContext({
+        context({
           pathname: '/boop',
           route: '/boop',
           query: { renderMe: true }
@@ -70,7 +73,7 @@ const immutableFragmentTest = {
             </Fragment>
           </div>
         </Fragment>,
-        fakeContext({
+        context({
           pathname: '/boop',
           route: '/boop',
           query: { renderMe: true }
@@ -106,7 +109,7 @@ const immutableFragmentTest = {
             </Fragment>
           </div>
         </Fragment>,
-        fakeContext({
+        context({
           pathname: '/this/is/nested/five/times',
           route: '/this/is/nested/:times/times'
         })
@@ -142,7 +145,7 @@ const immutableFragmentTest = {
             </Fragment>
           </div>
         </Fragment>,
-        fakeContext({
+        context({
           pathname: '/this/is/nested',
           route: '/this/is/nested'
         })
@@ -181,7 +184,7 @@ const immutableFragmentTest = {
             </Fragment>
           </div>
         </Fragment>,
-        fakeContext({
+        context({
           pathname: '/oh/hai/mark',
           route: '/oh/hai/:mark'
         })
@@ -206,7 +209,7 @@ const immutableFragmentTest = {
             </Fragment>
           </div>
         </Fragment>,
-        fakeContext({
+        context({
           pathname: '/',
           route: '/'
         })
@@ -230,7 +233,7 @@ const immutableFragmentTest = {
             </Fragment>
           </div>
         </Fragment>,
-        fakeContext({
+        context({
           pathname: '/',
           route: '/'
         })
@@ -254,7 +257,7 @@ const immutableFragmentTest = {
             </Fragment>
           </div>
         </Fragment>,
-        fakeContext({
+        context({
           pathname: '/oh',
           route: '/oh'
         })
@@ -278,7 +281,7 @@ const immutableFragmentTest = {
             </Fragment>
           </div>
         </Fragment>,
-        fakeContext({
+        context({
           pathname: '/foo',
           route: '/foo'
         })
@@ -304,7 +307,7 @@ const immutableFragmentTest = {
             </div>
           </Fragment>
         </Fragment>,
-        fakeContext({
+        context({
           pathname: '/foo/bar',
           route: '/foo/bar'
         })
@@ -328,7 +331,7 @@ const immutableFragmentTest = {
             </Fragment>
           </div>
         </Fragment>,
-        fakeContext({
+        context({
           pathname: '/foo/bar',
           route: '/foo/bar'
         })
@@ -365,7 +368,7 @@ const immutableFragmentTest = {
             </div>
           </Fragment>
         </Fragment>,
-        fakeContext({
+        context({
           pathname: '/foo/bar/you/again',
           route: '/foo/bar/you/again'
         })
@@ -537,11 +540,11 @@ const immutableFragmentTest = {
         }
       ];
 
-      contexts.forEach(context => {
-        const { pathname, route, assertion } = context;
+      contexts.forEach(c => {
+        const { pathname, route, assertion } = c;
         const wrapper = mount(
           element,
-          fakeContext({ pathname, route })
+          context({ pathname, route })
         );
 
         it(`${pathname} ${route}`, () => assertion(wrapper));
