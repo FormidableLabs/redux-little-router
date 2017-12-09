@@ -1,8 +1,7 @@
 /* eslint-disable new-cap */
 import createMemoryHistory from 'history/createMemoryHistory';
 import { Map, fromJS } from 'immutable';
-import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
-import { combineReducers as immutableCombineReducers } from 'redux-immutable';
+import { applyMiddleware, createStore, compose } from 'redux';
 
 import createMatcher from '../../src/util/create-matcher';
 
@@ -99,26 +98,12 @@ export const standardClickEvent = {
   preventDefault() {}
 };
 
-export const setupStores = (routerForEnv, immutableRouterForEnv, routerArg) => {
-  const router = routerForEnv(routerArg);
-  const immutableRouter = immutableRouterForEnv(routerArg);
-  const store = createStore(
-    combineReducers({ router: router.reducer }),
-    {},
-    compose(router.enhancer, applyMiddleware(router.middleware))
-  );
-  const immutableStore = createStore(
-    immutableCombineReducers({ router: immutableRouter.reducer }),
-    Map(),
-    compose(immutableRouter.enhancer, applyMiddleware(immutableRouter.middleware))
-  );
-  return {
-    store,
-    immutableStore
+export const setupStoreForEnv = (routerForEnv, combineReducers, initialState) =>
+  (routerArg) => {
+    const { reducer, middleware, enhancer } = routerForEnv(routerArg);
+    return createStore(
+      combineReducers({ router: reducer }),
+      initialState,
+      compose(enhancer, applyMiddleware(middleware))
+    );
   };
-};
-
-export const getJSState = (store) => {
-  const state = store.getState();
-  return state.toJS ? state.toJS() : state;
-};
