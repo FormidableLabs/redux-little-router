@@ -17,14 +17,14 @@ const browserRouterTest = {
   router: routerForBrowser,
   combineReducers,
   toState: state => state,
-  fromState: state => state,
+  readState: state => state,
   testLabel: 'browser router'
 };
 const immutableBrowserRouterTest = {
   router: immutableRouterForBrowser,
   combineReducers: combineImmutableReducers,
   toState: state => fromJS(state),
-  fromState: state => state.toJS(),
+  readState: state => state.toJS(),
   testLabel: 'immutable browser router'
 };
 
@@ -32,7 +32,7 @@ const immutableBrowserRouterTest = {
   router,
   combineReducers,
   toState,
-  fromState,
+  readState,
   testLabel
 }) => {
   describe(`${testLabel}`, () => {
@@ -50,7 +50,7 @@ const immutableBrowserRouterTest = {
           listen() {}
         }
       });
-      const state = fromState(store.getState());
+      const state = readState(store.getState());
 
       expect(state).to.have.nested.property('router.pathname', '/home');
       expect(state).to.have.nested.property('router.search', '?get=schwifty');
@@ -73,7 +73,7 @@ const immutableBrowserRouterTest = {
           listen() {}
         }
       });
-      const state = fromState(store.getState());
+      const state = readState(store.getState());
 
       expect(state).to.have.nested.property('router.basename', '/cob-planet');
       expect(state).to.have.nested.property('router.pathname', '/home');
@@ -96,7 +96,7 @@ const immutableBrowserRouterTest = {
         }
       });
 
-      const state = fromState(store.getState());
+      const state = readState(store.getState());
       expect(state).to.have.nested.property('router.basename', '/app');
       expect(state).to.have.nested.property('router.pathname', '/foo/app/bar');
     });

@@ -21,14 +21,14 @@ const enhancerTest = {
   install,
   combineReducers,
   toState: state => state,
-  fromState: state => state,
+  readState: state => state,
   testLabel: 'store enhancer'
 };
 const immutableEnhancerTest = {
   install: immutableInstall,
   combineReducers: combineImmutableReducers,
   toState: state => fromJS(state),
-  fromState: state => state.toJS(),
+  readState: state => state.toJS(),
   testLabel: 'immutable store enhancer'
 };
 
@@ -36,7 +36,7 @@ const immutableEnhancerTest = {
   install,
   combineReducers,
   toState,
-  fromState,
+  readState,
   testLabel
 }) => {
   describe(`${testLabel}`, () => {
@@ -98,7 +98,7 @@ const immutableEnhancerTest = {
       expect(historyStub.replace).to.be.calledOnce;
       expect(listenStub).to.be.calledOnce;
 
-      const { routes } = fromState(store.getState()).router;
+      const { routes } = readState(store.getState()).router;
       const matcher = createMatcher(routes);
       expect(matcher('/')).to.have.deep.property('result', {
         could: 'you not'

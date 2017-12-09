@@ -5,18 +5,18 @@ import immutableInstall from '../src/immutable/install';
 
 const installTest = {
   install,
-  fromState: state => state,
+  readState: state => state,
   testLabel: 'router installer'
 };
 const immutableInstallTest = {
   install: immutableInstall,
-  fromState: state => state.toJS(),
+  readState: state => state.toJS(),
   testLabel: 'immutable router installer'
 };
 
 [installTest, immutableInstallTest].forEach(({
   install,
-  fromState,
+  readState,
   testLabel
 }) => {
   describe('Router installer', () => {
@@ -40,7 +40,7 @@ const immutableInstallTest = {
         history: {},
         location: { pathname: '/stuff' }
       });
-      const state = fromState(reducer(undefined, {}));
+      const state = readState(reducer(undefined, {}));
 
       expect(state).to.deep.equal({
         pathname: '/stuff',
