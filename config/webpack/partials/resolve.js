@@ -11,8 +11,7 @@ module.exports = () => config => mergeWebpackConfig(config, {
     //
     // http://www.justincarmony.com/blog/2015/04/02/webpack-react-multiple-versions-issues/
     alias: {
-      'react': path.resolve(process.cwd(), 'node_modules/react')
-    },
-    extensions: ['', '.js', '.jsx']
+      'react': path.dirname(require.resolve("react/package.json"))
+    }
   }
 });

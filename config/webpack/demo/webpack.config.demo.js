@@ -21,10 +21,10 @@ const extendConfig = compose(
 
 module.exports = extendConfig({
   cache: true,
-  context: path.join(process.cwd()),
-  entry: './demo/app.js',
+  context: path.resolve("demo/client"),
+  entry: './app.js',
   output: {
-    path: path.join(process.cwd(), 'demo/dist'),
+    path: path.resolve('demo/dist'),
     publicPath: '/',
     filename: '[name].[hash].js'
   }

@@ -21,7 +21,7 @@ module.exports = extendConfig({
   },
 
   output: {
-    path: path.join(process.cwd(), 'demo/client'),
+    path: path.resolve('demo/client'),
     filename: 'main.js',
     publicPath: '/assets/'
   },
