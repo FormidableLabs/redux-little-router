@@ -4,6 +4,7 @@ import sinonChai from 'sinon-chai';
 import { fromJS } from 'immutable';
 import { combineReducers as combineReduxReducers } from 'redux';
 import { combineReducers as combineImmutableReducers } from 'redux-immutable';
+import * as createHashHistory from 'history/createHashHistory';
 
 import routerForHash from '../../src/environment/hash-router';
 import immutableRouterForHash from '../../src/immutable/environment/hash-router';
@@ -78,6 +79,24 @@ const immutableHashRouterTest = {
       expect(state).to.have.nested
         .property('router.query')
         .that.deep.equals({ get: 'schwifty' });
+    });
+
+    it('calls createHashHistory when history is not provided', () => {
+      sandbox.stub(createHashHistory, 'default').returns({
+        listen() {},
+        location: {
+          pathname: '/home',
+          search: '?get=schwifty'
+        }
+      });
+      const store = setupHashStore({
+        routes,
+        basename: '/cob-planet'
+      });
+      expect(createHashHistory.default).to.be.calledWith({
+        basename: '/cob-planet',
+        hashType: 'slash'
+      });
     });
   });
 });
