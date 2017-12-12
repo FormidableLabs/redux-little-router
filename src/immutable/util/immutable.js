@@ -1,17 +1,14 @@
 // @flow
 /* eslint-disable import/no-mutable-exports, no-empty */
-const throwError = (...args: Array<*>) => {
-  const argsString = args.reduce((str, arg) => `${str} ${arg}`, '');
-  throw new Error(
-    `immutable.js was not imported. Make sure you have it installed. Was called with ${argsString}.`
-  );
-};
+import throwError from '../../util/throw-error';
+
+const throwImmutableError = throwError('immutable.js was not imported. Make sure you have it installed.');
 
 let immutable;
-let Map = throwError;
-let List = throwError;
-let fromJS = throwError;
-let isImmutable = throwError;
+let Map = throwImmutableError;
+let List = throwImmutableError;
+let fromJS = throwImmutableError;
+let isImmutable = throwImmutableError;
 
 try {
   immutable = require('immutable');

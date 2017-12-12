@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 
 import matchCache from '../util/match-cache';
 import generateId from '../util/generate-id';
+import throwError from '../util/throw-error';
 
 const withId = ComposedComponent =>
   class WithId extends Component {
@@ -109,7 +110,7 @@ export class FragmentComponent extends Component {
 
   componentWillReceiveProps(nextProps: Props) {
     if (this.props.forRoute !== nextProps.forRoute) {
-      throw new Error('Updating route props is not yet supported.');
+      throwError('Updating route props is not yet supported')();
     }
 
     // When Fragment rerenders, matchCache can get out of sync.
