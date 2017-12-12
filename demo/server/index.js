@@ -84,7 +84,7 @@ app.get('/*', (req, res) => {
   const initialState = {};
   const initialStateJSON = encode(JSON.stringify(initialState));
   // const initialState = Map();
-  // const initialStateJSON = JSON.stringify(initialState.toJSON()),
+  // const initialStateJSON = JSON.stringify(initialState.toJSON());
 
   const router = routerForExpress({ routes, request: req });
   const store = createStore(
