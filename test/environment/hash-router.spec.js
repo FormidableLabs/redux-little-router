@@ -89,7 +89,7 @@ const immutableHashRouterTest = {
           search: '?get=schwifty'
         }
       });
-      const store = setupHashStore({
+      setupHashStore({
         routes,
         basename: '/cob-planet'
       });

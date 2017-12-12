@@ -110,7 +110,7 @@ const immutableBrowserRouterTest = {
           search: '?get=schwifty'
         }
       });
-      const store = setupBrowserStore({
+      setupBrowserStore({
         routes,
         basename: '/cob-planet'
       });
