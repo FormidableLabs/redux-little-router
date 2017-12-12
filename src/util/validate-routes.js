@@ -1,7 +1,7 @@
 // @flow
 import throwError from './throw-error';
 
-const README_MESSAGE = `
+export const README_MESSAGE = `
   See the README for more information:
   https://github.com/FormidableLabs/redux-little-router#wiring-up-the-boilerplate
 `;
