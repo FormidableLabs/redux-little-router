@@ -1,8 +1,9 @@
 // @flow
 /* eslint-disable import/no-mutable-exports, no-empty */
-const throwError = (...args) => {
+const throwError = (...args: Array<*>) => {
+  const argsString = args.reduce((str, arg) => `${str} ${arg}`, '');
   throw new Error(
-    `immutable.js was not imported. Make sure you have it installed. Was called with ${args}.`
+    `immutable.js was not imported. Make sure you have it installed. Was called with ${argsString}.`
   );
 };
 
