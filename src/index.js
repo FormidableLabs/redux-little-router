@@ -26,8 +26,8 @@ import routerForExpress from './environment/express-router';
 import routerForHapi from './environment/hapi-router';
 
 import immutableRouterForBrowser from './immutable/environment/browser-router';
-import immutableRouterForHash from './immutable/environment/hash-router';
 import immutableRouterForExpress from './immutable/environment/express-router';
+import immutableRouterForHash from './immutable/environment/hash-router';
 import immutableRouterForHapi from './immutable/environment/hapi-router';
 
 import { Link, PersistentQueryLink } from './components/link';

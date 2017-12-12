@@ -5,7 +5,7 @@ import type { Map as MapType } from 'immutable';
 import type { ReducerArgs } from '../reducer';
 import type { Location, LocationAction } from '../types';
 
-import { List, Map, fromJS } from 'immutable';
+import { List, Map, fromJS } from './util/immutable';
 
 import {
   LOCATION_CHANGED,
