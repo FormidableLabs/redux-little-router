@@ -349,6 +349,22 @@ To change how `<Link>` renders when its `href` matches the current location (i.e
 
 `<Link>` takes an optional valueless prop, `replaceState`, that changes the link navigation behavior from `pushState` to `replaceState` in the History API.
 
+## Use with `immutable`
+
+`redux-little-router` supports the use of immutable.js in tandem with an `immutable`-aware `combineReducers` function like provided by [`redux-immutable`](https://github.com/gajus/redux-immutable). To use it, you will need to import the immutable version of the router or component you want to use. For instance,
+
+```js
+import { immutableRouterForBrowser, ImmutableLink } from 'redux-little-router';
+import { combineReducers } from 'redux-immutable';
+
+const { reducer, enhancer, middleware } = immutableRouterForBrowser({ routes });
+
+const store = createStore(
+  combineReducers({ router: reducer, ... }),
+  ...
+);
+```
+
 ## Environment
 
 `redux-little-router` requires an ES5 compatible environment (no IE8).
