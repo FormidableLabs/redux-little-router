@@ -6,6 +6,7 @@ import {
   GO,
   GO_BACK,
   GO_FORWARD,
+  POP,
   REPLACE_ROUTES,
   DID_REPLACE_ROUTES
 } from './types';
@@ -72,8 +73,9 @@ export {
   PUSH,
   REPLACE,
   GO,
-  GO_FORWARD,
   GO_BACK,
+  GO_FORWARD,
+  POP,
   REPLACE_ROUTES,
   DID_REPLACE_ROUTES
 };
