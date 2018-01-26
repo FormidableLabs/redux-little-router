@@ -11,4 +11,6 @@ const mapStateToProps: MapStateToProps<*, *, *> = state => ({
 });
 
 // $FlowFixMe
-export default compose(connect(mapStateToProps), withIdAndContext, propsToJS)(FragmentComponent);
+export default compose(connect(mapStateToProps), withIdAndContext, propsToJS)(
+  FragmentComponent
+);
