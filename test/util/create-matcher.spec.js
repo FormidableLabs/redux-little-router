@@ -22,6 +22,14 @@ describe('createMatcher', () => {
       }
     });
 
+    expect(matchRoute("/home/messages/")).to.deep.equal({
+      route: "/home/messages",
+      params: {},
+      result: {
+        name: "messages"
+      }
+    });
+
     expect(matchRoute('/home/messages/a-team')).to.deep.equal({
       route: '/home/messages/:team',
       params: {

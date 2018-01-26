@@ -10,7 +10,9 @@ type RouteCache = {
 const eagerMatcher = (routeList: Array<RouteCache>) =>
   (incomingUrl: string) => {
     // Discard query strings
-    const pathname = incomingUrl.split('?')[0];
+    const pathname = incomingUrl
+      .split('?')[0]
+      .replace(/\w+\/$/, path => path.slice(0, path.length - 1));
 
     // Find the route that matches the URL
     for (let i = 0; i < routeList.length; i++) {
