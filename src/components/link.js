@@ -1,4 +1,5 @@
 // @flow
+import type { Node } from 'react';
 import type { Href, Location } from '../types';
 
 import React, { Component } from 'react';
@@ -11,7 +12,7 @@ import normalizeHref from '../util/normalize-href';
 import stringifyHref from '../util/stringify-href';
 
 type Props = {
-  children: React.Element<*>,
+  children: Node,
   className: string,
   href: Href,
   persistQuery: boolean,
@@ -31,22 +32,12 @@ const LEFT_MOUSE_BUTTON = 0;
 
 const isNotLeftClick = e => e.button && e.button !== LEFT_MOUSE_BUTTON;
 
-const hasModifier = e =>
-  Boolean(e.shiftKey || e.altKey || e.metaKey || e.ctrlKey);
+const hasModifier = e => Boolean(e.shiftKey || e.altKey || e.metaKey || e.ctrlKey);
 
 const shouldIgnoreClick = ({ e, target }) =>
   hasModifier(e) || isNotLeftClick(e) || e.defaultPrevented || target;
 
-const handleClick = ({
-  e,
-  target,
-  href,
-  onClick,
-  replaceState,
-  persistQuery,
-  push,
-  replace
-}) => {
+const handleClick = ({ e, target, href, onClick, replaceState, persistQuery, push, replace }) => {
   if (onClick) {
     onClick(e);
   }
@@ -68,10 +59,7 @@ const contextifyHref = (href, location, persistQuery) => {
     return href;
   }
 
-  const mergedQuery = mergeQueries(
-    location.query,
-    href.query
-  );
+  const mergedQuery = mergeQueries(location.query, href.query);
 
   return {
     ...href,
@@ -79,7 +67,7 @@ const contextifyHref = (href, location, persistQuery) => {
   };
 };
 
-class LinkComponent extends Component {
+class LinkComponent extends Component<*> {
   constructor(props: Props) {
     super(props);
   }
@@ -131,7 +119,7 @@ class LinkComponent extends Component {
   }
 }
 
-const PersistentQueryLinkComponent = class extends Component {
+const PersistentQueryLinkComponent = class extends Component<*> {
   render() {
     const { children, ...rest } = this.props;
     return (

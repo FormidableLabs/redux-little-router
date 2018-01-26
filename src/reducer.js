@@ -24,13 +24,10 @@ export type ReducerArgs = {|
 const flow = (...funcs: Array<*>) =>
   funcs.reduce((prev, curr) => (...args: Array<*>) => curr(prev(...args)));
 
-const resolveQuery = ({ oldLocation, newLocation, options }): ResolverArgs => {
+const resolveQuery = ({ oldLocation, newLocation, options }: ResolverArgs): ResolverArgs => {
   // Merge the old and new queries if asked to persist
   if (options.persistQuery) {
-    const mergedQuery = mergeQueries(
-      oldLocation.query,
-      newLocation.query
-    );
+    const mergedQuery = mergeQueries(oldLocation.query, newLocation.query);
     return {
       oldLocation,
       newLocation: {
@@ -51,11 +48,7 @@ const resolveQuery = ({ oldLocation, newLocation, options }): ResolverArgs => {
   };
 };
 
-const resolveBasename = ({
-  oldLocation,
-  newLocation,
-  options
-}): ResolverArgs => {
+const resolveBasename = ({ oldLocation, newLocation, options }: ResolverArgs): ResolverArgs => {
   const { basename } = oldLocation;
   if (basename) {
     return {
@@ -67,11 +60,7 @@ const resolveBasename = ({
   return { oldLocation, newLocation, options };
 };
 
-const resolvePrevious = ({
-  oldLocation,
-  newLocation,
-  options
-}): ResolverArgs => ({
+const resolvePrevious = ({ oldLocation, newLocation, options }: ResolverArgs): ResolverArgs => ({
   oldLocation,
   newLocation: {
     ...newLocation,
@@ -114,33 +103,32 @@ const locationChangeReducer = (state, action) => {
   return { ...resolvedNewLocation, routes: currentRoutes, queue: newQueue };
 };
 
-export default ({ routes = {}, initialLocation }: ReducerArgs = {}) =>
-  (
-    state: Location = { ...initialLocation, routes, queue: [] },
-    action: LocationAction
-  ) => {
-    if (isNavigationActionWithPayload(action)) {
-      return {
-        ...state,
-        queue: state.queue && state.queue.concat([action.payload])
-      };
-    }
+export default ({ routes = {}, initialLocation }: ReducerArgs = {}) => (
+  state: Location = { ...initialLocation, routes, queue: [] },
+  action: LocationAction
+) => {
+  if (isNavigationActionWithPayload(action)) {
+    return {
+      ...state,
+      queue: state.queue && state.queue.concat([action.payload])
+    };
+  }
 
-    if (action.type === REPLACE_ROUTES) {
-      return {
-        ...state,
-        routes: action.payload.routes,
-        options: action.payload.options
-      };
-    }
+  if (action.type === REPLACE_ROUTES) {
+    return {
+      ...state,
+      routes: action.payload.routes,
+      options: action.payload.options
+    };
+  }
 
-    if (action.type === DID_REPLACE_ROUTES) {
-      return { ...state, options: {} };
-    }
+  if (action.type === DID_REPLACE_ROUTES) {
+    return { ...state, options: {} };
+  }
 
-    if (action.type === LOCATION_CHANGED) {
-      return locationChangeReducer(state, action);
-    }
+  if (action.type === LOCATION_CHANGED) {
+    return locationChangeReducer(state, action);
+  }
 
-    return state;
-  };
+  return state;
+};

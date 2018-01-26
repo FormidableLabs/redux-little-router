@@ -30,47 +30,43 @@ export const createStoreSubscriber = (
   getState: Function,
   dispatch: Dispatch<*>,
   createMatcher: Function
-) =>
-  (currentMatcher: Function) => {
-    const {
-      routes,
-      pathname,
-      search,
-      hash,
-      updateRoutes
-    } = getState();
+) => (currentMatcher: Function) => {
+  const { routes, pathname, search, hash, updateRoutes } = getState();
 
-    if (updateRoutes) {
-      currentMatcher = createMatcher(routes);
-      dispatch(didReplaceRoutes());
-      dispatch(replace({ pathname, search, hash }));
-    }
+  if (updateRoutes) {
+    currentMatcher = createMatcher(routes);
+    dispatch(didReplaceRoutes());
+    dispatch(replace({ pathname, search, hash }));
+  }
 
-    return currentMatcher;
+  return currentMatcher;
+};
+
+export const createHistoryListener = (dispatch: Dispatch<*>) => (
+  currentMatcher: Function,
+  location: HistoryLocation,
+  action?: Action
+) => {
+  matchCache.clear();
+
+  const match = currentMatcher(location.pathname);
+  const payload = {
+    ...location,
+    ...match,
+    query: qs.parse(location.search || '')
   };
 
-export const createHistoryListener = (dispatch: Dispatch<*>) =>
-  (currentMatcher: Function, location: HistoryLocation, action?: Action) => {
-    matchCache.clear();
+  // Other actions come from the user, so they already have a
+  // corresponding queued navigation action.
+  if (action === 'POP') {
+    dispatch({
+      type: POP,
+      payload
+    });
+  }
 
-    const match = currentMatcher(location.pathname);
-    const payload = {
-      ...location,
-      ...match,
-      query: qs.parse(location.search)
-    };
-
-    // Other actions come from the user, so they already have a
-    // corresponding queued navigation action.
-    if (action === "POP") {
-      dispatch({
-        type: POP,
-        payload
-      });
-    }
-
-    dispatch(locationDidChange(payload));
-  };
+  dispatch(locationDidChange(payload));
+};
 
 export const subscribeToStoreAndHistory = ({
   getState,
@@ -90,35 +86,33 @@ export const subscribeToStoreAndHistory = ({
     currentMatcher = storeSubscriber(currentMatcher);
   });
 
-  subscribeToHistory((location, action) =>
-    historyListener(currentMatcher, location, action)
-  );
+  subscribeToHistory((location, action) => historyListener(currentMatcher, location, action));
 };
 
-export default ({ history, matchRoute, createMatcher }: EnhancerArgs) =>
-  (createStore: StoreCreator<*, *>) =>
-    (userReducer: Reducer<*, *>, initialState: State, enhancer: StoreEnhancer<*, *>) => {
-      const store = createStore(userReducer, initialState, enhancer);
-      const { dispatch, subscribe: subscribeToStore } = store;
-      const { listen: subscribeToHistory } = history;
+export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
+  createStore: StoreCreator<*, *>
+) => (userReducer: Reducer<*, *>, initialState: State, enhancer: StoreEnhancer<*, *>) => {
+  const store = createStore(userReducer, initialState, enhancer);
+  const { dispatch, subscribe: subscribeToStore } = store;
+  const { listen: subscribeToHistory } = history;
 
-      const getState = () => {
-        const routerState = store.getState().router;
-        const { options: { updateRoutes } = {} } = routerState;
-        return { ...routerState, updateRoutes };
-      }
+  const getState = () => {
+    const routerState = store.getState().router;
+    const { options: { updateRoutes } = {} } = routerState;
+    return { ...routerState, updateRoutes };
+  };
 
-      subscribeToStoreAndHistory({
-        getState,
-        dispatch,
-        createMatcher,
-        matchRoute,
-        subscribeToStore,
-        subscribeToHistory
-      });
+  subscribeToStoreAndHistory({
+    getState,
+    dispatch,
+    createMatcher,
+    matchRoute,
+    subscribeToStore,
+    subscribeToHistory
+  });
 
-      return {
-        ...store,
-        matchRoute
-      };
-    };
+  return {
+    ...store,
+    matchRoute
+  };
+};
