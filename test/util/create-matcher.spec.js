@@ -40,6 +40,16 @@ describe('createMatcher', () => {
       }
     });
 
+    expect(matchRoute('/home/messages/a-team/')).to.deep.equal({
+      route: '/home/messages/:team',
+      params: {
+        team: 'a-team'
+      },
+      result: {
+        name: 'team'
+      }
+    });
+
     expect(matchRoute('/home/messages/a-team/the-wat-channel')).to.deep.equal({
       route: '/home/messages/:team/:channel',
       params: {
