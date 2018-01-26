@@ -1,7 +1,8 @@
-// flow-typed signature: 78eec0fbe090057bc3c26451d513b4ce
-// flow-typed version: e7aa3314da/express_v4.x.x/flow_>=v0.32.x
+// flow-typed signature: f0e399a136d6e8dc8b1fbdc078e2850c
+// flow-typed version: ed397013d1/express_v4.x.x/flow_>=v0.32.x
 
 import type { Server } from 'http';
+import type { Socket } from 'net';
 
 declare type express$RouterOptions = {
   caseSensitive?: boolean,
@@ -14,20 +15,25 @@ declare class express$RequestResponseBase {
   get(field: string): string | void;
 }
 
+declare type express$RequestParams = {
+  [param: string]: string
+}
+
 declare class express$Request extends http$IncomingMessage mixins express$RequestResponseBase {
   baseUrl: string;
   body: any;
   cookies: {[cookie: string]: string};
+  connection: Socket;
   fresh: boolean;
   hostname: string;
   ip: string;
   ips: Array<string>;
   method: string;
   originalUrl: string;
-  params: {[param: string]: string};
+  params: express$RequestParams;
   path: string;
   protocol: 'https' | 'http';
-  query: {[name: string]: string};
+  query: {[name: string]: string | Array<string>};
   route: string;
   secure: boolean;
   signedCookies: {[signedCookie: string]: string};
@@ -35,6 +41,7 @@ declare class express$Request extends http$IncomingMessage mixins express$Reques
   subdomains: Array<string>;
   xhr: boolean;
   accepts(types: string): string | false;
+  accepts(types: Array<string>): string | false;
   acceptsCharsets(...charsets: Array<string>): string | false;
   acceptsEncodings(...encoding: Array<string>): string | false;
   acceptsLanguages(...lang: Array<string>): string | false;
@@ -53,6 +60,8 @@ declare type express$CookieOptions = {
   secure?: boolean,
   signed?: boolean
 };
+
+declare type express$Path = string | RegExp;
 
 declare type express$RenderCallback = (err: Error | null, html?: string) => mixed;
 
@@ -90,16 +99,17 @@ declare class express$Response extends http$ServerResponse mixins express$Reques
   status(statusCode: number): this;
   type(type: string): this;
   vary(field: string): this;
+  req: express$Request;
 }
 
 declare type express$NextFunction = (err?: ?Error | 'route') => mixed;
 declare type express$Middleware =
-  ((req: express$Request, res: express$Response, next: express$NextFunction) => mixed) |
-  ((error: ?Error, req: express$Request, res: express$Response, next: express$NextFunction) => mixed);
+  ((req: $Subtype<express$Request>, res: express$Response, next: express$NextFunction) => mixed) |
+  ((error: Error, req: $Subtype<express$Request>, res: express$Response, next: express$NextFunction) => mixed);
 declare interface express$RouteMethodType<T> {
   (middleware: express$Middleware): T;
   (...middleware: Array<express$Middleware>): T;
-  (path: string|RegExp|string[], ...middleware: Array<express$Middleware>): T;
+  (path: express$Path|express$Path[], ...middleware: Array<express$Middleware>): T;
 }
 declare class express$Route {
   all: express$RouteMethodType<this>;
@@ -139,9 +149,18 @@ declare class express$Router extends express$Route {
   static (options?: express$RouterOptions): express$Router;
   use(middleware: express$Middleware): this;
   use(...middleware: Array<express$Middleware>): this;
-  use(path: string|RegExp|string[], ...middleware: Array<express$Middleware>): this;
+  use(path: express$Path|express$Path[], ...middleware: Array<express$Middleware>): this;
   use(path: string, router: express$Router): this;
   handle(req: http$IncomingMessage, res: http$ServerResponse, next: express$NextFunction): void;
+  param(
+    param: string,
+    callback: (
+      req: $Subtype<express$Request>,
+      res: express$Response,
+      next: express$NextFunction,
+      id: string
+    ) => mixed
+  ): void;
 
   // Can't use regular callable signature syntax due to https://github.com/facebook/flow/issues/3084
   $call: (req: http$IncomingMessage, res: http$ServerResponse, next?: ?express$NextFunction) => void;
@@ -158,7 +177,7 @@ declare class express$Application extends express$Router mixins events$EventEmit
   listen(handle: Object, callback?: (err?: ?Error) => mixed): Server;
   disable(name: string): void;
   disabled(name: string): boolean;
-  enable(name: string): void;
+  enable(name: string): express$Application;
   enabled(name: string): boolean;
   engine(name: string, callback: Function): void;
   /**
@@ -171,19 +190,18 @@ declare class express$Application extends express$Router mixins events$EventEmit
 }
 
 declare module 'express' {
-  declare function serveStatic(root: string, options?: Object): express$Middleware;
-
   declare export type RouterOptions = express$RouterOptions;
   declare export type CookieOptions = express$CookieOptions;
   declare export type Middleware = express$Middleware;
   declare export type NextFunction = express$NextFunction;
+  declare export type RequestParams = express$RequestParams;
   declare export type $Response = express$Response;
   declare export type $Request = express$Request;
   declare export type $Application = express$Application;
 
   declare module.exports: {
     (): express$Application, // If you try to call like a function, it will use this signature
-    static: serveStatic, // `static` property on the function
+    static: (root: string, options?: Object) => express$Middleware, // `static` property on the function
     Router: typeof express$Router, // `Router` property on the function
   };
 }

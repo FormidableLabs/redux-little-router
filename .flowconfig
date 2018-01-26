@@ -6,6 +6,7 @@ lib/
 .*/__tests__/.*
 .*/__mocks__/.*
 .*/node_modules/flow-typed/src/.*
+.*/node_modules/immutable/.*
 
 [include]
 src/
@@ -17,4 +18,6 @@ interfaces/
 module.name_mapper='history\(.*\)' -> 'history'
 esproposal.class_static_fields=enable
 esproposal.class_instance_fields=enable
-suppress_comment= \\(.\\|\n\\)*\\$FlowIssue]
+suppress_comment= \\(.\\|\n\\)*\\$FlowIssue
+suppress_comment= \\(.\\|\n\\)*\\$FlowFixMe
+

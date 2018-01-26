@@ -1,5 +1,7 @@
 // @flow
 /* eslint-disable react/sort-comp */
+import type { Node } from 'react';
+import type { MapStateToProps } from 'react-redux';
 import type { Location } from '../types';
 
 import UrlPattern from 'url-pattern';
@@ -13,7 +15,7 @@ import generateId from '../util/generate-id';
 import throwError from '../util/throw-error';
 
 const withId = ComposedComponent =>
-  class WithId extends Component {
+  class WithId extends Component<*> {
     id: string;
 
     constructor() {
@@ -27,13 +29,9 @@ const withId = ComposedComponent =>
   };
 
 const resolveChildRoute = (parentRoute, currentRoute) => {
-  const parentIsRootRoute = parentRoute &&
-    parentRoute !== '/' &&
-    parentRoute !== currentRoute;
+  const parentIsRootRoute = parentRoute && parentRoute !== '/' && parentRoute !== currentRoute;
 
-  return parentIsRootRoute
-    ? `${parentRoute}${currentRoute || ''}`
-    : currentRoute;
+  return parentIsRootRoute ? `${parentRoute}${currentRoute || ''}` : currentRoute;
 };
 
 const resolveCurrentRoute = (parentRoute, currentRoute) => {
@@ -57,32 +55,21 @@ const resolveCurrentRoute = (parentRoute, currentRoute) => {
   //   <Fragment forRoute='/'>
   //   </Fragment>
   // </Fragment>
-  const routeSuffix = currentIsRootRoute && !parentIsRootRoute
-    ? ''
-    : currentRoute;
+  const routeSuffix = currentIsRootRoute && !parentIsRootRoute ? '' : currentRoute;
 
   const wildcard = currentIsRootRoute && parentIsRootRoute ? '' : '*';
 
   return `${routePrefix}${routeSuffix}${wildcard}`;
 };
 
-const shouldShowFragment = (
-  {
-    forRoute,
-    withConditions,
-    matcher,
-    location
-  }
-) => {
+const shouldShowFragment = ({ forRoute, withConditions, matcher, location }) => {
   if (!forRoute) {
     return withConditions && withConditions(location);
   }
 
   const matchesRoute = matcher && matcher.match(location.pathname);
 
-  return withConditions
-    ? matchesRoute && withConditions(location)
-    : matchesRoute;
+  return withConditions ? matchesRoute && withConditions(location) : matchesRoute;
 };
 
 type Props = {
@@ -94,10 +81,10 @@ type Props = {
   withConditions?: (location: Location) => boolean,
   forNoMatch?: boolean,
   parentId?: string,
-  children: React.Element<*>
+  children: Node
 };
 
-export class FragmentComponent extends Component {
+export class FragmentComponent extends Component<*> {
   matcher: ?Object;
 
   constructor(props: Props) {
@@ -158,6 +145,7 @@ export class FragmentComponent extends Component {
   }
 }
 
+// $FlowFixMe
 export const withIdAndContext = compose(
   getContext({
     parentRoute: PropTypes.string,
@@ -176,9 +164,8 @@ export const withIdAndContext = compose(
   )
 );
 
-export default compose(
-  connect(state => ({
-    location: state.router
-  })),
-  withIdAndContext
-)(FragmentComponent);
+const mapStateToProps: MapStateToProps<*, *, *> = state => ({
+  location: state.router
+});
+
+export default compose(connect(mapStateToProps), withIdAndContext)(FragmentComponent);

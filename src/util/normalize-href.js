@@ -17,7 +17,7 @@ export default (href: Href): Location => {
   const resolvedSearch = search ||
     (query && Object.keys(query).length && `?${qs.stringify(query)}`) ||
     '';
-  const resolvedQuery = query || qs.parse(search);
+  const resolvedQuery = query || qs.parse(search || '');
 
   return {
     ...href,
