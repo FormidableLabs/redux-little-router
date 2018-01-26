@@ -33,7 +33,10 @@ import immutableRouterForHapi from './immutable/environment/hapi-router';
 import { Link, PersistentQueryLink } from './components/link';
 import Fragment from './components/fragment';
 
-import { ImmutableLink, ImmutablePersistentQueryLink } from './immutable/components/link';
+import {
+  ImmutableLink,
+  ImmutablePersistentQueryLink
+} from './immutable/components/link';
 import ImmutableFragment from './immutable/components/fragment';
 
 export {
@@ -42,23 +45,18 @@ export {
   routerForExpress,
   routerForHapi,
   routerForHash,
-
   immutableRouterForBrowser,
   immutableRouterForExpress,
   immutableRouterForHapi,
   immutableRouterForHash,
-
   initializeCurrentLocation,
-
   // React API
   Link,
   PersistentQueryLink,
   Fragment,
-
   ImmutableLink,
   ImmutablePersistentQueryLink,
   ImmutableFragment,
-
   // Public action creators
   push,
   replace,
@@ -66,7 +64,6 @@ export {
   goBack,
   goForward,
   replaceRoutes,
-
   // Public action types
   LOCATION_CHANGED,
   PUSH,
@@ -77,3 +74,16 @@ export {
   REPLACE_ROUTES,
   DID_REPLACE_ROUTES
 };
+
+export type {
+  Query,
+  Params,
+  LocationOptions,
+  Location,
+  State,
+  Href,
+  BareAction,
+  IndexedAction,
+  LocationAction,
+  RouterAction
+} from './types';
