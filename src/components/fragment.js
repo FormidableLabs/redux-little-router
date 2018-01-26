@@ -29,9 +29,12 @@ const withId = ComposedComponent =>
   };
 
 const resolveChildRoute = (parentRoute, currentRoute) => {
-  const parentIsRootRoute = parentRoute && parentRoute !== '/' && parentRoute !== currentRoute;
+  const parentIsRootRoute =
+    parentRoute && parentRoute !== '/' && parentRoute !== currentRoute;
 
-  return parentIsRootRoute ? `${parentRoute}${currentRoute || ''}` : currentRoute;
+  return parentIsRootRoute
+    ? `${parentRoute}${currentRoute || ''}`
+    : currentRoute;
 };
 
 const resolveCurrentRoute = (parentRoute, currentRoute) => {
@@ -55,21 +58,29 @@ const resolveCurrentRoute = (parentRoute, currentRoute) => {
   //   <Fragment forRoute='/'>
   //   </Fragment>
   // </Fragment>
-  const routeSuffix = currentIsRootRoute && !parentIsRootRoute ? '' : currentRoute;
+  const routeSuffix =
+    currentIsRootRoute && !parentIsRootRoute ? '' : currentRoute;
 
   const wildcard = currentIsRootRoute && parentIsRootRoute ? '' : '*';
 
   return `${routePrefix}${routeSuffix}${wildcard}`;
 };
 
-const shouldShowFragment = ({ forRoute, withConditions, matcher, location }) => {
+const shouldShowFragment = ({
+  forRoute,
+  withConditions,
+  matcher,
+  location
+}) => {
   if (!forRoute) {
     return withConditions && withConditions(location);
   }
 
   const matchesRoute = matcher && matcher.match(location.pathname);
 
-  return withConditions ? matchesRoute && withConditions(location) : matchesRoute;
+  return withConditions
+    ? matchesRoute && withConditions(location)
+    : matchesRoute;
 };
 
 type Props = {
@@ -145,7 +156,6 @@ export class FragmentComponent extends Component<*> {
   }
 }
 
-// $FlowFixMe
 export const withIdAndContext = compose(
   getContext({
     parentRoute: PropTypes.string,
@@ -168,4 +178,6 @@ const mapStateToProps: MapStateToProps<*, *, *> = state => ({
   location: state.router
 });
 
-export default compose(connect(mapStateToProps), withIdAndContext)(FragmentComponent);
+export default compose(connect(mapStateToProps), withIdAndContext)(
+  FragmentComponent
+);
