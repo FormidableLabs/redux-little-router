@@ -5,7 +5,12 @@ import { render } from 'react-dom';
 
 /* Invert comments for immutable */
 import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
-import { routerForBrowser, initializeCurrentLocation } from '../../src';
+import {
+  routerForBrowser,
+  initializeCurrentLocation,
+  block,
+  unblock
+} from '../../src';
 // import { createStore, compose, applyMiddleware } from 'redux';
 // import { combineReducers } from 'redux-immutable';
 // import { Map, fromJS } from 'immutable';
@@ -14,6 +19,8 @@ import { routerForBrowser, initializeCurrentLocation } from '../../src';
 import routes from './routes';
 import wrap from './wrap';
 import Demo from './demo';
+
+const UNBLOCK_DELAY = 10000;
 
 /* Invert comments for immutable */
 const { reducer, enhancer, middleware } = routerForBrowser({ routes });
@@ -36,6 +43,17 @@ const store = createStore(
 /* Invert comments for immutable */
 const initialLocation = store.getState().router;
 // const initialLocation = store.getState().get('router').toJS();
+
+store.dispatch(
+  // eslint-disable-next-line consistent-return
+  block(() => {
+    if (location.pathname.indexOf('cheese') !== -1) {
+      return `Are you sure you want to see other pages? It's really all downhill from here.`;
+    }
+  })
+);
+
+setTimeout(() => store.dispatch(unblock()), UNBLOCK_DELAY);
 
 if (initialLocation) {
   store.dispatch(initializeCurrentLocation(initialLocation));

@@ -6,6 +6,9 @@ import {
   GO,
   GO_BACK,
   GO_FORWARD,
+  POP,
+  BLOCK,
+  UNBLOCK,
   REPLACE_ROUTES,
   DID_REPLACE_ROUTES
 } from './types';
@@ -16,6 +19,8 @@ import {
   go,
   goBack,
   goForward,
+  block,
+  unblock,
   replaceRoutes,
   initializeCurrentLocation
 } from './actions';
@@ -63,6 +68,8 @@ export {
   go,
   goBack,
   goForward,
+  block,
+  unblock,
   replaceRoutes,
   // Public action types
   LOCATION_CHANGED,
@@ -71,6 +78,9 @@ export {
   GO,
   GO_FORWARD,
   GO_BACK,
+  POP,
+  BLOCK,
+  UNBLOCK,
   REPLACE_ROUTES,
   DID_REPLACE_ROUTES
 };

@@ -7,6 +7,8 @@ import {
   GO,
   GO_BACK,
   GO_FORWARD,
+  BLOCK,
+  UNBLOCK,
   LOCATION_CHANGED,
   DID_REPLACE_ROUTES
 } from '../src/types';
@@ -17,6 +19,8 @@ import {
   go,
   goBack,
   goForward,
+  block,
+  unblock,
   replaceRoutes,
   didReplaceRoutes,
   locationDidChange,
@@ -78,6 +82,16 @@ describe('Action creators', () => {
 
   it('creates a GO_FORWARD action', () => {
     expect(goForward()).to.deep.equal({ type: GO_FORWARD });
+  });
+
+  it('creates a BLOCK action', () => {
+    const action = block(() => {});
+    expect(action.type).to.equal(BLOCK);
+    expect(action.payload).to.be.a('Function');
+  });
+
+  it('creates an UNBLOCK action', () => {
+    expect(unblock()).to.deep.equal({ type: UNBLOCK });
   });
 
   it('creates a REPLACE_ROUTES action with flattened route payloads and options', () => {

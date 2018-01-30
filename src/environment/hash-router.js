@@ -1,5 +1,5 @@
 // @flow
-import type { History } from 'history';
+import type { History, HashHistoryOptions } from 'history';
 import createHashHistory from 'history/createHashHistory';
 
 import normalizeHref from '../util/normalize-href';
@@ -9,23 +9,24 @@ type HashRouterArgs = {
   routes: Object,
   basename: string,
   hashType: string,
+  historyOptions: HashHistoryOptions,
   history: History
 };
 
-export const createHashRouter = (installer: Function) =>
-  ({
-    routes,
-    basename,
-    hashType = 'slash',
-    history = createHashHistory({ basename, hashType })
-  }: HashRouterArgs) => {
-    const descriptor = basename
-      ? { basename, ...history.location }
-      : history.location;
+export const createHashRouter = (installer: Function) => ({
+  routes,
+  basename,
+  hashType = 'slash',
+  historyOptions,
+  history = createHashHistory({ basename, hashType, ...historyOptions })
+}: HashRouterArgs) => {
+  const descriptor = basename
+    ? { basename, ...history.location }
+    : history.location;
 
-    const location = normalizeHref(descriptor);
+  const location = normalizeHref(descriptor);
 
-    return installer({ routes, history, location });
-  };
+  return installer({ routes, history, location });
+};
 
 export default createHashRouter(install);
