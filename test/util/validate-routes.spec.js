@@ -15,7 +15,7 @@ describe('validateRoute', () => {
   it('throws an error if a route does not begin with a slash', () => {
     const routes = {
       '/': {},
-      'cat': {},
+      cat: {},
       '/dog': {}
     };
     expect(validateRoutes.bind(null, routes)).to.throw(`

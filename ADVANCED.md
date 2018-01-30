@@ -1,6 +1,7 @@
 # Advanced Docs
 
 ## Server Rendering
+
 `redux-little-router` supports React server rendering with an Express or Hapi adapter.
 
 Make sure to read http://redux.js.org/docs/recipes/ServerRendering.html to understand how the server/client Redux boilerplate works.
@@ -32,15 +33,15 @@ const routes = {
 app.use('/*', (req, res) => {
   // Create the Redux store, passing in the Express
   // request to the routerForExpress factory.
-  // 
+  //
   // If you're using an Express sub-router,
   // routerForExpress will infer the basename
   // from req.baseUrl!
-  // 
+  //
   const { reducer, middleware, enhancer } = routerForExpress({
     routes,
     request: req
-  })
+  });
 
   const store = createStore(
     combineReducers({ router: reducer }),
@@ -50,7 +51,7 @@ app.use('/*', (req, res) => {
 
   // ...then renderToString() your components as usual,
   // passing your new store to your <Provider> component.
-  // 
+  //
   // Don't forget to attach your ESCAPED initialState to
   // a script tag in your template that attaches to
   // something like window.__INITIAL_STATE.
@@ -80,30 +81,30 @@ const routes = {
 };
 
 server.route({
-	method: 'GET',
-	path: '/{wild*}',
-	handler: (request, reply) => {
-		// Create the Redux store, passing in the Hapi
-		// request to the routerForHapi factory.
+  method: 'GET',
+  path: '/{wild*}',
+  handler: (request, reply) => {
+    // Create the Redux store, passing in the Hapi
+    // request to the routerForHapi factory.
 
-		const { reducer, middleware, enhancer } = routerForHapi({
-			routes,
-			request
-		})
+    const { reducer, middleware, enhancer } = routerForHapi({
+      routes,
+      request
+    });
 
-		const store = createStore(
-			reducer,
-			{ what: 'ever' },
-			compose(enhancer, applyMiddleware(middleware))
-		);
+    const store = createStore(
+      reducer,
+      { what: 'ever' },
+      compose(enhancer, applyMiddleware(middleware))
+    );
 
-		// ...then renderToString() your components as usual,
-		// passing your new store to your <Provider> component.
-		// 
-		// Don't forget to attach your ESCAPED initialState to
-		// a script tag in your template that attaches to
-		// something like window.__INITIAL_STATE.
-	}
+    // ...then renderToString() your components as usual,
+    // passing your new store to your <Provider> component.
+    //
+    // Don't forget to attach your ESCAPED initialState to
+    // a script tag in your template that attaches to
+    // something like window.__INITIAL_STATE.
+  }
 });
 ```
 
@@ -123,11 +124,7 @@ const routes = {
   }
 };
 
-const {
-  reducer,
-  enhancer,
-  middleware
-} = routerForBrowser({ routes });
+const { reducer, enhancer, middleware } = routerForBrowser({ routes });
 
 const store = createStore(
   combineReducers({ router: reducer }),
@@ -152,8 +149,8 @@ import { replaceRoutes } from 'redux-little-router';
 const mergeRoutes = newRoutes => (dispatch, getState) => {
   const currentRoutes = getState().routes;
   return dispatch(replaceRoutes(merge(currentRoutes, newRoutes)));
-}
+};
 
 // Later, maybe in a `connect()ed component`
-loadSomeAsyncRoutes().then(routes => dispatch(mergeRoutes()))
+loadSomeAsyncRoutes().then(routes => dispatch(mergeRoutes()));
 ```

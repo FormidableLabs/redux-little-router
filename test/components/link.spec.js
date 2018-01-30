@@ -10,9 +10,17 @@ import {
   Link as LinkComponent,
   PersistentQueryLink as PersistentQueryLinkComponent
 } from '../../src/components/link';
-import { ImmutableLink, ImmutablePersistentQueryLink } from '../../src/immutable/components/link';
+import {
+  ImmutableLink,
+  ImmutablePersistentQueryLink
+} from '../../src/immutable/components/link';
 
-import { captureErrors, fakeContext, fakeImmutableContext, standardClickEvent } from '../test-util';
+import {
+  captureErrors,
+  fakeContext,
+  fakeImmutableContext,
+  standardClickEvent
+} from '../test-util';
 
 chai.use(sinonChai);
 
@@ -27,11 +35,7 @@ const immutableLinkTest = {
   testLabel: 'ImmutableLink'
 };
 
-[linkTest, immutableLinkTest].forEach(({
-  Link,
-  context,
-  testLabel
-}) => {
+[linkTest, immutableLinkTest].forEach(({ Link, context, testLabel }) => {
   describe(`${testLabel}`, () => {
     describe('PUSH', () => {
       const hrefs = [
@@ -50,27 +54,24 @@ const immutableLinkTest = {
             if (action.type === PUSH) {
               const { payload } = action;
               captureErrors(done, () => {
-                expect(payload).to.have
-                  .property('pathname')
+                expect(payload)
+                  .to.have.property('pathname')
                   .that.contains('/home/messages/a-team');
 
                 if (typeof href === 'string') {
-                  expect(payload).to.have
-                    .property('search')
+                  expect(payload)
+                    .to.have.property('search')
                     .that.equal('?test=ing');
                 } else {
-                  expect(payload).to.have
-                    .property('query')
+                  expect(payload)
+                    .to.have.property('query')
                     .that.deep.equals({ test: 'ing' });
                 }
               });
             }
           };
 
-          const wrapper = mount(
-            <Link href={href} />,
-            context({ assertion })
-          );
+          const wrapper = mount(<Link href={href} />, context({ assertion }));
 
           wrapper.find('a').simulate('click', standardClickEvent);
         });
@@ -115,17 +116,17 @@ const immutableLinkTest = {
             if (action.type === REPLACE) {
               const { payload } = action;
               captureErrors(done, () => {
-                expect(payload).to.have
-                  .property('pathname')
+                expect(payload)
+                  .to.have.property('pathname')
                   .that.contains('/home/messages/a-team');
 
                 if (typeof href === 'string') {
-                  expect(payload).to.have
-                    .property('search')
+                  expect(payload)
+                    .to.have.property('search')
                     .that.equal('?test=ing');
                 } else {
-                  expect(payload).to.have.deep
-                    .property('query')
+                  expect(payload)
+                    .to.have.deep.property('query')
                     .that.deep.equals({ test: 'ing' });
                 }
               });
@@ -200,9 +201,11 @@ const immutableLinkTest = {
         const props = wrapper.props();
         expect(props).to.have.property('aria-label', 'a11y');
         expect(props).to.have.property('className', 'classy');
-        expect(props).to.have.property('style').that.deep.equals({
-          fontFamily: 'Comic Sans'
-        });
+        expect(props)
+          .to.have.property('style')
+          .that.deep.equals({
+            fontFamily: 'Comic Sans'
+          });
       });
 
       it('calls the onClick prop if provided', () => {
@@ -308,7 +311,10 @@ const immutableLinkTest = {
           })
         );
 
-        expect(wrapper.find('a').prop('style')).to.have.property('color', 'red');
+        expect(wrapper.find('a').prop('style')).to.have.property(
+          'color',
+          'red'
+        );
       });
 
       it('renders without activeProps when href and location pathname do not match', () => {
@@ -341,17 +347,15 @@ const immutablePersistentQueryLinkTest = {
   testLabel: 'ImmutablePersistentQueryLink'
 };
 
-[persistentQueryLinkTest, immutablePersistentQueryLinkTest].forEach(({
-  PersistentQueryLink,
-  context,
-  testLabel
-}) => {
-  describe(`${testLabel}`, () => {
-    it('appends persistQuery to the props', () => {
-      const wrapper = mount(<PersistentQueryLink href="/" />, context());
-      const link = wrapper.findWhere(node => node.name() === 'LinkComponent');
+[persistentQueryLinkTest, immutablePersistentQueryLinkTest].forEach(
+  ({ PersistentQueryLink, context, testLabel }) => {
+    describe(`${testLabel}`, () => {
+      it('appends persistQuery to the props', () => {
+        const wrapper = mount(<PersistentQueryLink href="/" />, context());
+        const link = wrapper.findWhere(node => node.name() === 'LinkComponent');
 
-      expect(link.props()).to.have.property('persistQuery', true);
+        expect(link.props()).to.have.property('persistQuery', true);
+      });
     });
-  });
-});
+  }
+);

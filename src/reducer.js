@@ -24,7 +24,11 @@ export type ReducerArgs = {|
 const flow = (...funcs: Array<*>) =>
   funcs.reduce((prev, curr) => (...args: Array<*>) => curr(prev(...args)));
 
-const resolveQuery = ({ oldLocation, newLocation, options }: ResolverArgs): ResolverArgs => {
+const resolveQuery = ({
+  oldLocation,
+  newLocation,
+  options
+}: ResolverArgs): ResolverArgs => {
   // Merge the old and new queries if asked to persist
   if (options.persistQuery) {
     const mergedQuery = mergeQueries(oldLocation.query, newLocation.query);
@@ -48,7 +52,11 @@ const resolveQuery = ({ oldLocation, newLocation, options }: ResolverArgs): Reso
   };
 };
 
-const resolveBasename = ({ oldLocation, newLocation, options }: ResolverArgs): ResolverArgs => {
+const resolveBasename = ({
+  oldLocation,
+  newLocation,
+  options
+}: ResolverArgs): ResolverArgs => {
   const { basename } = oldLocation;
   if (basename) {
     return {
@@ -60,7 +68,11 @@ const resolveBasename = ({ oldLocation, newLocation, options }: ResolverArgs): R
   return { oldLocation, newLocation, options };
 };
 
-const resolvePrevious = ({ oldLocation, newLocation, options }: ResolverArgs): ResolverArgs => ({
+const resolvePrevious = ({
+  oldLocation,
+  newLocation,
+  options
+}: ResolverArgs): ResolverArgs => ({
   oldLocation,
   newLocation: {
     ...newLocation,
@@ -69,7 +81,11 @@ const resolvePrevious = ({ oldLocation, newLocation, options }: ResolverArgs): R
   options
 });
 
-export const resolveLocation = flow(resolveQuery, resolveBasename, resolvePrevious);
+export const resolveLocation = flow(
+  resolveQuery,
+  resolveBasename,
+  resolvePrevious
+);
 
 const locationChangeReducer = (state, action) => {
   // No-op the initial route action

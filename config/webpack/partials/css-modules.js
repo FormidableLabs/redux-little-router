@@ -6,7 +6,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const loader = require('webpack-partial/loader').default;
 const plugin = require('webpack-partial/plugin').default;
 
-module.exports = function (opts) {
+module.exports = function(opts) {
   opts = _.defaults(opts, {
     production: false,
     cssOpts: {}
@@ -20,15 +20,18 @@ module.exports = function (opts) {
         use: [
           {
             loader: require.resolve('css-loader'),
-            options: _.assign({
-              autoprefixer: false,
-              mergeRules: false, // disable or keyframes break
-              modules: true,
-              sourceMap: true,
-              importLoaders: 1,
-              localIdentName: '[local]___[hash:base64:5]',
-              context: 'src'
-            }, opts.cssOpts)
+            options: _.assign(
+              {
+                autoprefixer: false,
+                mergeRules: false, // disable or keyframes break
+                modules: true,
+                sourceMap: true,
+                importLoaders: 1,
+                localIdentName: '[local]___[hash:base64:5]',
+                context: 'src'
+              },
+              opts.cssOpts
+            )
           },
           {
             loader: require.resolve('postcss-loader'),
@@ -45,9 +48,14 @@ module.exports = function (opts) {
     plugin(
       // Hashes in CSS file names make the dev server choke.
       // Only enable hashes in production!
-      new ExtractTextPlugin(_.assign({
-        filename: `[name]${opts.production ? '.[hash]' : ''}.css`
-      }, opts.extractTextPlugin))
+      new ExtractTextPlugin(
+        _.assign(
+          {
+            filename: `[name]${opts.production ? '.[hash]' : ''}.css`
+          },
+          opts.extractTextPlugin
+        )
+      )
     )
   );
 };

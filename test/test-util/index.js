@@ -98,12 +98,15 @@ export const standardClickEvent = {
   preventDefault() {}
 };
 
-export const setupStoreForEnv = (routerForEnv, combineReducers, initialState) =>
-  (routerArg) => {
-    const { reducer, middleware, enhancer } = routerForEnv(routerArg);
-    return createStore(
-      combineReducers({ router: reducer }),
-      initialState,
-      compose(enhancer, applyMiddleware(middleware))
-    );
-  };
+export const setupStoreForEnv = (
+  routerForEnv,
+  combineReducers,
+  initialState
+) => routerArg => {
+  const { reducer, middleware, enhancer } = routerForEnv(routerArg);
+  return createStore(
+    combineReducers({ router: reducer }),
+    initialState,
+    compose(enhancer, applyMiddleware(middleware))
+  );
+};

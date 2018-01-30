@@ -19,30 +19,29 @@ type InstallArgs = {|
   createMatcher?: Function
 |};
 
-export default ({ reducer, middleware, enhancer }: CreateInstallArgs) =>
-  ({
-    routes: nestedRoutes,
-    history,
-    location,
-    createMatcher = matcherFactory
-  }: InstallArgs) => {
-    validateRoutes(nestedRoutes);
-    const routes = flattenRoutes(nestedRoutes);
-    const matchRoute = createMatcher(routes);
+export default ({ reducer, middleware, enhancer }: CreateInstallArgs) => ({
+  routes: nestedRoutes,
+  history,
+  location,
+  createMatcher = matcherFactory
+}: InstallArgs) => {
+  validateRoutes(nestedRoutes);
+  const routes = flattenRoutes(nestedRoutes);
+  const matchRoute = createMatcher(routes);
 
-    return {
-      reducer: reducer({
-        routes,
-        initialLocation: {
-          ...location,
-          ...matchRoute(location.pathname)
-        }
-      }),
-      middleware: middleware({ history }),
-      enhancer: enhancer({
-        history,
-        matchRoute,
-        createMatcher
-      })
-    };
+  return {
+    reducer: reducer({
+      routes,
+      initialLocation: {
+        ...location,
+        ...matchRoute(location.pathname)
+      }
+    }),
+    middleware: middleware({ history }),
+    enhancer: enhancer({
+      history,
+      matchRoute,
+      createMatcher
+    })
   };
+};

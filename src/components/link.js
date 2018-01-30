@@ -32,12 +32,22 @@ const LEFT_MOUSE_BUTTON = 0;
 
 const isNotLeftClick = e => e.button && e.button !== LEFT_MOUSE_BUTTON;
 
-const hasModifier = e => Boolean(e.shiftKey || e.altKey || e.metaKey || e.ctrlKey);
+const hasModifier = e =>
+  Boolean(e.shiftKey || e.altKey || e.metaKey || e.ctrlKey);
 
 const shouldIgnoreClick = ({ e, target }) =>
   hasModifier(e) || isNotLeftClick(e) || e.defaultPrevented || target;
 
-const handleClick = ({ e, target, href, onClick, replaceState, persistQuery, push, replace }) => {
+const handleClick = ({
+  e,
+  target,
+  href,
+  onClick,
+  replaceState,
+  persistQuery,
+  push,
+  replace
+}) => {
   if (onClick) {
     onClick(e);
   }
@@ -142,7 +152,9 @@ const mapDispatchToProps = {
 const withLocation = connect(mapStateToProps, mapDispatchToProps);
 
 const LinkWithLocation = withLocation(LinkComponent);
-const PersistentQueryLinkWithLocation = withLocation(PersistentQueryLinkComponent);
+const PersistentQueryLinkWithLocation = withLocation(
+  PersistentQueryLinkComponent
+);
 
 export {
   LinkWithLocation as Link,

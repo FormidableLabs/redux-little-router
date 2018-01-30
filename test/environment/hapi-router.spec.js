@@ -28,31 +28,31 @@ const immutableHapiRouterTest = {
   testLabel: 'immutable hapi router'
 };
 
-[hapiRouterTest, immutableHapiRouterTest].forEach(({
-  router,
-  combineReducers,
-  toState,
-  readState,
-  testLabel
-}) => {
-  describe(`${testLabel}`, () => {
-    const setupHapiStore = setupStoreForEnv(router, combineReducers, toState({}));
+[hapiRouterTest, immutableHapiRouterTest].forEach(
+  ({ router, combineReducers, toState, readState, testLabel }) => {
+    describe(`${testLabel}`, () => {
+      const setupHapiStore = setupStoreForEnv(
+        router,
+        combineReducers,
+        toState({})
+      );
 
-    it('creates a server store enhancer using Hapi request object', () => {
-      const store = setupHapiStore({
-        routes,
-        request: {
-          path: '/home',
-          query: { get: 'schwifty' }
-        }
+      it('creates a server store enhancer using Hapi request object', () => {
+        const store = setupHapiStore({
+          routes,
+          request: {
+            path: '/home',
+            query: { get: 'schwifty' }
+          }
+        });
+
+        const state = readState(store.getState());
+        expect(state).to.have.nested.property('router.pathname', '/home');
+        expect(state).to.have.nested.property('router.search', '?get=schwifty');
+        expect(state)
+          .to.have.nested.property('router.query')
+          .that.deep.equals({ get: 'schwifty' });
       });
-
-      const state = readState(store.getState());
-      expect(state).to.have.nested.property('router.pathname', '/home');
-      expect(state).to.have.nested.property('router.search', '?get=schwifty');
-      expect(state).to.have.nested
-        .property('router.query')
-        .that.deep.equals({ get: 'schwifty' });
     });
-  });
-});
+  }
+);
