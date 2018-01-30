@@ -1,4 +1,6 @@
 // @flow
+import type { MemoryHistoryOptions } from 'history';
+
 import createMemoryHistory from 'history/createMemoryHistory';
 
 import normalizeHref from '../util/normalize-href';
@@ -12,7 +14,7 @@ type ServerRouterArgs = {
     url: string,
     query: { [key: string]: string }
   },
-  passRouterStateToReducer?: boolean
+  historyOptions: MemoryHistoryOptions
 };
 
 const locationForRequest = request => {
@@ -23,12 +25,15 @@ const locationForRequest = request => {
   return normalizeHref(descriptor);
 };
 
-export const createExpressRouter = (installer: Function) =>
-  ({ routes, request }: ServerRouterArgs) => {
-    const history = createMemoryHistory();
-    const location = locationForRequest(request);
+export const createExpressRouter = (installer: Function) => ({
+  routes,
+  request,
+  historyOptions = {}
+}: ServerRouterArgs) => {
+  const history = createMemoryHistory(historyOptions);
+  const location = locationForRequest(request);
 
-    return installer({ routes, history, location });
-  };
+  return installer({ routes, history, location });
+};
 
 export default createExpressRouter(install);

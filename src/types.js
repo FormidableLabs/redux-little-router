@@ -1,5 +1,5 @@
 // @flow
-import type { Location as HistoryLocation } from 'history';
+import type { Location as HistoryLocation, BlockCallback } from 'history';
 
 export type Query = { [key: string]: string };
 export type Params = { [key: string]: string };
@@ -35,20 +35,35 @@ export const GO = 'ROUTER_GO';
 export const GO_BACK = 'ROUTER_GO_BACK';
 export const GO_FORWARD = 'ROUTER_GO_FORWARD';
 export const POP = 'ROUTER_POP';
+export const BLOCK = 'ROUTER_BLOCK';
+export const UNBLOCK = 'ROUTER_UNBLOCK';
 export const REPLACE_ROUTES = 'ROUTER_REPLACE_ROUTES';
 export const DID_REPLACE_ROUTES = 'ROUTER_DID_REPLACE_ROUTES';
 
 const actionsWithPayload = [PUSH, REPLACE, GO, POP];
-const actions = [...actionsWithPayload, GO_FORWARD, GO_BACK, POP];
+const actions = [
+  ...actionsWithPayload,
+  GO_FORWARD,
+  GO_BACK,
+  POP,
+  BLOCK,
+  UNBLOCK
+];
 
 export const isNavigationAction = (action: { type: $Subtype<string> }) =>
   actions.indexOf(action.type) !== -1;
 
-export const isNavigationActionWithPayload = (action: { type: $Subtype<string> }) =>
-  actionsWithPayload.indexOf(action.type) !== -1;
+export const isNavigationActionWithPayload = (action: {
+  type: $Subtype<string>
+}) => actionsWithPayload.indexOf(action.type) !== -1;
 
 export type BareAction = {
-  type: 'ROUTER_GO_BACK' | 'ROUTER_GO_FORWARD'
+  type: 'ROUTER_GO_BACK' | 'ROUTER_GO_FORWARD' | 'ROUTER_UNBLOCK'
+};
+
+export type FunctionAction = {
+  type: 'ROUTER_BLOCK',
+  payload: BlockCallback
 };
 
 export type IndexedAction = {
@@ -61,4 +76,8 @@ export type LocationAction = {
   payload: Location
 };
 
-export type RouterAction = BareAction | IndexedAction | LocationAction;
+export type RouterAction =
+  | BareAction
+  | FunctionAction
+  | IndexedAction
+  | LocationAction;

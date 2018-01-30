@@ -43,17 +43,19 @@ declare module 'history' {
 
   declare type GetUserConfirmation = (
     message: string,
-    callback: (continueTransition: bool) => void
+    callback: (continueTransition: boolean) => void
   ) => void;
 
   declare type BrowserHistoryOptions = {|
     basename?: string,
-    forceRefresh?: bool,
+    forceRefresh?: boolean,
     keyLength?: number,
-    getUserConfirmation: GetUserConfirmation;
+    getUserConfirmation?: GetUserConfirmation
   |};
 
-  declare function createBrowserHistory(options?: BrowserHistoryOptions): History;
+  declare function createBrowserHistory(
+    options?: BrowserHistoryOptions
+  ): History;
 
   declare type MemoryHistoryOptions = {|
     initialEntries?: Array<string>,
@@ -62,7 +64,9 @@ declare module 'history' {
     getUserConfirmation?: GetUserConfirmation
   |};
 
-  declare function createMemoryHistory(options?: MemoryHistoryOptions): MemoryHistory;
+  declare function createMemoryHistory(
+    options?: MemoryHistoryOptions
+  ): MemoryHistory;
 
   declare type HashType = 'slash' | 'noslash' | 'hashbang';
 
@@ -81,7 +85,7 @@ declare module 'history' {
     currentLocation?: Location
   ): Location;
 
-  declare function locationsAreEqual(a: Location, b: Location): bool;
+  declare function locationsAreEqual(a: Location, b: Location): boolean;
 
   declare function parsePath(path: string): Location;
   declare function createPath(location: Location): string;

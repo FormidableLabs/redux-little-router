@@ -10,6 +10,8 @@ import {
   GO,
   GO_BACK,
   GO_FORWARD,
+  BLOCK,
+  UNBLOCK,
   isNavigationAction
 } from './types';
 
@@ -25,6 +27,8 @@ type HandleNavArgs = {
   history: History,
   query?: Query
 };
+
+let unblock = null;
 
 const navigate = (history, action) => {
   switch (action.type) {
@@ -43,12 +47,25 @@ const navigate = (history, action) => {
     case GO_FORWARD:
       history.goForward();
       break;
+    case BLOCK:
+      unblock = history.block(action.payload);
+      break;
+    case UNBLOCK:
+      if (unblock) {
+        unblock();
+      }
+      break;
     default:
       break;
   }
 };
 
-export const handleNavigationAction = ({ next, action, history, query }: HandleNavArgs) => {
+export const handleNavigationAction = ({
+  next,
+  action,
+  history,
+  query
+}: HandleNavArgs) => {
   // Synchronously dispatch the original action so that the
   // reducer can add it to its location queue
   const originalDispatch = next(action);
@@ -72,12 +89,11 @@ export const handleNavigationAction = ({ next, action, history, query }: HandleN
   return originalDispatch;
 };
 
-export default ({ history }: MiddlewareArgs) =>
-  ({ getState }: Store<State, *>) =>
-    (next: Dispatch<*>) =>
-      (action: RouterAction) => {
-        const { query } = getState().router;
-        return isNavigationAction(action) ?
-          handleNavigationAction({ next, action, history, query }) :
-          next(action);
-      };
+export default ({ history }: MiddlewareArgs) => ({
+  getState
+}: Store<State, *>) => (next: Dispatch<*>) => (action: RouterAction) => {
+  const { query } = getState().router;
+  return isNavigationAction(action)
+    ? handleNavigationAction({ next, action, history, query })
+    : next(action);
+};

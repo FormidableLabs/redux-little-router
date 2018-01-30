@@ -6,9 +6,9 @@
 
 The router follows three basic principles:
 
-- The URL is just another member of the state tree.
-- URL changes are just plain actions.
-- Route matching should be simple and extendable.
+* The URL is just another member of the state tree.
+* URL changes are just plain actions.
+* Route matching should be simple and extendable.
 
 While the core router does not depend on any view library, it provides flexible React bindings and components.
 
@@ -73,16 +73,12 @@ const routes = {
 // Install the router into the store for a browser-only environment.
 // routerForBrowser is a factory method that returns a store
 // enhancer and a middleware.
-const {
-  reducer,
-  middleware,
-  enhancer
-} = routerForBrowser({
+const { reducer, middleware, enhancer } = routerForBrowser({
   // The configured routes. Required.
   routes,
   // The basename for all routes. Optional.
   basename: '/example'
-})
+});
 
 const clientOnlyStore = createStore(
   combineReducers({ router: reducer, yourReducer }),
@@ -111,7 +107,7 @@ if (initialLocation) {
 import { push, replace, go, goBack, goForward } from 'redux-little-router';
 
 // `push` and `replace`
-// 
+//
 // Equivalent to pushState and replaceState in the History API.
 // If you installed the router with a basename, `push` and `replace`
 // know to automatically prepend paths with it. Both action creators
@@ -132,14 +128,17 @@ replace({
 // Optional second argument accepts a `persistQuery` field. When true,
 // reuse the query object from the previous location instead of replacing
 // or emptying it.
-push({
-  pathname: '/messages',
-  query: {
-    filter: 'business'
+push(
+  {
+    pathname: '/messages',
+    query: {
+      filter: 'business'
+    }
+  },
+  {
+    persistQuery: true
   }
-}, {
-  persistQuery: true
-});
+);
 
 // Navigates forward or backward a specified number of locations
 go(3);
@@ -150,6 +149,19 @@ goBack();
 
 // Equivalent to the browser forward button
 goForward();
+
+// Creates a function that blocks navigation with window.confirm when returning a string.
+// You can customize how the prompt works by passing a `historyOptions` option with a
+// `getUserConfirmation` function to `routerForBrowser`, `routerForExpress`, etc.
+// See https://www.npmjs.com/package/history#blocking-transitions
+block((location, action) => {
+  if (location.pathname === '/messages') {
+    return 'Are you sure you want to leave the messages view?';
+  }
+});
+
+// Removes the previous `block()`.
+unblock();
 ```
 
 Note: if you used the vanilla action types prior to `v13`, you'll need to migrate to using the public action creators.
@@ -227,8 +239,8 @@ Your custom reducers or selectors can derive a large portion of your app's state
 
 `redux-little-router` provides the following to make React integration easier:
 
-- A `<Fragment>` component that conditionally renders children based on current route and/or location conditions.
-- A `<Link>` component that sends navigation actions to the middleware when tapped or clicked. `<Link>` respects default modifier key and right-click behavior. A sibling component, `<PersistentQueryLink>`, persists the existing query string on navigation.
+* A `<Fragment>` component that conditionally renders children based on current route and/or location conditions.
+* A `<Link>` component that sends navigation actions to the middleware when tapped or clicked. `<Link>` respects default modifier key and right-click behavior. A sibling component, `<PersistentQueryLink>`, persists the existing query string on navigation.
 
 Instances of each component automatically `connect()` to the router state with `react-redux`.
 
@@ -246,7 +258,7 @@ Think of `<Fragment>` as the midpoint of a "flexibility continuum" that starts w
 The simplest fragment is one that displays when a route is active:
 
 ```jsx
-<Fragment forRoute='/home/messages/:team'>
+<Fragment forRoute="/home/messages/:team">
   <p>This is the team messages page!</p>
 </Fragment>
 ```
@@ -266,13 +278,13 @@ To show a `Fragment` when no other `Fragment`s match a route, use `<Fragment for
 `<Fragment>` lets you nest fragments to match your UI hierarchy to your route hierarchy, much like the `<Route>` component does in `react-router@v3`. Given a URL of `/about/bio/dat-boi`, and the following elements:
 
 ```jsx
-<Fragment forRoute='/about'>
+<Fragment forRoute="/about">
   <div>
     <h1>About</h1>
-    <Fragment forRoute='/bio'>
+    <Fragment forRoute="/bio">
       <div>
         <h2>Bios</h2>
-        <Fragment forRoute='/dat-boi'>
+        <Fragment forRoute="/dat-boi">
           <div>
             <h3>Dat Boi</h3>
             <p>Something something whaddup</p>
@@ -302,12 +314,20 @@ To show a `Fragment` when no other `Fragment`s match a route, use `<Fragment for
 `<Fragment>` makes basic component-per-page navigation easy:
 
 ```jsx
-<Fragment forRoute='/'>
+<Fragment forRoute="/">
   <div>
-    <Fragment forRoute='/'><Home /></Fragment>
-    <Fragment forRoute='/about'><About /></Fragment>
-    <Fragment forRoute='/messages'><Messages /></Fragment>
-    <Fragment forRoute='/feed'><Feed /></Fragment>
+    <Fragment forRoute="/">
+      <Home />
+    </Fragment>
+    <Fragment forRoute="/about">
+      <About />
+    </Fragment>
+    <Fragment forRoute="/messages">
+      <Messages />
+    </Fragment>
+    <Fragment forRoute="/feed">
+      <Feed />
+    </Fragment>
   </div>
 </Fragment>
 ```
@@ -317,7 +337,7 @@ To show a `Fragment` when no other `Fragment`s match a route, use `<Fragment for
 Using the `<Link>` component is simple:
 
 ```jsx
-<Link className='anything' href='/yo'>
+<Link className="anything" href="/yo">
   Share Order
 </Link>
 ```
@@ -325,12 +345,15 @@ Using the `<Link>` component is simple:
 Alternatively, you can pass in a location object to `href`. This is useful for passing query objects:
 
 ```jsx
-<Link className='anything' href={{
-  pathname: '/home/messages/a-team?test=ing',
-  query: {
-    test: 'ing'
-  }
-}}>
+<Link
+  className="anything"
+  href={{
+    pathname: '/home/messages/a-team?test=ing',
+    query: {
+      test: 'ing'
+    }
+  }}
+>
   Share Order
 </Link>
 ```
@@ -339,8 +362,8 @@ To change how `<Link>` renders when its `href` matches the current location (i.e
 
 ```jsx
 <Link
-  href='/wat'
-  className='normal-link' 
+  href="/wat"
+  className="normal-link"
   activeProps={{ className: 'active-link' }}
 >
   Wat
@@ -379,5 +402,5 @@ We consider `redux-little-router` to be **stable**. Any API changes will be incr
 
 ## Community
 
-- [react-redux-boiler](https://github.com/justrossthings/react-redux-boiler)
-- [hoc-little-router](https://github.com/Trampss/hoc-little-router)
+* [react-redux-boiler](https://github.com/justrossthings/react-redux-boiler)
+* [hoc-little-router](https://github.com/Trampss/hoc-little-router)

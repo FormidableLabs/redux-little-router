@@ -1,4 +1,5 @@
 // @flow
+import type { BlockCallback } from 'history';
 import type { Location, LocationOptions, Href } from './types';
 
 import {
@@ -7,6 +8,8 @@ import {
   GO,
   GO_BACK,
   GO_FORWARD,
+  BLOCK,
+  UNBLOCK,
   LOCATION_CHANGED,
   REPLACE_ROUTES,
   DID_REPLACE_ROUTES
@@ -32,6 +35,13 @@ export const go = (index: number) => ({
 
 export const goBack = () => ({ type: GO_BACK });
 export const goForward = () => ({ type: GO_FORWARD });
+
+export const block = (historyShouldBlock: BlockCallback) => ({
+  type: BLOCK,
+  payload: historyShouldBlock
+});
+
+export const unblock = () => ({ type: UNBLOCK });
 
 export const locationDidChange = (location: Location) => ({
   type: LOCATION_CHANGED,
