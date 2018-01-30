@@ -7,11 +7,11 @@ export default (oldQuery: ?Query, newQuery: ?Query): Location => {
   const mergedQuery = {
     ...oldQuery,
     ...newQuery
-  }
+  };
   const search: string = `?${qs.stringify(mergedQuery)}`;
 
   return {
     query: mergedQuery,
     search
-  }
+  };
 };

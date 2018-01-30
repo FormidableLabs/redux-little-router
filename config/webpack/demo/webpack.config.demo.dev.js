@@ -7,11 +7,7 @@ const babel = require('../partials/babel');
 const cssModules = require('../partials/css-modules');
 const sourceMaps = require('../partials/sourcemaps-inline');
 
-const extendConfig = compose(
-  babel(),
-  cssModules(),
-  sourceMaps()
-);
+const extendConfig = compose(babel(), cssModules(), sourceMaps());
 
 module.exports = extendConfig({
   devServer: {

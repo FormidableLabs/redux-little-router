@@ -18,7 +18,7 @@ describe('mergeQueries', () => {
         iced: 'joose'
       },
       search: '?cool=jeans&iced=joose'
-    })
+    });
   });
 
   it('allows either query to be undefined', () => {
@@ -27,7 +27,7 @@ describe('mergeQueries', () => {
       iced: 'tea'
     };
 
-    const query2 = (void 0);
+    const query2 = void 0;
 
     expect(mergeQueries(query1, query2)).to.deep.equal({
       query: query1,

@@ -1,5 +1,11 @@
 // @flow
-import type { StoreCreator, Reducer, StoreEnhancer, Dispatch, Store } from 'redux';
+import type {
+  StoreCreator,
+  Reducer,
+  StoreEnhancer,
+  Dispatch,
+  Store
+} from 'redux';
 import type { History, Action, Location as HistoryLocation } from 'history';
 
 import type { State } from './types';
@@ -76,7 +82,11 @@ export const subscribeToStoreAndHistory = ({
   subscribeToStore,
   subscribeToHistory
 }: SubscribeArgs) => {
-  const storeSubscriber = createStoreSubscriber(getState, dispatch, createMatcher);
+  const storeSubscriber = createStoreSubscriber(
+    getState,
+    dispatch,
+    createMatcher
+  );
   const historyListener = createHistoryListener(dispatch);
 
   let currentMatcher = matchRoute;
@@ -86,12 +96,18 @@ export const subscribeToStoreAndHistory = ({
     currentMatcher = storeSubscriber(currentMatcher);
   });
 
-  subscribeToHistory((location, action) => historyListener(currentMatcher, location, action));
+  subscribeToHistory((location, action) =>
+    historyListener(currentMatcher, location, action)
+  );
 };
 
 export default ({ history, matchRoute, createMatcher }: EnhancerArgs) => (
   createStore: StoreCreator<*, *>
-) => (userReducer: Reducer<*, *>, initialState: State, enhancer: StoreEnhancer<*, *>) => {
+) => (
+  userReducer: Reducer<*, *>,
+  initialState: State,
+  enhancer: StoreEnhancer<*, *>
+) => {
   const store = createStore(userReducer, initialState, enhancer);
   const { dispatch, subscribe: subscribeToStore } = store;
   const { listen: subscribeToHistory } = history;

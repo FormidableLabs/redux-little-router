@@ -12,6 +12,8 @@ describe('throwError', () => {
   });
 
   it('lists the arguments passed in', () => {
-    expect(throwError().bind(null, 1, 'two')).to.throw('Was called with arguments 1, two.');
+    expect(throwError().bind(null, 1, 'two')).to.throw(
+      'Was called with arguments 1, two.'
+    );
   });
 });

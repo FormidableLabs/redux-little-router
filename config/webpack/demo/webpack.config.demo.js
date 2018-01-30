@@ -21,7 +21,7 @@ const extendConfig = compose(
 
 module.exports = extendConfig({
   cache: true,
-  context: path.resolve("demo/client"),
+  context: path.resolve('demo/client'),
   entry: './app.js',
   output: {
     path: path.resolve('demo/dist'),

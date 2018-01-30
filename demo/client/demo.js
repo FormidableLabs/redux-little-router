@@ -22,16 +22,17 @@ const columnize = (array, columns) => {
   );
 };
 
-const Gallery = ({ images, columns, ...rest }) =>
+const Gallery = ({ images, columns, ...rest }) => (
   <div className={styles.gallery} {...rest}>
-    {columnize(images, columns).map((column, index) =>
+    {columnize(images, columns).map((column, index) => (
       <div key={index} className={styles.column}>
-        {column.map((image, imageIndex) =>
+        {column.map((image, imageIndex) => (
           <img key={imageIndex} className={styles.image} src={image} />
-        )}
+        ))}
       </div>
-    )}
-  </div>;
+    ))}
+  </div>
+);
 
 Gallery.propTypes = {
   columns: PropTypes.number,
@@ -71,19 +72,17 @@ const Demo = ({ location }) => {
           </div>
 
           <div className={styles.panes}>
-            {demoRoutes.map(route =>
+            {demoRoutes.map(route => (
               <Fragment key={route} forRoute={route}>
                 <div>
-                  <p>
-                    {location.result && location.result.text}
-                  </p>
+                  <p>{location.result && location.result.text}</p>
                   <Gallery
                     images={location.result && location.result.images}
                     columns={COLUMN_COUNT}
                   />
                 </div>
               </Fragment>
-            )}
+            ))}
           </div>
 
           <Fragment forRoute="/">

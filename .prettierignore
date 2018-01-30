@@ -1,0 +1,6 @@
+dist/
+lib/
+es/
+flow-typed/
+.nyc-output/
+package-lock.json
