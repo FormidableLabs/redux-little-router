@@ -1,6 +1,6 @@
 {
   "name": "redux-little-router",
-  "version": "14.2.3",
+  "version": "14.3.0",
   "description": "A barebones routing solution for Redux applications.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -9,27 +9,19 @@
     "preversion": "npm run check",
     "precommit": "lint-staged",
     "version": "npm run clean && npm run build",
-    "demo":
-      "webpack-dev-server --port 3000 --config config/webpack/demo/webpack.config.demo.dev.js --colors",
-    "build-demo":
-      "webpack --bail --config config/webpack/demo/webpack.config.demo.js",
-    "start-ssr-demo":
-      "BABEL_ENV=commonjs nodemon --watch demo demo/server/index.js",
+    "demo": "webpack-dev-server --port 3000 --config config/webpack/demo/webpack.config.demo.dev.js --colors",
+    "build-demo": "webpack --bail --config config/webpack/demo/webpack.config.demo.js",
+    "start-ssr-demo": "BABEL_ENV=commonjs nodemon --watch demo demo/server/index.js",
     "clean-dist": "rimraf dist",
-    "build-dist-min":
-      "webpack --bail --config config/webpack/webpack.config.js",
-    "build-dist-dev":
-      "webpack --bail --config config/webpack/webpack.config.dev.js",
-    "build-dist":
-      "npm run clean-dist && builder concurrent --buffer build-dist-min build-dist-dev",
+    "build-dist-min": "webpack --bail --config config/webpack/webpack.config.js",
+    "build-dist-dev": "webpack --bail --config config/webpack/webpack.config.dev.js",
+    "build-dist": "npm run clean-dist && builder concurrent --buffer build-dist-min build-dist-dev",
     "build-flow": "flow-copy-source src lib",
     "clean-lib": "rimraf lib",
-    "build-lib":
-      "npm run clean-lib && BABEL_ENV=commonjs babel src -d lib --copy-files && flow-copy-source src lib",
+    "build-lib": "npm run clean-lib && BABEL_ENV=commonjs babel src -d lib --copy-files && flow-copy-source src lib",
     "watch-lib": "watch 'npm run build-lib' src/ -d",
     "clean-es": "rimraf es",
-    "build-es":
-      "npm run clean-es && babel src -d es --copy-files && flow-copy-source src es",
+    "build-es": "npm run clean-es && babel src -d es --copy-files && flow-copy-source src es",
     "watch-es": "watch 'npm run build-es' src/ -d",
     "clean": "builder concurrent clean-lib clean-dist clean-es",
     "build": "builder concurrent --buffer build-lib build-dist build-es",
@@ -37,13 +29,11 @@
     "lint-src": "eslint --color --ext .js,.jsx src test demo config",
     "lint": "builder concurrent lint-src lint-flow",
     "test": "BABEL_ENV=commonjs mocha test/.setup.js 'test/**/*.spec.js'",
-    "test-cov":
-      "builder run -q --env='{\"BABEL_ENV\":\"coverage\"}' test-cov-base",
+    "test-cov": "builder run -q --env='{\"BABEL_ENV\":\"coverage\"}' test-cov-base",
     "test-cov-base": "nyc mocha test/.setup.js 'test/**/*.spec.js'",
     "check": "builder concurrent --buffer lint test",
     "check-cov": "builder concurrent --buffer lint test-cov",
-    "all":
-      "npm run clean && builder concurrent --buffer lint test test-cov build"
+    "all": "npm run clean && builder concurrent --buffer lint test test-cov build"
   },
   "engines": {
     "node": ">=4"
@@ -52,7 +42,11 @@
     "type": "git",
     "url": "git+https://tptee@github.com/FormidableLabs/redux-little-router.git"
   },
-  "keywords": ["redux", "router", "middleware"],
+  "keywords": [
+    "redux",
+    "router",
+    "middleware"
+  ],
   "author": "Tyler Thompson",
   "license": "MIT",
   "bugs": {
@@ -149,6 +143,9 @@
     "instrument": false
   },
   "lint-staged": {
-    "*.js": ["prettier --write", "git add"]
+    "*.js": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }
