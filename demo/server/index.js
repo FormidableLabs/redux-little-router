@@ -29,7 +29,7 @@ const redux = require('redux');
 /* Invert comments for immutable */
 const routerForExpress = require('../../src').routerForExpress;
 const combineReducers = redux.combineReducers;
-// const routerForExpress = require('../../src').immutableRouterForExpress;
+// const routerForExpress = require('../../src/immutable').immutableRouterForExpress;
 // const Map = require('immutable').Map;
 // const combineReducers = require('redux-immutable').combineReducers;
 

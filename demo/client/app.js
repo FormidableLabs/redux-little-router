@@ -14,7 +14,8 @@ import {
 // import { createStore, compose, applyMiddleware } from 'redux';
 // import { combineReducers } from 'redux-immutable';
 // import { Map, fromJS } from 'immutable';
-// import { immutableRouterForBrowser, initializeCurrentLocation } from '../../src';
+// import { immutableRouterForBrowser } from '../../src/immutable';
+// import { initializeCurrentLocation } from '../../src';
 
 import routes from './routes';
 import wrap from './wrap';

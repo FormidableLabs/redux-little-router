@@ -377,7 +377,7 @@ To change how `<Link>` renders when its `href` matches the current location (i.e
 `redux-little-router` supports the use of immutable.js in tandem with an `immutable`-aware `combineReducers` function like provided by [`redux-immutable`](https://github.com/gajus/redux-immutable). To use it, you will need to import the immutable version of the router or component you want to use. For instance,
 
 ```js
-import { immutableRouterForBrowser, ImmutableLink } from 'redux-little-router';
+import { immutableRouterForBrowser, ImmutableLink } from 'redux-little-router/es/immutable';
 import { combineReducers } from 'redux-immutable';
 
 const { reducer, enhancer, middleware } = immutableRouterForBrowser({ routes });
@@ -386,6 +386,19 @@ const store = createStore(
   combineReducers({ router: reducer, ... }),
   ...
 );
+```
+
+Depending on your environment, you might need to modify the import statement further. In that case, here are some tips:
+
+```js
+// works: ESM (preferred for webpack2+)
+import { immutableRouterForBrowser } from 'redux-little-router/es/immutable';
+
+// works: CJS (preferred for webpack1 or Node.js)
+import { immutableRouterForBrowser } from 'redux-little-router/lib/immutable';
+
+// DOESN'T WORK
+import { immutableRouterForBrowser } from 'redux-little-router/immutable';
 ```
 
 ## Environment
