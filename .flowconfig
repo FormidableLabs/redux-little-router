@@ -1,6 +1,7 @@
 [ignore]
 dist/
 lib/
+es/
 .*/node_modules/fbjs/.*
 .*/node_modules/systemjs-builder/.*
 .*/__tests__/.*

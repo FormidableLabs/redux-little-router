@@ -1,3 +1,4 @@
+// @flow
 import immutableRouterForBrowser from './environment/browser-router';
 import immutableRouterForExpress from './environment/express-router';
 import immutableRouterForHash from './environment/hash-router';
