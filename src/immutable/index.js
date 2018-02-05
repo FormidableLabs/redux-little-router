@@ -3,10 +3,7 @@ import immutableRouterForExpress from './environment/express-router';
 import immutableRouterForHash from './environment/hash-router';
 import immutableRouterForHapi from './environment/hapi-router';
 
-import {
-  ImmutableLink,
-  ImmutablePersistentQueryLink
-} from './components/link';
+import { ImmutableLink, ImmutablePersistentQueryLink } from './components/link';
 import ImmutableFragment from './components/fragment';
 
 export {
@@ -15,9 +12,8 @@ export {
   immutableRouterForExpress,
   immutableRouterForHapi,
   immutableRouterForHash,
-  initializeCurrentLocation,
   // React API
   ImmutableLink,
   ImmutablePersistentQueryLink,
-  ImmutableFragment,
+  ImmutableFragment
 };
