@@ -6,7 +6,7 @@ import chunk from 'lodash.chunk';
 
 /* Invert comments for immutable */
 import { Link, Fragment } from '../../src';
-// import { ImmutableLink as Link, ImmutableFragment as Fragment } from '../../src';
+// import { ImmutableLink as Link, ImmutableFragment as Fragment } from '../../src/immutable';
 
 import styles from './demo.css';
 

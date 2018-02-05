@@ -30,19 +30,8 @@ import routerForHash from './environment/hash-router';
 import routerForExpress from './environment/express-router';
 import routerForHapi from './environment/hapi-router';
 
-import immutableRouterForBrowser from './immutable/environment/browser-router';
-import immutableRouterForExpress from './immutable/environment/express-router';
-import immutableRouterForHash from './immutable/environment/hash-router';
-import immutableRouterForHapi from './immutable/environment/hapi-router';
-
 import { Link, PersistentQueryLink } from './components/link';
 import Fragment from './components/fragment';
-
-import {
-  ImmutableLink,
-  ImmutablePersistentQueryLink
-} from './immutable/components/link';
-import ImmutableFragment from './immutable/components/fragment';
 
 export {
   // High-level Redux API
@@ -50,18 +39,11 @@ export {
   routerForExpress,
   routerForHapi,
   routerForHash,
-  immutableRouterForBrowser,
-  immutableRouterForExpress,
-  immutableRouterForHapi,
-  immutableRouterForHash,
   initializeCurrentLocation,
   // React API
   Link,
   PersistentQueryLink,
   Fragment,
-  ImmutableLink,
-  ImmutablePersistentQueryLink,
-  ImmutableFragment,
   // Public action creators
   push,
   replace,
