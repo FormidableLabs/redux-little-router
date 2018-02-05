@@ -30,10 +30,10 @@ import routerForHash from './environment/hash-router';
 import routerForExpress from './environment/express-router';
 import routerForHapi from './environment/hapi-router';
 
-import immutableRouterForBrowser from './immutable/environment/browser-router';
-import immutableRouterForExpress from './immutable/environment/express-router';
-import immutableRouterForHash from './immutable/environment/hash-router';
-import immutableRouterForHapi from './immutable/environment/hapi-router';
+import immutableRouterForBrowser from './immutable';
+import immutableRouterForExpress from './immutable';
+import immutableRouterForHash from './immutable';
+import immutableRouterForHapi from './immutable';
 
 import { Link, PersistentQueryLink } from './components/link';
 import Fragment from './components/fragment';
@@ -41,8 +41,8 @@ import Fragment from './components/fragment';
 import {
   ImmutableLink,
   ImmutablePersistentQueryLink
-} from './immutable/components/link';
-import ImmutableFragment from './immutable/components/fragment';
+} from './immutable';
+import ImmutableFragment from './immutable';
 
 export {
   // High-level Redux API
