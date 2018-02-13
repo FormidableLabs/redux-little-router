@@ -174,6 +174,10 @@ export function routerForBrowser(options: BrowserRouterArgs): Router;
 export function routerForExpress(options: ExpressRouterArgs): Router;
 export function routerForHapi(options: HapiRouterArgs): Router;
 export function routerForHash(options: HashRouterArgs): Router;
+export function immutableRouterForBrowser(options: BrowserRouterArgs): Router;
+export function immutableRouterForExpress(options: ExpressRouterArgs): Router;
+export function immutableRouterForHapi(options: HapiRouterArgs): Router;
+export function immutableRouterForHash(options: HashRouterArgs): Router;
 
 export interface LinkProps {
   className?: string;
@@ -195,9 +199,11 @@ export interface LinkProps {
   activeProps?: {};
 }
 
-export declare class Link extends React.Component<LinkProps, any> {}
+export declare class Link extends React.Component<LinkProps, {}> {}
+export declare class ImmutableLink extends React.Component<LinkProps, {}> {}
 
-export declare class PersistentQueryLink extends React.Component<LinkProps, any> {}
+export declare class PersistentQueryLink extends React.Component<LinkProps, {}> {}
+export declare class ImmutablePersistentQueryLink extends React.Component<LinkProps, {}> {}
 
 export interface FragmentProps {
   location?: Location;
@@ -211,4 +217,5 @@ export interface FragmentProps {
   style?: {};
 }
 
-export declare class Fragment extends React.Component<FragmentProps, any> {}
+export declare class Fragment extends React.Component<FragmentProps, {}> {}
+export declare class ImmutableFragment extends React.Component<FragmentProps, {}> {}
