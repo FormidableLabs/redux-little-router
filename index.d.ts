@@ -10,14 +10,12 @@ import { Action, Reducer, Middleware, StoreEnhancer } from "redux";
 export type Query = { [key: string]: string };
 export type Params = { [key: string]: string };
 
+/* check out https://basarat.gitbooks.io/typescript/docs/types/index-signatures.html to read more
+about what is happening here. */
 export interface Routes {
-  [index: string]: {
-    [index: string]: RouteDefinition;
+  [key: string]: {
+    [key: string]: any;
   };
-}
-
-export interface RouteDefinition {
-  [index: string]: string | RouteDefinition;
 }
 
 export type LocationOptions = {
@@ -41,7 +39,7 @@ export interface Location extends HistoryLocation {
   query?: Query;
   queue?: Array<Location>;
   result?: {};
-  routes?: {};
+  routes?: Routes;
 }
 
 export interface State {
@@ -93,10 +91,10 @@ export function initializeCurrentLocation(location: Location): {
   payload: Location;
 };
 
-export function replaceRoutes(routes: {}): {
+export function replaceRoutes(routes: Routes): {
   type: string;
   payload: {
-    routes: {};
+    routes: Routes;
     options: {
       updateRoutes: boolean
     };
@@ -134,7 +132,7 @@ export interface Router {
 }
 
 export interface BrowserRouterArgs {
-  routes: {};
+  routes: Routes;
   basename?: string;
   history?: History;
 }
