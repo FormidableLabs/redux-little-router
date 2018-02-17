@@ -60,6 +60,10 @@ export const UNBLOCK = 'ROUTER_UNBLOCK';
 export const REPLACE_ROUTES = 'ROUTER_REPLACE_ROUTES';
 export const DID_REPLACE_ROUTES = 'ROUTER_DID_REPLACE_ROUTES';
 
+export type LocationChangedAction = {
+  type: typeof LOCATION_CHANGED;
+  payload: Location;
+};
 export type PushAction = {
   type: typeof PUSH;
   payload: Location;
@@ -78,9 +82,12 @@ export type GoBackAction = {
 export type GoForwardAction = {
   type: typeof GO_FORWARD;
 };
-export type LocationDidChangeAction = {
-  type: typeof LOCATION_CHANGED;
-  payload: Location;
+export type BlockAction = {
+  type: typeof BLOCK;
+  payload: BlockCallback;
+};
+export type UnblockAction = {
+  type: typeof UNBLOCK;
 };
 export type ReplaceRoutesAction = {
   type: typeof REPLACE_ROUTES;
@@ -91,22 +98,28 @@ export type ReplaceRoutesAction = {
     };
   };
 };
-export type DidReplaceRoutesAction = {
-  type: typeof DID_REPLACE_ROUTES;
-};
+
+export type RouterActions =
+  | LocationChangedAction
+  | PushAction
+  | ReplaceAction
+  | GoAction
+  | GoBackAction
+  | GoForwardAction
+  | BlockAction
+  | UnblockAction
+  | ReplaceRoutesAction;
+
+export function initializeCurrentLocation(location: Location): LocationChangedAction;
 
 export function push(href: Href, options: LocationOptions): PushAction;
 export function replace(href: Href, options: LocationOptions): ReplaceAction;
 export function go(index: number): GoAction;
 export function goBack(): GoBackAction;
 export function goForward(): GoForwardAction;
-export function locationDidChange(location: Location): LocationDidChangeAction;
-export function initializeCurrentLocation(location: Location): {
-  type: string;
-  payload: Location;
-};
+export function block(cb: BlockCallback): BlockAction;
+export function unblock(): UnblockAction;
 export function replaceRoutes(routes: Routes): ReplaceRoutesAction;
-export function didReplaceRoutes(): DidReplaceRoutesAction;
 
 type ListenCallback = (location: Location, action?: Action) => void;
 type BlockCallback = (location: Location, action?: Action) => string;
