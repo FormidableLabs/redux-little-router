@@ -48,62 +48,65 @@ export interface State {
 
 export type Href = string | Location;
 
-export const LOCATION_CHANGED: string;
-export const PUSH: string;
-export const REPLACE: string;
-export const GO: string;
-export const GO_BACK: string;
-export const GO_FORWARD: string;
-export const POP: string;
-export const REPLACE_ROUTES: string;
-export const DID_REPLACE_ROUTES: string;
+export const LOCATION_CHANGED = 'ROUTER_LOCATION_CHANGED';
+export const PUSH = 'ROUTER_PUSH';
+export const REPLACE = 'ROUTER_REPLACE';
+export const GO = 'ROUTER_GO';
+export const GO_BACK = 'ROUTER_GO_BACK';
+export const GO_FORWARD = 'ROUTER_GO_FORWARD';
+export const POP = 'ROUTER_POP';
+export const BLOCK = 'ROUTER_BLOCK';
+export const UNBLOCK = 'ROUTER_UNBLOCK';
+export const REPLACE_ROUTES = 'ROUTER_REPLACE_ROUTES';
+export const DID_REPLACE_ROUTES = 'ROUTER_DID_REPLACE_ROUTES';
 
-export function push(href: Href, options: LocationOptions): {
-  type: string;
+export type PushAction = {
+  type: typeof PUSH;
   payload: Location;
 }
-
-export function replace(href: Href, options: LocationOptions): {
-  type: string;
+export type ReplaceAction = {
+  type: typeof REPLACE;
   payload: Location;
-}
-
-export function go(index: number): {
-  type: string;
+};
+export type GoAction = {
+  type: typeof GO;
   payload: number;
 };
-
-export function goBack(): {
-  type: string;
-}
-
-export function goForward(): {
-  type: string;
-}
-
-export function locationDidChange(location: Location): {
-  type: string;
+export type GoBackAction = {
+  type: typeof GO_BACK;
+};
+export type GoForwardAction = {
+  type: typeof GO_FORWARD;
+};
+export type LocationDidChangeAction = {
+  type: typeof LOCATION_CHANGED;
   payload: Location;
 };
-
-export function initializeCurrentLocation(location: Location): {
-  type: string;
-  payload: Location;
-};
-
-export function replaceRoutes(routes: Routes): {
-  type: string;
+export type ReplaceRoutesAction = {
+  type: typeof REPLACE_ROUTES;
   payload: {
     routes: Routes;
     options: {
       updateRoutes: boolean
     };
-  }
+  };
+};
+export type DidReplaceRoutesAction = {
+  type: typeof DID_REPLACE_ROUTES;
 };
 
-export function didReplaceRoutes(): {
-  type: string
+export function push(href: Href, options: LocationOptions): PushAction;
+export function replace(href: Href, options: LocationOptions): ReplaceAction;
+export function go(index: number): GoAction;
+export function goBack(): GoBackAction;
+export function goForward(): GoForwardAction;
+export function locationDidChange(location: Location): LocationDidChangeAction;
+export function initializeCurrentLocation(location: Location): {
+  type: string;
+  payload: Location;
 };
+export function replaceRoutes(routes: Routes): ReplaceRoutesAction;
+export function didReplaceRoutes(): DidReplaceRoutesAction;
 
 type ListenCallback = (location: Location, action?: Action) => void;
 type BlockCallback = (location: Location, action?: Action) => string;
