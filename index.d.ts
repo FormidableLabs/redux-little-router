@@ -117,7 +117,7 @@ export function replace(href: Href, options: LocationOptions): ReplaceAction;
 export function go(index: number): GoAction;
 export function goBack(): GoBackAction;
 export function goForward(): GoForwardAction;
-export function block(cb: BlockCallback): BlockAction;
+export function block(historyShouldBlock: BlockCallback): BlockAction;
 export function unblock(): UnblockAction;
 export function replaceRoutes(routes: Routes): ReplaceRoutesAction;
 
