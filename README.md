@@ -413,6 +413,23 @@ We consider `redux-little-router` to be **stable**. Any API changes will be incr
 
 `redux-little-router` follows **strict semver**. Don't be alarmed by the high version number! Major version bumps represent _any_ breaking change, no matter how small, and do not represent a major shift in direction. We strive to make breaking changes small and compartmentalized.
 
+## Contributing
+
+We welcome community contributions! We have standardized our dev experience on [`yarn`](https://yarnpkg.com/) so make sure to have that installed.
+
+```sh
+$ git clone git@github.com:FormidableLabs/redux-little-router.git
+$ cd redux-little-router
+$ yarn install
+```
+
+After any changes and before a PR, make sure to pass our build and quality checks:
+
+```sh
+$ yarn run build
+$ yarn run check
+```
+
 ## Community
 
 * [react-redux-boiler](https://github.com/justrossthings/react-redux-boiler)

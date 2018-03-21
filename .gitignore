@@ -1,14 +1,15 @@
-\.git
-\.hg
+.git
 
-\.DS_Store
-\.idea
-\.project
-\.vagrant
+.DS_Store
+.idea
+.project
+.vagrant
 bower_components
 node_modules
-npm-debug\.log*
+npm-debug.log*
+package-lock.json
 jmeter.log
+yarn-error.log*
 
 # Config overrides
 config/local*
