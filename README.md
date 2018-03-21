@@ -430,6 +430,16 @@ $ yarn run build
 $ yarn run check
 ```
 
+When ready for release, we use an `npm version` workflow:
+
+```sh
+$ npm version <major|minor|patch|ACTUAL_VERSION_NUMBER>
+$ npm publish
+$ git push && git push --tags
+```
+
+After publishing, consider drafting some [release notes](https://github.com/FormidableLabs/redux-little-router/releases) to let the world know about all the great new features!
+
 ## Community
 
 * [react-redux-boiler](https://github.com/justrossthings/react-redux-boiler)
