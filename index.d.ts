@@ -28,7 +28,7 @@ export interface HistoryLocation {
   key?: string
   pathname: string,
   search?: string,
-  state?: {},
+  state?: any,
 }
 
 export interface Location extends HistoryLocation {
@@ -38,7 +38,7 @@ export interface Location extends HistoryLocation {
   previous?: Location;
   query?: Query;
   queue?: Array<Location>;
-  result?: {};
+  result?: any;
   routes?: Routes;
 }
 
@@ -130,9 +130,9 @@ export interface History {
   location: Location;
   action: Action;
   listen(callback: ListenCallback): Unsubscribe;
-  push(path: string, state?: {}): void;
+  push(path: string, state?: any): void;
   push(location: Location): void;
-  replace(path: string, state?: {}): void;
+  replace(path: string, state?: any): void;
   replace(location: Location): void;
   go(n: number): void;
   goBack(): void;
@@ -200,7 +200,7 @@ export interface LinkProps {
   replaceState?: boolean;
   target?: string;
   onClick?: (event: Event) => any;
-  style?: {};
+  style?: any;
   location?: Location;
   push?: (href: Href, options: LocationOptions) => {
     type: string;
@@ -210,7 +210,7 @@ export interface LinkProps {
     type: string;
     payload: Location;
   };
-  activeProps?: {};
+  activeProps?: any;
 }
 
 export declare class Link extends React.Component<LinkProps, {}> {}
@@ -228,7 +228,7 @@ export interface FragmentProps {
   withConditions?: (location: Location) => boolean;
   forNoMatch?: boolean;
   parentId?: string;
-  style?: {};
+  style?: any;
 }
 
 export declare class Fragment extends React.Component<FragmentProps, {}> {}
