@@ -164,9 +164,7 @@ export interface ExpressRouterArgs {
     path: string;
     baseUrl: string;
     url: string;
-    query: {
-      [key: string]: string;
-    };
+    query: ObjectLiteral<string>;
     passRouterStateToReducer?: boolean;
   };
 }
@@ -176,9 +174,7 @@ export interface HapiRouterArgs {
   request: {
     path: string;
     url: string;
-    query: {
-      [key: string]: string;
-    }
+    query: ObjectLiteral<string>;
   };
 }
 
