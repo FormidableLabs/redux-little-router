@@ -7,16 +7,14 @@
 import * as React from "react";
 import { Action, Reducer, Middleware, StoreEnhancer } from "redux";
 
-export type Query = { [key: string]: string };
-export type Params = { [key: string]: string };
+export type ObjectLiteral<T> = { [key: string]: T };
+
+export type Query = ObjectLiteral<string>;
+export type Params = ObjectLiteral<string>;
 
 /* check out https://basarat.gitbooks.io/typescript/docs/types/index-signatures.html to read more
 about what is happening here. */
-export interface Routes {
-  [key: string]: {
-    [key: string]: any;
-  };
-}
+export type Routes = ObjectLiteral<ObjectLiteral<any>>;
 
 export type LocationOptions = {
   persistQuery?: boolean;
@@ -28,7 +26,7 @@ export interface HistoryLocation {
   key?: string
   pathname: string,
   search?: string,
-  state?: any,
+  state?: ObjectLiteral<any>,
 }
 
 export interface Location extends HistoryLocation {
@@ -38,7 +36,7 @@ export interface Location extends HistoryLocation {
   previous?: Location;
   query?: Query;
   queue?: Array<Location>;
-  result?: any;
+  result?: ObjectLiteral<any>;
   routes?: Routes;
 }
 
@@ -130,9 +128,9 @@ export interface History {
   location: Location;
   action: Action;
   listen(callback: ListenCallback): Unsubscribe;
-  push(path: string, state?: any): void;
+  push(path: string, state?: ObjectLiteral<any>): void;
   push(location: Location): void;
-  replace(path: string, state?: any): void;
+  replace(path: string, state?: ObjectLiteral<any>): void;
   replace(location: Location): void;
   go(n: number): void;
   goBack(): void;
@@ -200,7 +198,7 @@ export interface LinkProps {
   replaceState?: boolean;
   target?: string;
   onClick?: (event: Event) => any;
-  style?: any;
+  style?: ObjectLiteral<any>;
   location?: Location;
   push?: (href: Href, options: LocationOptions) => {
     type: string;
@@ -210,7 +208,7 @@ export interface LinkProps {
     type: string;
     payload: Location;
   };
-  activeProps?: any;
+  activeProps?: ObjectLiteral<any>;
 }
 
 export declare class Link extends React.Component<LinkProps, {}> {}
@@ -228,7 +226,7 @@ export interface FragmentProps {
   withConditions?: (location: Location) => boolean;
   forNoMatch?: boolean;
   parentId?: string;
-  style?: any;
+  style?: ObjectLiteral<any>;
 }
 
 export declare class Fragment extends React.Component<FragmentProps, {}> {}
