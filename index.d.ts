@@ -110,8 +110,8 @@ export type RouterActions =
 
 export function initializeCurrentLocation(location: Location): LocationChangedAction;
 
-export function push(href: Href, options: LocationOptions): PushAction;
-export function replace(href: Href, options: LocationOptions): ReplaceAction;
+export function push(href: Href, options?: LocationOptions): PushAction;
+export function replace(href: Href, options?: LocationOptions): ReplaceAction;
 export function go(index: number): GoAction;
 export function goBack(): GoBackAction;
 export function goForward(): GoForwardAction;
