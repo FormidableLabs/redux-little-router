@@ -8,9 +8,9 @@ import install from '../install';
 
 type BrowserRouterArgs = {
   routes: Object,
-  basename: string,
-  historyOptions: BrowserHistoryOptions,
-  history: History
+  basename?: string,
+  historyOptions?: BrowserHistoryOptions,
+  history?: History
 };
 
 export const createBrowserRouter = (installer: Function) => ({
@@ -28,7 +28,7 @@ export const createBrowserRouter = (installer: Function) => ({
 
   // Strip the basename from the initial pathname
   const pathname =
-    fullPathname.indexOf(basename) === 0
+    basename && fullPathname.indexOf(basename) === 0
       ? fullPathname.slice(basename.length)
       : fullPathname;
 
