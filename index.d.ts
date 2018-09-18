@@ -24,7 +24,7 @@ export type LocationOptions = {
 export interface HistoryLocation {
   hash?: string,
   key?: string
-  pathname: string,
+  pathname?: string,
   search?: string,
   state?: ObjectLiteral<any>,
 }
