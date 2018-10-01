@@ -5,7 +5,7 @@
 // TypeScript version: 2.4
 
 import * as React from "react";
-import { Action, Reducer, Middleware, StoreEnhancer } from "redux";
+import { Reducer, Middleware, StoreEnhancer } from "redux";
 
 export type ObjectLiteral<T> = { [key: string]: T };
 
@@ -119,14 +119,15 @@ export function block(historyShouldBlock: BlockCallback): BlockAction;
 export function unblock(): UnblockAction;
 export function replaceRoutes(routes: Routes): ReplaceRoutesAction;
 
-type ListenCallback = (location: Location, action?: Action) => void;
-type BlockCallback = (location: Location, action?: Action) => string;
+type HistoryAction = 'PUSH' | 'POP' | 'REPLACE';
+type ListenCallback = (location: Location, action?: HistoryAction) => void;
+type BlockCallback = (location: Location, action?: HistoryAction) => string;
 type Unsubscribe = () => void;
 
 export interface History {
   length: number;
   location: Location;
-  action: Action;
+  action: HistoryAction;
   listen(callback: ListenCallback): Unsubscribe;
   push(path: string, state?: ObjectLiteral<any>): void;
   push(location: Location): void;
