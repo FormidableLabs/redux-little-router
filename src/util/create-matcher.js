@@ -41,7 +41,7 @@ export default (routes: Object) => {
     .reverse()
     .map(route => ({
       route,
-      pattern: new UrlPattern(route),
+      pattern: new UrlPattern(route, routes[route].patternOptions || {}),
       result: routes[route]
     }));
 
