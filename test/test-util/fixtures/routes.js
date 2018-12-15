@@ -16,6 +16,10 @@ export default flattenRoutes({
   '/home/:spookyparam': {
     name: '3spooky5me'
   },
+  '/home/email/:customparam': {
+    name: 'custom',
+    patternOptions: { segmentValueCharset: 'a-zA-Z0-9-_~ %@.' }
+  },
   '/': {
     '/oh': {
       name: 'oh',
