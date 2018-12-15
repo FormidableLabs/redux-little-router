@@ -6,6 +6,6 @@ export default (href: Href, basename: ?string) => {
     return `${basename || ''}${href}`;
   }
 
-  const { pathname, search } = href;
-  return `${basename || ''}${pathname}${search || ''}`;
+  const { pathname, search, hash } = href;
+  return `${basename || ''}${pathname}${hash || ''}${search || ''}`;
 };
