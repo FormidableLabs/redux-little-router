@@ -1,6 +1,17 @@
+## Project Deprecated
+
+As of December 10, 2018, this project is no longer under active maintenance. There are a few reasons we at Formidable made this decision:
+
+* React Router and its ecosystem have solved many of the problems this library was originally created for.
+* There are other alternatives that store React Router state in Redux, so you get the benefits of their view layer while keeping router state in your store. We recommend [`connected-react-router`](https://github.com/supasate/connected-react-router).
+* React Router v4's component APIs are more suited to presentational / connected components than prior versions. With that, it becomes more ergonomic to use those components even when routing with Redux.
+* We are hard at work at other new and exciting open source!
+
+We appreciate all of the effort our maintainers and collaborators in the community have put into this project. We're proud to have made the world of Redux routing a little bit better with all of you. 🎉
+
 # redux-little-router
 
-[![Build Status](https://travis-ci.org/FormidableLabs/redux-little-router.svg?branch=master)](https://travis-ci.org/FormidableLabs/redux-little-router) [![codecov](https://codecov.io/gh/FormidableLabs/redux-little-router/branch/master/graph/badge.svg)](https://codecov.io/gh/FormidableLabs/redux-little-router) <a href="https://overv.io/FormidableLabs/redux-little-router/board/"><img src="https://img.shields.io/badge/issues-board-green.svg" height="20" /></a> [![npm](https://img.shields.io/npm/v/redux-little-router.svg)]() [![npm (tag)](https://img.shields.io/npm/v/redux-little-router/next.svg)]()
+[![Build Status](https://travis-ci.org/FormidableLabs/redux-little-router.svg?branch=master)](https://travis-ci.org/FormidableLabs/redux-little-router) [![codecov](https://codecov.io/gh/FormidableLabs/redux-little-router/branch/master/graph/badge.svg)](https://codecov.io/gh/FormidableLabs/redux-little-router) <a href="https://overv.io/FormidableLabs/redux-little-router/board/"><img src="https://img.shields.io/badge/issues-board-green.svg" height="20" /></a> [![npm](https://img.shields.io/npm/v/redux-little-router.svg)]()
 
 `redux-little-router` is a tiny router for Redux applications that lets the URL do the talking.
 
