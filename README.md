@@ -306,7 +306,6 @@ To show a `Fragment` when no other `Fragment`s match a route, use `<Fragment for
   </div>
 </Fragment>
 ```
-
 ...React will render:
 
 ```html
@@ -320,6 +319,28 @@ To show a `Fragment` when no other `Fragment`s match a route, use `<Fragment for
         </div>
     </div>
 </div>
+```
+
+If you want to use nested fragments for complex navigation patterns, you should remember to put the most generic route at the end of your jsx. If you do not follow this advice your route will just get matched to the first matching route. 
+Internally the Fragments get converted into default Route objects the sequence is important: 
+e.G. '/users/:id' -> would get mapped to '/users/' -> render UserManagement.
+
+To solve this little issue just rearrange the sequences like that:
+
+```jsx
+<Fragment forRoute="/admin">
+  <React.Fragment>
+    <Fragment forRoute="/users/:id/requests">
+      <AbsenceRequests />
+    </Fragment>
+    <Fragment forRoute="/users/:id">
+      <UserManagementDetails />
+    </Fragment>
+    <Fragment forRoute="/users">
+      <UserManagement />
+    </Fragment>
+  </React.Fragment>
+</Fragment>
 ```
 
 `<Fragment>` makes basic component-per-page navigation easy:
