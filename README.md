@@ -93,6 +93,18 @@ const { reducer, middleware, enhancer } = routerForBrowser({
 
 const clientOnlyStore = createStore(
   combineReducers({ router: reducer, yourReducer }),
+  // Or alternatively, if yourReducer is already the top-level reducers.
+  // (state, action) => {
+  //   const s = { ...state };
+  //   if (s.hasOwnProperty('router')) {
+  //     delete s.router;
+  //   }
+  //
+  //   return {
+  //     ...yourReducer(s, action),
+  //     router: routerReducer(state && state.hasOwnProperty('router') ? state.router : undefined, action)
+  //   };
+  // },
   initialState,
   compose(enhancer, applyMiddleware(middleware))
 );
