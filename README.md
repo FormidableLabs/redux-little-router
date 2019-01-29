@@ -343,6 +343,8 @@ To show a `Fragment` when no other `Fragment`s match a route, use `<Fragment for
 </Fragment>
 ```
 
+When nesting `<Fragment>` tags, it's important to note that all of the nested `<Fragment>`s need to share a single parent, as shown in the example above. Failing to do this will result in a React error that will crash your app.
+
 ### `<Link>`
 
 Using the `<Link>` component is simple:
